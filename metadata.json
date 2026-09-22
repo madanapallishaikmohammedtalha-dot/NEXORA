@@ -1,0 +1,6 @@
+{
+  "name": "NEXORA",
+  "description": "Local-first Personal Learning & Career Operating System for students.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
