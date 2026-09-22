@@ -156,6 +156,24 @@ export default function App() {
     }
   };
 
+  const handleSaveTopics = (topics: RoadmapTopic[]) => {
+    try {
+      dataService.saveTopics(topics);
+      showToast(`Imported ${topics.length} topics into curriculum`);
+    } catch (err: any) {
+      showToast(`Roadmap batch error: ${err.message}`);
+    }
+  };
+
+  const handleOverrideTopicPrerequisites = (topicId: string, override: boolean) => {
+    try {
+      dataService.overrideTopicPrerequisites(topicId, override);
+      showToast(override ? 'Prerequisite requirement bypassed' : 'Prerequisite lock restored');
+    } catch (err: any) {
+      showToast(`Override error: ${err.message}`);
+    }
+  };
+
   const handleUpdateTopicMastery = (topicId: string, mastery: number, status?: TopicStatus) => {
     try {
       dataService.updateTopicMastery(topicId, mastery, status);
@@ -396,7 +414,9 @@ export default function App() {
             state={state}
             setActiveTab={setActiveTab}
             onSaveTopic={handleSaveTopic}
+            onSaveTopics={handleSaveTopics}
             onUpdateTopicMastery={handleUpdateTopicMastery}
+            onOverrideTopicPrerequisites={handleOverrideTopicPrerequisites}
             onSelectTopicForTutor={(topic) => setTutorTopic(topic)}
             onAddTopicToDailyMission={handleAddTopicToDailyMission}
           />

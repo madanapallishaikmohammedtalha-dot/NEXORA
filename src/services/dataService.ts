@@ -5,18 +5,19 @@ import {
   Goal,
   LearningProgress,
   MissionItem,
+  RoadmapProgressSummary,
   RoadmapTopic,
   Semester,
   StudySession,
   Subject,
   TimeBlock,
   TimetableSlot,
+  TopicProgressDetail,
   TopicStatus,
   UserProfile,
 } from '../types';
 import { INITIAL_SEEDED_STATE } from './seedData';
 import {
-  detectCycleInTopics,
   validateGoal,
   validateRoadmapTopic,
   validateSemester,
@@ -26,16 +27,26 @@ import {
   validateTimetableSlot,
   validateUserProfile,
 } from './validation';
+import {
+  calculateRoadmapProgress as computeRoadmapProgress,
+  calculateTopicProgress as computeTopicProgress,
+  DEFAULT_LEARNING_DOMAINS,
+  detectCycleInTopics,
+  evaluatePrerequisites,
+  getDependents as getDependentsHelper,
+  getLockedTopics as getLockedTopicsHelper,
+  getPrerequisites as getPrerequisitesHelper,
+  getReadyTopics as getReadyTopicsHelper,
+  MASTERY_THRESHOLD_COMPLETED,
+  MASTERY_THRESHOLD_PREREQ,
+  recalculateRoadmapStatus,
+  TopicFilterOptions,
+  validateTopicPrerequisites,
+} from './learningEngine';
+
+export { MASTERY_THRESHOLD_COMPLETED, MASTERY_THRESHOLD_PREREQ };
 
 export const STORAGE_KEY = 'nexora_os_v1';
-
-/**
- * Low-level storage adapter interface
- * Isolates direct localStorage access so that alternate adapters (e.g. IndexedDB, in-memory)
- * can be swapped in without changing business logic.
- */
-export const MASTERY_THRESHOLD_COMPLETED = 80;
-export const MASTERY_THRESHOLD_PREREQ = 80;
 
 export interface StorageAdapter {
   getItem(key: string): string | null;
@@ -467,65 +478,161 @@ export class DataService {
       updatedTopics = [...state.topics, topic];
     }
 
-    // Graph Verification: check for dependency cycles
-    const cycle = detectCycleInTopics(updatedTopics.filter((t) => t.subjectId === topic.subjectId));
-    if (cycle) {
-      throw new Error(`Prerequisite cycle detected: ${cycle.join(' -> ')}`);
+    // Graph Verification: validate prerequisites and detect dependency cycles
+    const prereqValidation = validateTopicPrerequisites(topic, updatedTopics);
+    if (!prereqValidation.isValid) {
+      throw new Error(`Topic prerequisite error: ${prereqValidation.errors.map((e) => e.message).join('; ')}`);
     }
 
-    // Automatically recalculate DAG status for all topics in this subject
-    const syncedTopics = this.recomputeTopicStatuses(updatedTopics, topic.subjectId);
+    // Automatically recalculate DAG status for all topics across the entire graph
+    const syncedTopics = recalculateRoadmapStatus(updatedTopics);
     this.saveState({ ...state, topics: syncedTopics });
     return syncedTopics.find((t) => t.id === topic.id) || topic;
+  }
+
+  /**
+   * Save multiple topics in a single transaction (e.g. after reviewing AI roadmap proposal)
+   */
+  saveTopics(topicsToSave: RoadmapTopic[]): RoadmapTopic[] {
+    const state = this.getState();
+    const currentTopicsMap = new Map<string, RoadmapTopic>(state.topics.map((t) => [t.id, t]));
+
+    for (const t of topicsToSave) {
+      const validation = validateRoadmapTopic(t);
+      if (!validation.isValid) {
+        throw new Error(`Topic validation failed for "${t.title}": ${validation.errors.map((e) => e.message).join('; ')}`);
+      }
+      currentTopicsMap.set(t.id, t);
+    }
+
+    const mergedTopics = Array.from(currentTopicsMap.values());
+    const cycle = detectCycleInTopics(mergedTopics);
+    if (cycle) {
+      throw new Error(`Prerequisite cycle detected in topic batch: ${cycle.join(' -> ')}`);
+    }
+
+    const syncedTopics = recalculateRoadmapStatus(mergedTopics);
+    this.saveState({ ...state, topics: syncedTopics });
+    return syncedTopics;
   }
 
   deleteTopic(topicId: string): void {
     const state = this.getState();
     // Remove topic and strip it from any other topic's prerequisite list
-    const updatedTopics = state.topics
+    const filteredTopics = state.topics
       .filter((t) => t.id !== topicId)
       .map((t) => ({
         ...t,
         prerequisiteTopicIds: (t.prerequisiteTopicIds || []).filter((id) => id !== topicId),
       }));
 
-    this.saveState({ ...state, topics: updatedTopics });
+    // Recalculate status for dependent topics now that prerequisite was removed
+    const syncedTopics = recalculateRoadmapStatus(filteredTopics);
+    this.saveState({ ...state, topics: syncedTopics });
   }
 
   /**
-   * Recompute DAG statuses (locked vs ready vs in_progress vs completed)
+   * Updates topic mastery level and automatically recalculates dependent topic readiness.
+   * If mastery reaches >= 80%, topic is completed and dependent topics automatically unlock!
    */
-  private recomputeTopicStatuses(topics: RoadmapTopic[], subjectId: string): RoadmapTopic[] {
-    const subjectTopics = topics.filter((t) => t.subjectId === subjectId);
-    const otherTopics = topics.filter((t) => t.subjectId !== subjectId);
-    const topicMap = new Map<string, RoadmapTopic>(subjectTopics.map((t) => [t.id, t]));
+  updateTopicMastery(topicId: string, mastery: number, status?: TopicStatus): RoadmapTopic {
+    const state = this.getState();
+    const topic = state.topics.find((t) => t.id === topicId);
+    if (!topic) {
+      throw new Error(`Topic with id "${topicId}" not found`);
+    }
 
-    const computedSubjectTopics = subjectTopics.map((topic) => {
-      // Completed topics stay completed
-      if (topic.masteryLevel >= MASTERY_THRESHOLD_COMPLETED) {
-        return { ...topic, status: 'completed' as TopicStatus };
-      }
+    const clampedMastery = Math.max(0, Math.min(100, Math.round(mastery)));
+    const updatedTopic: RoadmapTopic = {
+      ...topic,
+      masteryLevel: clampedMastery,
+      status: status || (clampedMastery >= MASTERY_THRESHOLD_COMPLETED ? 'completed' : clampedMastery > 0 ? 'in_progress' : topic.status),
+      lastStudiedAt: new Date().toISOString(),
+    };
 
-      // Check if all prerequisites are completed (mastery >= 80% or status === 'completed')
-      const prereqs = topic.prerequisiteTopicIds || [];
-      const allPrereqsMet = prereqs.every((prereqId) => {
-        const p = topicMap.get(prereqId);
-        return p && (p.status === 'completed' || p.masteryLevel >= MASTERY_THRESHOLD_PREREQ);
-      });
+    const tempTopics = state.topics.map((t) => (t.id === topicId ? updatedTopic : t));
+    const syncedTopics = recalculateRoadmapStatus(tempTopics);
+    this.saveState({ ...state, topics: syncedTopics });
+    return syncedTopics.find((t) => t.id === topicId) || updatedTopic;
+  }
 
-      if (!allPrereqsMet) {
-        return { ...topic, status: 'locked' as TopicStatus };
-      }
+  /**
+   * Allows manual user override for locked topics (prerequisites incomplete)
+   * The user is never hard-locked from learning.
+   */
+  overrideTopicPrerequisites(topicId: string, isUserOverride: boolean): RoadmapTopic {
+    const state = this.getState();
+    const topic = state.topics.find((t) => t.id === topicId);
+    if (!topic) {
+      throw new Error(`Topic with id "${topicId}" not found`);
+    }
 
-      // If unlocked:
-      if (topic.masteryLevel > 0 || topic.status === 'in_progress') {
-        return { ...topic, status: 'in_progress' as TopicStatus };
-      }
+    const updatedTopic: RoadmapTopic = {
+      ...topic,
+      isUserOverride,
+      overrideWarning: isUserOverride ? 'Prerequisites incomplete (overridden by student)' : undefined,
+    };
 
-      return { ...topic, status: 'ready' as TopicStatus };
-    });
+    const tempTopics = state.topics.map((t) => (t.id === topicId ? updatedTopic : t));
+    const syncedTopics = recalculateRoadmapStatus(tempTopics);
+    this.saveState({ ...state, topics: syncedTopics });
+    return syncedTopics.find((t) => t.id === topicId) || updatedTopic;
+  }
 
-    return [...otherTopics, ...computedSubjectTopics];
+  /**
+   * Returns all topics ready to study (uncompleted, with prereqs satisfied or overridden)
+   */
+  getReadyTopics(filter?: TopicFilterOptions): RoadmapTopic[] {
+    return getReadyTopicsHelper(this.getState().topics, filter);
+  }
+
+  /**
+   * Returns all topics currently locked by incomplete prerequisites
+   */
+  getLockedTopics(filter?: TopicFilterOptions): RoadmapTopic[] {
+    return getLockedTopicsHelper(this.getState().topics, filter);
+  }
+
+  /**
+   * Returns immediate prerequisites for a topic
+   */
+  getPrerequisites(topicId: string): RoadmapTopic[] {
+    return getPrerequisitesHelper(topicId, this.getState().topics);
+  }
+
+  /**
+   * Returns immediate downstream dependents for a topic
+   */
+  getDependents(topicId: string): RoadmapTopic[] {
+    return getDependentsHelper(topicId, this.getState().topics);
+  }
+
+  /**
+   * Calculates topic progress and 4-phase pedagogical evidence from stored session data
+   */
+  calculateTopicProgress(topicId: string): TopicProgressDetail | null {
+    const state = this.getState();
+    const topic = state.topics.find((t) => t.id === topicId);
+    if (!topic) return null;
+    return computeTopicProgress(topic, state.sessions);
+  }
+
+  /**
+   * Aggregates roadmap-level progress (completion %, counts, evidence breakdown)
+   */
+  calculateRoadmapProgress(filter?: TopicFilterOptions): RoadmapProgressSummary {
+    const state = this.getState();
+    let topics = state.topics;
+    if (filter?.subjectId) {
+      topics = topics.filter((t) => t.subjectId === filter.subjectId);
+    }
+    if (filter?.domain) {
+      topics = topics.filter((t) => t.domain === filter.domain);
+    }
+    if (filter?.category) {
+      topics = topics.filter((t) => t.category === filter.category);
+    }
+    return computeRoadmapProgress(topics, state.sessions);
   }
 
   // ==========================================
@@ -596,7 +703,7 @@ export class DataService {
         const existingIndex = state.topics.findIndex((t) => t.id === topic.id);
         const tempTopics = [...state.topics];
         tempTopics[existingIndex] = updatedTopic;
-        updatedTopics = this.recomputeTopicStatuses(tempTopics, topic.subjectId);
+        updatedTopics = recalculateRoadmapStatus(tempTopics);
       }
     }
 
@@ -744,22 +851,6 @@ export class DataService {
 
     this.saveDailyMission(updatedMission);
     return item;
-  }
-
-  updateTopicMastery(topicId: string, mastery: number, status?: TopicStatus): RoadmapTopic {
-    const state = this.getState();
-    const topic = state.topics.find((t) => t.id === topicId);
-    if (!topic) {
-      throw new Error(`Topic with id ${topicId} not found`);
-    }
-    const cleanMastery = Math.min(100, Math.max(0, mastery));
-    const cleanStatus = status || (cleanMastery >= MASTERY_THRESHOLD_COMPLETED ? 'completed' : cleanMastery > 0 ? 'in_progress' : topic.status);
-    const updatedTopic: RoadmapTopic = {
-      ...topic,
-      masteryLevel: cleanMastery,
-      status: cleanStatus,
-    };
-    return this.saveTopic(updatedTopic);
   }
 }
 

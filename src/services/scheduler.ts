@@ -135,7 +135,7 @@ export function calculateDailyCapacity(dateStr: string, state: AppState) {
 
 /**
  * Prerequisite DAG (Directed Acyclic Graph) Checker
- * Evaluates whether all prerequisite topic IDs for a given topic are 'completed'
+ * Evaluates whether all prerequisite topic IDs for a given topic are satisfied (completed or >= 80% mastery)
  */
 export function evaluatePrerequisites(
   topic: RoadmapTopic,
@@ -150,7 +150,7 @@ export function evaluatePrerequisites(
 
   for (const prereqId of topic.prerequisiteTopicIds) {
     const prereq = topicMap.get(prereqId);
-    if (!prereq || prereq.status !== 'completed') {
+    if (!prereq || (prereq.status !== 'completed' && (prereq.masteryLevel || 0) < 80)) {
       if (prereq) missingPrereqs.push(prereq);
     }
   }

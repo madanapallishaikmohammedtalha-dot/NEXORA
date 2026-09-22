@@ -70,6 +70,15 @@ export interface TimeBlock {
 
 export type TopicStatus = 'locked' | 'ready' | 'in_progress' | 'completed';
 
+export type LearningCategory = 'academic' | 'career' | 'project';
+
+export interface TopicLearningEvidence {
+  studied: boolean;   // Logged >= 1 study session or focus period
+  practiced: boolean; // Logged practice or >= 30m actual duration
+  assessed: boolean;  // Logged comprehension rating >= 3
+  mastered: boolean;  // Mastery level >= 80% with real session evidence
+}
+
 export interface RoadmapTopic {
   id: string;
   subjectId: string;
@@ -82,6 +91,14 @@ export interface RoadmapTopic {
   notes?: string;
   orderIndex: number;
   lastStudiedAt?: string;
+
+  // Multi-domain, pedagogical stage, and override extensions
+  domain?: string; // e.g. "Operating Systems", "Java", "DSA", "Web Development", "AI", "Git/GitHub", "Career Skills"
+  category?: LearningCategory; // 'academic' | 'career' | 'project'
+  stage?: string; // e.g. "Foundations", "Core Architecture", "Applied Systems", "Advanced Topics"
+  stageIndex?: number;
+  isUserOverride?: boolean; // When true, user bypassed incomplete prereqs with explicit override
+  overrideWarning?: string;
 }
 
 // Learning Progress record per topic (longitudinal metric tracking)
@@ -94,6 +111,46 @@ export interface LearningProgress {
   sessionsCount: number;
   averageComprehension: number; // 1 - 5 scale
   lastStudiedAt?: string;
+}
+
+export interface TopicProgressDetail {
+  topicId: string;
+  status: TopicStatus;
+  masteryLevel: number;
+  totalTimeMinutes: number;
+  sessionsCount: number;
+  averageComprehension: number;
+  evidence: TopicLearningEvidence;
+  isCompleted: boolean;
+  isPrerequisitesMet: boolean;
+  missingPrereqTitles: string[];
+}
+
+export interface RoadmapProgressSummary {
+  totalTopics: number;
+  completedTopics: number;
+  inProgressTopics: number;
+  readyTopics: number;
+  lockedTopics: number;
+  completionPercentage: number;
+  averageMastery: number;
+  totalTimeInvestedMinutes: number;
+  evidenceBreakdown: {
+    studiedCount: number;
+    practicedCount: number;
+    assessedCount: number;
+    masteredCount: number;
+  };
+}
+
+export interface LearningDomainInfo {
+  id: string;
+  name: string;
+  category: LearningCategory;
+  description: string;
+  subjectId?: string;
+  iconName?: string;
+  color?: string;
 }
 
 // Academic & Career Goals

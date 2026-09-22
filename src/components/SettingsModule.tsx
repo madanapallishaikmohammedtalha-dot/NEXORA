@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { AppState, UserProfile } from '../types';
 import { runDataLayerTests, TestResult } from '../services/dataLayerTests';
+import { runPlannerEngineTests } from '../services/plannerEngineTests';
+import { runLearningEngineTests } from '../services/learningEngineTests';
 import { aiService, ProviderHealthStatus } from '../services/ai';
 
 interface SettingsModuleProps {
@@ -84,8 +86,22 @@ export const SettingsModule: React.FC<SettingsModuleProps> = ({
   const handleRunTests = () => {
     setIsTesting(true);
     setTimeout(() => {
-      const summary = runDataLayerTests();
-      setTestResults(summary);
+      const dataLayerSummary = runDataLayerTests();
+      const plannerSummary = runPlannerEngineTests();
+      const learningSummary = runLearningEngineTests();
+
+      const combinedResults = [
+        ...dataLayerSummary.results,
+        ...plannerSummary.results,
+        ...learningSummary.results,
+      ];
+
+      setTestResults({
+        total: dataLayerSummary.total + plannerSummary.total + learningSummary.total,
+        passed: dataLayerSummary.passed + plannerSummary.passed + learningSummary.passed,
+        failed: dataLayerSummary.failed + plannerSummary.failed + learningSummary.failed,
+        results: combinedResults,
+      });
       setIsTesting(false);
     }, 150);
   };
@@ -470,7 +486,7 @@ export const SettingsModule: React.FC<SettingsModuleProps> = ({
         </div>
 
         <p className="text-xs text-slate-300 leading-relaxed">
-          Executes automated tests validating domain models and the deterministic Planner Engine: <strong>overlapping events</strong>, <strong>insufficient time</strong>, <strong>fixed events</strong>, <strong>flexible focus windows</strong>, <strong>cognitive breaks</strong>, <strong>rescheduling</strong>, and <strong>missed sessions recovery</strong>.
+          Executes automated test suites across the entire deterministic architecture: <strong>Learning Roadmap DAGs</strong> (prerequisite evaluation, cycle prevention, 80% canonical mastery unlocks, 4-phase pedagogical tracking), <strong>Data Layer persistence & integrity</strong>, and <strong>Planner Engine scheduling</strong> (conflicts, capacity constraints, cognitive recovery).
         </p>
 
         {testResults && (
