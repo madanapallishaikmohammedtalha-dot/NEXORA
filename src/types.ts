@@ -174,6 +174,18 @@ export interface Goal {
 
 export type MissionItemStatus = 'pending' | 'in_progress' | 'completed' | 'skipped' | 'missed' | 'rescheduled';
 
+export type ActivityType = 
+  | 'college_work' 
+  | 'academic_study' 
+  | 'career_learning' 
+  | 'dsa_practice' 
+  | 'project_work' 
+  | 'revision' 
+  | 'break';
+
+export type ActivityPriority = 'high' | 'medium' | 'low';
+export type ActivitySource = 'ai' | 'manual' | 'system';
+
 export interface MissionItem {
   id: string;
   topicId?: string;
@@ -187,11 +199,41 @@ export interface MissionItem {
   isAIRecorded: boolean;
   priorityScore?: number;
   reason?: string;
+  activityType?: ActivityType;
+  priority?: ActivityPriority;
+  source?: ActivitySource;
+  domain?: 'academic' | 'career' | 'project';
+  objective?: string;
   isBreak?: boolean;
   isUserOverride?: boolean;
   overrideWarning?: string;
   originalScheduledTime?: string;
   rescheduledTo?: string; // target date/time
+}
+
+export interface DailyCheckInInput {
+  date: string;
+  hasUrgentAssignment?: boolean;
+  assignmentSubjectId?: string;
+  assignmentDetails?: string;
+  energyLevel?: 'high' | 'medium' | 'low';
+  tired?: boolean;
+  reachedHomeLate?: boolean;
+  lateArrivalMinutes?: number;
+  hasCollegeWorkToday?: boolean;
+  extraMinutes?: number;
+  focusTopicOrSkill?: string; // e.g. "Java", "DSA"
+  customNote?: string;
+}
+
+export interface ProposedDailyMission {
+  date: string;
+  todayCapacityMinutes: number;
+  usedCapacityMinutes: number;
+  freeCapacityMinutes: number;
+  rationale: string;
+  items: MissionItem[];
+  checkIn?: DailyCheckInInput;
 }
 
 export interface DailyMission {
@@ -202,6 +244,7 @@ export interface DailyMission {
   items: MissionItem[];
   reflectionNotes?: string;
   aiProposalRationale?: string;
+  checkIn?: DailyCheckInInput;
 }
 
 export interface StudySession {

@@ -14,6 +14,8 @@ import {
 } from './validation';
 import { runPlannerEngineTests } from './plannerEngineTests';
 import { runAIProviderTests } from './ai/aiProviderTests';
+import { runLearningEngineTests } from './learningEngineTests';
+import { runAdaptivePlannerTests } from './adaptivePlannerTests';
 
 export interface TestResult {
   suite: string;
@@ -348,6 +350,29 @@ export function runDataLayerTests(): { total: number; passed: number; failed: nu
     results.push(...aiProviderTestReport.results);
   } catch (err: any) {
     assert('AI Provider', 'AI Provider test suite threw unexpected error', false, err?.message);
+  }
+
+  // -------------------------------------------------------------
+  // Test Suite 5: NEXORA Learning Engine Tests (docs/LEARNING_ENGINE.md)
+  // (DAG, prerequisites, mastery thresholds, cycle detection, evidence tracking)
+  // -------------------------------------------------------------
+  try {
+    const learningTestReport = runLearningEngineTests();
+    results.push(...learningTestReport.results);
+  } catch (err: any) {
+    assert('Learning Engine', 'Learning Engine test suite threw unexpected error', false, err?.message);
+  }
+
+  // -------------------------------------------------------------
+  // Test Suite 6: NEXORA Adaptive Daily Planning & Today's Mission Tests (docs/PLANNER_ENGINE.md)
+  // (Capacity & sleep protection, 15-factor sieve, AI validation, realistic sizing,
+  // break injection, morning check-in reality, mid-day adaptation, user controls)
+  // -------------------------------------------------------------
+  try {
+    const adaptiveTestReport = runAdaptivePlannerTests();
+    results.push(...adaptiveTestReport.results);
+  } catch (err: any) {
+    assert('Adaptive Planner', 'Adaptive Planner test suite threw unexpected error', false, err?.message);
   }
 
   const passed = results.filter((r) => r.passed).length;

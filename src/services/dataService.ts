@@ -15,6 +15,7 @@ import {
   TopicProgressDetail,
   TopicStatus,
   UserProfile,
+  ProposedDailyMission,
 } from '../types';
 import { INITIAL_SEEDED_STATE } from './seedData';
 import {
@@ -851,6 +852,44 @@ export class DataService {
 
     this.saveDailyMission(updatedMission);
     return item;
+  }
+
+  deleteMissionItem(date: string, itemId: string): DailyMission {
+    const state = this.getState();
+    const mission = state.missions[date];
+    if (!mission) return { id: `m-${date}`, date, availableMinutes: 0, allocatedMinutes: 0, items: [] };
+
+    const updatedItems = mission.items.filter((i) => i.id !== itemId);
+    const allocatedMinutes = updatedItems
+      .filter((i) => !i.isBreak && i.status !== 'skipped' && i.status !== 'missed')
+      .reduce((acc, curr) => acc + (curr.plannedMinutes || 0), 0);
+
+    const updatedMission: DailyMission = {
+      ...mission,
+      items: updatedItems,
+      allocatedMinutes,
+    };
+
+    this.saveDailyMission(updatedMission);
+    return updatedMission;
+  }
+
+  acceptProposedMission(proposed: ProposedDailyMission): DailyMission {
+    const state = this.getState();
+    const existing = state.missions[proposed.date];
+    const newMission: DailyMission = {
+      id: existing?.id || `m-${proposed.date}`,
+      date: proposed.date,
+      availableMinutes: proposed.todayCapacityMinutes,
+      allocatedMinutes: proposed.usedCapacityMinutes,
+      items: proposed.items,
+      aiProposalRationale: proposed.rationale,
+      checkIn: proposed.checkIn,
+      reflectionNotes: existing?.reflectionNotes,
+    };
+
+    this.saveDailyMission(newMission);
+    return newMission;
   }
 }
 
