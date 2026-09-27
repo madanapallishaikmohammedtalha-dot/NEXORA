@@ -386,6 +386,10 @@ export function validateStudySession(session: Partial<StudySession>): Validation
     errors.push({ field: 'energyRating', message: 'Energy rating must be an integer between 1 and 5' });
   }
 
+  if (session.difficultyNote !== undefined && typeof session.difficultyNote !== 'string') {
+    errors.push({ field: 'difficultyNote', message: 'Difficulty note must be a string' });
+  }
+
   return createValidationResult(errors);
 }
 

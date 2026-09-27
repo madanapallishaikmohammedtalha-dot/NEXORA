@@ -122,24 +122,6 @@ export default function App() {
 
     try {
       dataService.recordStudySession(fullSession);
-
-      // If tied to a mission item, update actualMinutes and status
-      const targetId = missionItemId || sessionData.missionItemId;
-      if (targetId && sessionData.date) {
-        const mission = state.missions[sessionData.date];
-        if (mission) {
-          const item = mission.items.find((i) => i.id === targetId);
-          if (item) {
-            const updatedItem: MissionItem = {
-              ...item,
-              actualMinutes: (item.actualMinutes || 0) + fullSession.actualDurationMinutes,
-              status: completionState === 'partial' ? 'pending' : 'completed',
-            };
-            dataService.saveMissionItem(sessionData.date, updatedItem);
-          }
-        }
-      }
-
       showToast(`Logged ${fullSession.actualDurationMinutes}m focus session.`);
     } catch (err: any) {
       showToast(`Failed to log study session: ${err.message}`);

@@ -739,6 +739,79 @@ export class DataService {
     return session;
   }
 
+  /**
+   * Previews or calculates the completion summary for a session
+   * before or after committing to storage.
+   */
+  calculateSessionSummary(session: Partial<StudySession>): {
+    topicTitle: string;
+    subjectCode: string;
+    plannedMinutes: number;
+    actualMinutes: number;
+    comprehensionRating: number;
+    energyRating: number;
+    evidence: {
+      studied: boolean;
+      practiced: boolean;
+      assessed: boolean;
+      mastered: boolean;
+    };
+    masteryBefore: number;
+    masteryAfter: number;
+    masteryStatus: 'unchanged' | 'increased';
+    nextRecommendedAction: string;
+  } {
+    const state = this.getState();
+    const topic = session.topicId ? state.topics.find((t) => t.id === session.topicId) : undefined;
+    const subject = session.subjectId ? state.subjects.find((s) => s.id === session.subjectId) : undefined;
+
+    const plannedMinutes = session.plannedDurationMinutes || 30;
+    const actualMinutes = session.actualDurationMinutes || plannedMinutes;
+    const comp = (session.comprehensionRating || 3) as 1 | 2 | 3 | 4 | 5;
+    const energy = (session.energyRating || 3) as 1 | 2 | 3 | 4 | 5;
+
+    const masteryBefore = topic?.masteryLevel || 0;
+    const boost = topic ? comp * 5 : 0;
+    const masteryAfter = topic ? Math.min(100, Math.max(0, masteryBefore + boost)) : 0;
+    const masteryStatus = masteryAfter > masteryBefore ? 'increased' : 'unchanged';
+
+    const evidence = {
+      studied: true,
+      practiced: actualMinutes >= 30,
+      assessed: comp >= 3,
+      mastered: masteryAfter >= MASTERY_THRESHOLD_COMPLETED,
+    };
+
+    let nextRecommendedAction = 'Take a 10-minute restorative break, then review your key takeaways.';
+    if (topic) {
+      if (comp <= 2) {
+        nextRecommendedAction = `Review foundational prerequisites for "${topic.title}" and use AI Tutor 'Why?' mode to clear core misconceptions.`;
+      } else if (comp === 3) {
+        nextRecommendedAction = `Consolidate your grasp on "${topic.title}" with 1–3 focused exercises in AI Tutor Practice Mode.`;
+      } else if (comp === 4) {
+        nextRecommendedAction = `Test your mental model of "${topic.title}" using 'Explain It Back' or 'Test Me' mode.`;
+      } else if (comp === 5 && masteryAfter >= MASTERY_THRESHOLD_COMPLETED) {
+        nextRecommendedAction = `Mastery achieved (${masteryAfter}%)! Downstream roadmap topics are now unlocked. Ready for your next curriculum challenge.`;
+      } else {
+        nextRecommendedAction = `Excellent fluency! Try a Solo Mode coding challenge without AI to verify independent execution.`;
+      }
+    }
+
+    return {
+      topicTitle: topic?.title || 'General Deep Work',
+      subjectCode: subject?.code || 'Self-Study',
+      plannedMinutes,
+      actualMinutes,
+      comprehensionRating: comp,
+      energyRating: energy,
+      evidence,
+      masteryBefore,
+      masteryAfter,
+      masteryStatus,
+      nextRecommendedAction,
+    };
+  }
+
   deleteStudySession(sessionId: string): void {
     const state = this.getState();
     const updatedSessions = state.sessions.filter((s) => s.id !== sessionId);

@@ -1,6 +1,14 @@
-import { AppState } from '../types';
+import { AppState, TutorContext, TutorMode } from '../types';
 import { aiService } from './ai/service';
+import { 
+  askContextAwareTutor, 
+  constructTutorSystemPrompt,
+  buildTutorContext,
+  generateDeterministicTutorFallback 
+} from './ai/tutorService';
+
 export * from './ai/index';
+export * from './ai/tutorService';
 
 export interface PlanProposalResult {
   rationale: string;
@@ -111,7 +119,7 @@ RULES:
 }
 
 /**
- * Tutor turn delegating to generic AIService
+ * Tutor turn delegating to generic AIService or context-aware tutor engine
  */
 export async function askAITutor(
   messages: Array<{ role: 'user' | 'assistant'; content: string }>,
@@ -119,37 +127,53 @@ export async function askAITutor(
     topicTitle?: string;
     subjectName?: string;
     currentMastery?: number;
-  },
-  mode: 'socratic' | 'explain' | 'quiz' | 'breakdown',
+  } | TutorContext,
+  mode: TutorMode | 'socratic' | 'explain' | 'quiz' | 'breakdown' | string,
   userApiKey?: string,
-  modelId?: string
-): Promise<{ reply: string }> {
-  const topicContext = context.topicTitle ? `Topic: ${context.topicTitle} (${context.subjectName || ''})` : 'Academic Mentorship';
-  const systemInstruction = `You are NEXORA's Socratic AI Tutor. Mode: ${mode}. Context: ${topicContext}.`;
+  modelId?: string,
+  isSoloMode?: boolean
+): Promise<{ reply: string; isOfflineFallback?: boolean }> {
+  // Normalize to TutorContext
+  const isFullContext = (ctx: any): ctx is TutorContext => 'topic' in ctx || 'semester' in ctx || 'domain' in ctx;
 
-  try {
-    const res = await aiService.generateText(
-      {
-        messages: messages.map((m) => ({ role: m.role, content: m.content })),
-        systemInstruction,
-        modelId: modelId || 'gemini-3.8-flash',
-        credentials: { apiKey: userApiKey },
-      },
-      {
-        allowFallbackToOffline: true,
-        userApiKey,
-        modelId,
-      }
-    );
-
-    return { reply: res.text };
-  } catch (err: any) {
-    console.warn('AIService tutor error:', err?.message);
-    const lastMsg = messages[messages.length - 1]?.content || '';
-    return {
-      reply: `### Socratic Reflection: ${context.topicTitle || 'Core Concept'}\n\nTo master **"${lastMsg}"**, consider this question:\n\n*What is the critical constraint or assumption this concept relies on, and what would fail if that constraint were violated?*\n\n*(Note: Running in offline local mode. Configure your API key in Settings to unlock real-time Gemini tutoring)*`,
+  let tutorCtx: TutorContext;
+  if (isFullContext(context)) {
+    tutorCtx = context;
+  } else {
+    const simple = context as { topicTitle?: string; subjectName?: string; currentMastery?: number };
+    tutorCtx = {
+      topic: simple.topicTitle ? {
+        id: 'topic-ctx',
+        title: simple.topicTitle,
+        description: '',
+        masteryLevel: simple.currentMastery ?? 0,
+        status: (simple.currentMastery ?? 0) >= 80 ? 'completed' : 'in_progress',
+      } : undefined,
+      subject: simple.subjectName ? {
+        id: 'sub-ctx',
+        code: simple.subjectName,
+        name: simple.subjectName,
+      } : undefined,
+      topicMastery: simple.currentMastery ?? 0,
     };
   }
+
+  // Map legacy mode strings to canonical TutorMode
+  let canonicalMode: TutorMode = 'explain';
+  if (mode === 'socratic' || mode === 'why') canonicalMode = 'why';
+  else if (mode === 'quiz' || mode === 'test') canonicalMode = 'test';
+  else if (mode === 'breakdown' || mode === 'analogy') canonicalMode = 'analogy';
+  else if (mode === 'example') canonicalMode = 'example';
+  else if (mode === 'practice') canonicalMode = 'practice';
+  else if (mode === 'explain_back') canonicalMode = 'explain_back';
+  else if (mode === 'review_answer') canonicalMode = 'review_answer';
+  else canonicalMode = 'explain';
+
+  return await askContextAwareTutor(messages, tutorCtx, canonicalMode, {
+    isSoloMode,
+    userApiKey,
+    modelId,
+  });
 }
 
 /**

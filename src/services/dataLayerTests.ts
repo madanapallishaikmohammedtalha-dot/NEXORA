@@ -16,6 +16,7 @@ import { runPlannerEngineTests } from './plannerEngineTests';
 import { runAIProviderTests } from './ai/aiProviderTests';
 import { runLearningEngineTests } from './learningEngineTests';
 import { runAdaptivePlannerTests } from './adaptivePlannerTests';
+import { runFocusSessionAndTutorTests } from './focusSessionAndTutorTests';
 
 export interface TestResult {
   suite: string;
@@ -373,6 +374,19 @@ export function runDataLayerTests(): { total: number; passed: number; failed: nu
     results.push(...adaptiveTestReport.results);
   } catch (err: any) {
     assert('Adaptive Planner', 'Adaptive Planner test suite threw unexpected error', false, err?.message);
+  }
+
+  // -------------------------------------------------------------
+  // Test Suite 7: Focus Sessions & Context-Aware AI Tutor Tests
+  // (Timer start/pause/overtime/finish, persistence, comprehension,
+  // tutor context, explain/why/practice/test modes, explain-it-back,
+  // solo mode, locked topic protection, AI boundaries)
+  // -------------------------------------------------------------
+  try {
+    const focusAndTutorReport = runFocusSessionAndTutorTests();
+    results.push(...focusAndTutorReport.results);
+  } catch (err: any) {
+    assert('Focus Session & AI Tutor', 'Focus Session and AI Tutor test suite threw unexpected error', false, err?.message);
   }
 
   const passed = results.filter((r) => r.passed).length;

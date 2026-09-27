@@ -260,6 +260,150 @@ export interface StudySession {
   energyRating: 1 | 2 | 3 | 4 | 5; // 1 = Exhausted, 5 = Peak Flow
   keyTakeaways: string;
   date: string; // YYYY-MM-DD
+  difficultyNote?: string; // Optional difficulty note or tricky roadblock
+}
+
+// ==========================================
+// AI Tutor Modes & Context-Aware Types
+// ==========================================
+
+export type TutorMode =
+  | 'explain'
+  | 'why'
+  | 'example'
+  | 'analogy'
+  | 'practice'
+  | 'test'
+  | 'explain_back'
+  | 'review_answer';
+
+export interface TutorContext {
+  semester?: {
+    id: string;
+    name: string;
+  };
+  subject?: {
+    id: string;
+    code: string;
+    name: string;
+  };
+  domain?: string;
+  topic?: {
+    id: string;
+    title: string;
+    description: string;
+    masteryLevel: number;
+    status: TopicStatus;
+    stage?: string;
+  };
+  prerequisites?: Array<{
+    id: string;
+    title: string;
+    status: TopicStatus;
+    masteryLevel: number;
+  }>;
+  topicMastery?: number;
+  previousSessions?: Array<{
+    date: string;
+    actualDurationMinutes: number;
+    comprehensionRating: number;
+    energyRating: number;
+    keyTakeaways: string;
+    difficultyNote?: string;
+  }>;
+  comprehensionHistory?: {
+    averageComprehension: number;
+    totalSessions: number;
+    recentRatings: number[];
+  };
+  currentObjective?: string;
+  isLocked?: boolean;
+  missingPrerequisites?: string[];
+}
+
+export interface ExplainItBackFeedback {
+  understandingScore: number; // 0 - 100
+  whatYouGotRight: string[];
+  whatIsMissing: string[];
+  oneCorrection: string;
+  followUpQuestion: string;
+}
+
+export type AssessmentProblemType = 'multiple_choice' | 'short_answer' | 'code' | 'explain';
+
+export interface AssessmentProblem {
+  id: string;
+  type: AssessmentProblemType;
+  question: string;
+  options?: string[]; // For multiple choice
+  correctAnswer?: string;
+  rubricHint?: string;
+}
+
+export interface TestAssessment {
+  topicId: string;
+  topicTitle: string;
+  difficulty: 'foundational' | 'intermediate' | 'advanced';
+  problems: AssessmentProblem[];
+}
+
+export interface TestEvaluation {
+  score: number; // 0 - 100
+  totalQuestions: number;
+  correctCount: number;
+  feedbackPerQuestion: Array<{
+    problemId: string;
+    question: string;
+    studentAnswer: string;
+    isCorrect: boolean;
+    explanation: string;
+  }>;
+  overallFeedback: string;
+  nextRecommendedAction: string;
+}
+
+export interface PracticeProblem {
+  id: string;
+  title: string;
+  description: string;
+  difficulty: 'foundational' | 'intermediate' | 'advanced';
+  hints: string[];
+  sampleInputOutput?: string;
+}
+
+export interface PracticeProblemSet {
+  topicId: string;
+  topicTitle: string;
+  problems: PracticeProblem[];
+}
+
+export interface SoloCodingChallenge {
+  id: string;
+  title: string;
+  topicTitle: string;
+  description: string;
+  inputSpecification?: string;
+  outputSpecification?: string;
+  starterCode?: string;
+  hints: string[]; // Revealed only upon explicit request
+  solutionReference?: string; // Revealed only after submission
+}
+
+export interface SoloCodeReview {
+  correctness: 'correct' | 'partially_correct' | 'incorrect';
+  logicScore: number; // 0 - 100
+  correctnessAnalysis: string;
+  logicAnalysis: string;
+  edgeCases: string[];
+  complexity: {
+    time: string;
+    space: string;
+    analysis: string;
+  };
+  readability: string;
+  conceptualUnderstanding: string;
+  mistakesExplained: string[];
+  alternativeSolution?: string;
 }
 
 export type SkillProficiency = 'beginner' | 'intermediate' | 'advanced' | 'proficient';
