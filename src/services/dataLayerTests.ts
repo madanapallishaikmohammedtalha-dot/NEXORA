@@ -17,6 +17,7 @@ import { runAIProviderTests } from './ai/aiProviderTests';
 import { runLearningEngineTests } from './learningEngineTests';
 import { runAdaptivePlannerTests } from './adaptivePlannerTests';
 import { runFocusSessionAndTutorTests } from './focusSessionAndTutorTests';
+import { runWeeklyReviewTests } from './weeklyReviewTests';
 
 export interface TestResult {
   suite: string;
@@ -387,6 +388,19 @@ export function runDataLayerTests(): { total: number; passed: number; failed: nu
     results.push(...focusAndTutorReport.results);
   } catch (err: any) {
     assert('Focus Session & AI Tutor', 'Focus Session and AI Tutor test suite threw unexpected error', false, err?.message);
+  }
+
+  // -------------------------------------------------------------
+  // Test Suite 8: Weekly Review and Next-Week Planning Tests
+  // (Aggregation, planned vs actual, consistency score breakdown,
+  // skipped/missed tracking, mastery changes, learning patterns,
+  // AI context construction, recommendation validation, advisory boundaries)
+  // -------------------------------------------------------------
+  try {
+    const weeklyReviewReport = runWeeklyReviewTests();
+    results.push(...weeklyReviewReport.results);
+  } catch (err: any) {
+    assert('Weekly Review & Next-Week Planning', 'Weekly Review test suite threw unexpected error', false, err?.message);
   }
 
   const passed = results.filter((r) => r.passed).length;

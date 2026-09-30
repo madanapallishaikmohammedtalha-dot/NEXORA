@@ -9,7 +9,8 @@ import {
   BookOpen, 
   Settings, 
   Play, 
-  HardDrive
+  HardDrive,
+  Compass
 } from 'lucide-react';
 import { ActiveTab, AppState } from '../types';
 import { calculateDailyCapacity } from '../services/scheduler';
@@ -38,6 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'roadmap', label: 'Roadmap', icon: GitBranch },
     { id: 'tutor', label: 'AI Tutor', icon: Bot },
     { id: 'progress', label: 'Progress', icon: BarChart3 },
+    { id: 'weekly_review', label: 'Weekly Review', icon: Compass },
     { id: 'semester', label: 'Semester & Subjects', icon: BookOpen },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];

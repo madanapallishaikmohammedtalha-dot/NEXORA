@@ -427,12 +427,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Subject Pacing This Week
               </h3>
-              <button
-                onClick={() => setActiveTab('progress')}
-                className="text-[11px] text-indigo-400 hover:underline"
-              >
-                Details
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setActiveTab('weekly_review')}
+                  className="text-[11px] text-emerald-400 hover:underline font-semibold"
+                >
+                  Weekly Review
+                </button>
+                <span className="text-slate-600">•</span>
+                <button
+                  onClick={() => setActiveTab('progress')}
+                  className="text-[11px] text-indigo-400 hover:underline"
+                >
+                  Details
+                </button>
+              </div>
             </div>
 
             <div className="space-y-3">

@@ -16,8 +16,15 @@ import {
   TopicStatus,
   UserProfile,
   ProposedDailyMission,
+  WeeklyAnalyticsReport,
+  NextWeekProposedItem,
 } from '../types';
 import { INITIAL_SEEDED_STATE } from './seedData';
+import {
+  computeWeeklyAnalytics,
+  generateDeterministicNextWeekProposals,
+  getWeekBoundaries,
+} from './weeklyAnalytics';
 import {
   validateGoal,
   validateRoadmapTopic,
@@ -963,6 +970,46 @@ export class DataService {
 
     this.saveDailyMission(newMission);
     return newMission;
+  }
+
+  // ==========================================
+  // 11. Weekly Review & Analytics
+  // ==========================================
+
+  /**
+   * Computes deterministic weekly analytics strictly from stored data
+   */
+  getWeeklyAnalytics(referenceDate: string = '2026-09-21'): WeeklyAnalyticsReport {
+    return computeWeeklyAnalytics(this.getState(), referenceDate);
+  }
+
+  /**
+   * Generates proposed next-week focus priorities based on real data
+   */
+  getNextWeekProposals(referenceDate: string = '2026-09-21'): NextWeekProposedItem[] {
+    const report = this.getWeeklyAnalytics(referenceDate);
+    return generateDeterministicNextWeekProposals(report, this.getState());
+  }
+
+  /**
+   * Commits an accepted next-week proposal into the student's roadmap or target mission
+   */
+  commitNextWeekItemToMission(targetDate: string, item: NextWeekProposedItem): MissionItem {
+    const state = this.getState();
+    const missionItem: MissionItem = {
+      id: `mi-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      subjectId: item.subjectId,
+      topicId: item.topicId,
+      title: item.title,
+      plannedMinutes: item.estimatedMinutesPerSession,
+      actualMinutes: 0,
+      status: 'pending',
+      activityType: item.category === 'career' ? 'career_learning' : item.category === 'project' ? 'project_work' : item.category === 'revision' ? 'revision' : 'academic_study',
+      priority: item.priority,
+      reason: item.reason,
+      isAIRecorded: false,
+    };
+    return this.saveMissionItem(targetDate, missionItem);
   }
 }
 

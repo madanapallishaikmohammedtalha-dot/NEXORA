@@ -35,6 +35,7 @@ import { TimetableModule } from './components/TimetableModule';
 import { RoadmapModule } from './components/RoadmapModule';
 import { AITutorModule } from './components/AITutorModule';
 import { ProgressModule } from './components/ProgressModule';
+import { WeeklyReviewModule } from './components/WeeklyReviewModule';
 import { SemesterModule } from './components/SemesterModule';
 import { SettingsModule } from './components/SettingsModule';
 import { SessionTrackerModal } from './components/SessionTrackerModal';
@@ -432,7 +433,18 @@ export default function App() {
         )}
 
         {activeTab === 'progress' && (
-          <ProgressModule state={state} />
+          <ProgressModule
+            state={state}
+            onNavigateToTab={(tab) => setActiveTab(tab)}
+          />
+        )}
+
+        {activeTab === 'weekly_review' && (
+          <WeeklyReviewModule
+            state={state}
+            onNavigateToTab={(tab) => setActiveTab(tab)}
+            showToast={showToast}
+          />
         )}
 
         {activeTab === 'semester' && (

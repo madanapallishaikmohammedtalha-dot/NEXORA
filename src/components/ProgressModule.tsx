@@ -16,9 +16,10 @@ import { computeWeeklySubjectHours } from '../services/scheduler';
 
 interface ProgressModuleProps {
   state: AppState;
+  onNavigateToTab?: (tab: any) => void;
 }
 
-export const ProgressModule: React.FC<ProgressModuleProps> = ({ state }) => {
+export const ProgressModule: React.FC<ProgressModuleProps> = ({ state, onNavigateToTab }) => {
   const weeklyStats = computeWeeklySubjectHours(state);
 
   // Calculate planned vs actual across all sessions
@@ -44,17 +45,27 @@ export const ProgressModule: React.FC<ProgressModuleProps> = ({ state }) => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-        <div className="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-1">
-          Performance, Pacing & Historical Review
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-1">
+            Performance, Pacing & Historical Review
+          </div>
+          <h1 className="text-xl font-bold text-white flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-indigo-400" />
+            <span>Learning Analytics & Session Logs</span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Tracking planned vs. actual execution and cognitive energy to keep your learning pace sustainable.
+          </p>
         </div>
-        <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-indigo-400" />
-          <span>Learning Analytics & Session Logs</span>
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Tracking planned vs. actual execution and cognitive energy to keep your learning pace sustainable.
-        </p>
+        {onNavigateToTab && (
+          <button
+            onClick={() => onNavigateToTab('weekly_review')}
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-indigo-600/20 shrink-0 cursor-pointer text-center"
+          >
+            Launch Weekly Review →
+          </button>
+        )}
       </div>
 
       {/* Top Metric Cards */}

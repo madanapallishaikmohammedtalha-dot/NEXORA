@@ -449,6 +449,181 @@ export interface AppState {
   timeBlocks?: Record<string, TimeBlock[]>; // Keyed by YYYY-MM-DD
 }
 
+// ==========================================
+// Weekly Review & Next-Week Planning Types
+// ==========================================
+
+export interface WeeklySubjectBreakdown {
+  subjectId: string;
+  code: string;
+  name: string;
+  color: string;
+  actualMinutes: number;
+  plannedMinutes: number;
+  targetWeeklyHours: number;
+  sessionsCount: number;
+  averageComprehension: number;
+  topicsStudied: string[];
+}
+
+export interface WeeklyTopicMasteryChange {
+  topicId: string;
+  title: string;
+  subjectCode: string;
+  beforeMastery: number;
+  currentMastery: number;
+  deltaMastery: number;
+  status: TopicStatus;
+}
+
+export interface WeeklyGoalProgress {
+  goalId: string;
+  title: string;
+  horizon: GoalHorizon;
+  currentValue: number;
+  targetValue: number;
+  unit: string;
+  progressPercentage: number;
+  isCompleted: boolean;
+}
+
+export interface ConsistencyScoreFactor {
+  factor: 'sessions_completed' | 'execution_ratio' | 'practice_completion' | 'assessment_participation' | 'goal_progress';
+  label: string;
+  earnedPoints: number;
+  maxPoints: number;
+  description: string;
+}
+
+export interface ConsistencyScoreBreakdown {
+  score: number; // 0 - 100
+  factors: ConsistencyScoreFactor[];
+  summary: string;
+}
+
+export interface DetectedLearningPattern {
+  id: string;
+  type: 
+    | 'planned_exceeds_actual'
+    | 'high_study_low_assessment'
+    | 'repeated_low_comprehension'
+    | 'frequent_category_skipping'
+    | 'strong_subject_consistency'
+    | 'topic_revisited_no_mastery'
+    | 'excessive_tutorial_vs_practice'
+    | 'balanced_sustainable_pace';
+  severity: 'positive' | 'warning' | 'info';
+  title: string;
+  description: string;
+  evidence: string;
+}
+
+export interface WeeklyAnalyticsReport {
+  weekStartDate: string; // YYYY-MM-DD (Monday)
+  weekEndDate: string;   // YYYY-MM-DD (Sunday)
+  plannedStudyMinutes: number;
+  actualStudyMinutes: number;
+  executionPercentage: number; // actual / planned * 100 clamped or formatted
+  completedSessionsCount: number;
+  skippedSessionsCount: number;
+  missedSessionsCount: number;
+  rescheduledSessionsCount: number;
+  averageComprehension: number; // 1.0 - 5.0
+  averageEnergy: number;         // 1.0 - 5.0
+  topicsStudiedCount: number;
+  topicsCompletedCount: number;
+  topicsInProgressCount: number;
+  topicsStudied: Array<{ id: string; title: string; subjectCode: string }>;
+  masteryChanges: WeeklyTopicMasteryChange[];
+  strongestAreas: Array<{ subjectCode: string; name: string; score: number; reason: string }>;
+  weakAreas: Array<{ subjectCode: string; name: string; score: number; reason: string }>;
+  // Category time distributions (minutes)
+  academicMinutes: number;
+  careerMinutes: number;
+  projectMinutes: number;
+  revisionMinutes: number;
+  // Subject level breakdowns
+  subjectBreakdowns: WeeklySubjectBreakdown[];
+  // Goal progress
+  goalsProgress: WeeklyGoalProgress[];
+  // Consistency score
+  consistency: ConsistencyScoreBreakdown;
+  // Deterministic observations
+  deterministicObservations: string[];
+  // Detected behavioral/learning patterns
+  learningPatterns: DetectedLearningPattern[];
+}
+
+export interface NextWeekProposedItem {
+  id: string;
+  subjectId?: string;
+  topicId?: string;
+  subjectCode: string;
+  title: string;
+  targetSessions: number; // e.g. 2 or 3 sessions
+  estimatedMinutesPerSession: number;
+  reason: string;
+  priority: 'high' | 'medium' | 'low';
+  category: 'academic' | 'career' | 'project' | 'revision';
+  status: 'accepted' | 'modified' | 'removed';
+}
+
+export interface AIWeeklyReviewContext {
+  studentName: string;
+  degreeMajor: string;
+  semesterName: string;
+  weekRange: { start: string; end: string };
+  metrics: {
+    plannedMinutes: number;
+    actualMinutes: number;
+    executionPercentage: number;
+    sessionsCompleted: number;
+    sessionsSkipped: number;
+    sessionsMissed: number;
+    averageComprehension: number;
+    averageEnergy: number;
+    consistencyScore: number;
+  };
+  timeDistribution: {
+    academicHours: number;
+    careerHours: number;
+    projectHours: number;
+    revisionHours: number;
+  };
+  subjectPacing: Array<{
+    code: string;
+    actualHours: number;
+    targetHours: number;
+    avgComprehension: number;
+  }>;
+  masteryChanges: Array<{
+    title: string;
+    subjectCode: string;
+    delta: number;
+  }>;
+  detectedPatterns: string[];
+  strongestAreas: string[];
+  weakAreas: string[];
+}
+
+export interface AIWeeklyReviewResponse {
+  interpretation: string;
+  learningObservations: string[];
+  explanations: string;
+  recommendedPriorities: string[];
+  distributionSuggestions: string;
+  revisionRecommendations: string[];
+  potentialBottlenecks: string[];
+  proposedNextWeekPlan: Array<{
+    subjectCode: string;
+    title: string;
+    recommendedSessions: number;
+    estimatedMinutesPerSession?: number;
+    reason: string;
+    category?: 'academic' | 'career' | 'project' | 'revision';
+  }>;
+}
+
 export type ActiveTab = 
   | 'dashboard'
   | 'planner'
@@ -456,5 +631,6 @@ export type ActiveTab =
   | 'roadmap'
   | 'tutor'
   | 'progress'
+  | 'weekly_review'
   | 'semester'
   | 'settings';

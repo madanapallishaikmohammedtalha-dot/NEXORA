@@ -9,6 +9,7 @@ import {
 
 export * from './ai/index';
 export * from './ai/tutorService';
+export * from './ai/weeklyReviewService';
 
 export interface PlanProposalResult {
   rationale: string;
