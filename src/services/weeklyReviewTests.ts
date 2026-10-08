@@ -324,6 +324,37 @@ export function runWeeklyReviewTests(): { total: number; passed: number; failed:
     service.commitNextWeekItemToMission('2026-09-28', testProposal);
     const committedMission = service.getDailyMission('2026-09-28');
     assert(SUITE, 'User explicit commit creates pending item in target date mission', Boolean(committedMission?.items.some((i) => i.title === 'OS Scheduling Algorithms')));
+
+    // Test skipped item behavior
+    const skippedProposal: NextWeekProposedItem = {
+      id: 'prop-skip',
+      subjectCode: 'CS 303',
+      title: 'Database Normalization',
+      targetSessions: 2,
+      estimatedMinutesPerSession: 45,
+      reason: 'Skipped by user',
+      priority: 'medium',
+      category: 'academic',
+      status: 'skipped',
+    };
+    assert(SUITE, 'Skipped proposal has skipped status and is not committed', skippedProposal.status === 'skipped');
+
+    // Test modified proposal commit
+    const modifiedProposal: NextWeekProposedItem = {
+      id: 'prop-mod',
+      subjectCode: 'DSA',
+      title: 'Custom Graph Traversal Practice',
+      targetSessions: 3,
+      estimatedMinutesPerSession: 60,
+      reason: 'User modified session length',
+      priority: 'high',
+      category: 'career',
+      status: 'modified',
+    };
+    service.commitNextWeekItemToMission('2026-09-28', modifiedProposal);
+    const afterMission = service.getDailyMission('2026-09-28');
+    const committedMod = afterMission?.items.find((i) => i.title === 'Custom Graph Traversal Practice');
+    assert(SUITE, 'Modified proposal commits with custom title and minutes', Boolean(committedMod && committedMod.plannedMinutes === 60));
   } catch (e: any) {
     assert(SUITE, 'Strict advisory AI boundary test failed', false, e?.message);
   }

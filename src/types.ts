@@ -565,7 +565,7 @@ export interface NextWeekProposedItem {
   reason: string;
   priority: 'high' | 'medium' | 'low';
   category: 'academic' | 'career' | 'project' | 'revision';
-  status: 'accepted' | 'modified' | 'removed';
+  status: 'accepted' | 'modified' | 'removed' | 'skipped';
 }
 
 export interface AIWeeklyReviewContext {

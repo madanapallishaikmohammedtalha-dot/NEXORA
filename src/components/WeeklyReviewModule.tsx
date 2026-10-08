@@ -87,7 +87,13 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
     }
   };
 
-  // Next-week proposal actions: Accept, Modify, Remove, Regenerate
+  // State for inline modification
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState<string>('');
+  const [editSessions, setEditSessions] = useState<number>(2);
+  const [editMinutes, setEditMinutes] = useState<number>(45);
+
+  // Next-week proposal actions: Accept, Modify, Skip, Remove, Regenerate
   const handleAcceptItem = (id: string) => {
     setNextWeekItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, status: 'accepted' } : item))
@@ -95,7 +101,39 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
     showToast('Plan recommendation accepted.');
   };
 
-  const handleModifyItem = (id: string, deltaSessions: number) => {
+  const handleSkipItem = (id: string) => {
+    setNextWeekItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, status: 'skipped' } : item))
+    );
+    showToast('Recommendation skipped.');
+  };
+
+  const startModifying = (item: NextWeekProposedItem) => {
+    setEditingItemId(item.id);
+    setEditTitle(item.title);
+    setEditSessions(item.targetSessions);
+    setEditMinutes(item.estimatedMinutesPerSession);
+  };
+
+  const saveModification = (id: string) => {
+    setNextWeekItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              title: editTitle.trim() || item.title,
+              targetSessions: Math.max(1, Math.min(7, editSessions)),
+              estimatedMinutesPerSession: Math.max(15, Math.min(180, editMinutes)),
+              status: 'modified',
+            }
+          : item
+      )
+    );
+    setEditingItemId(null);
+    showToast('Plan recommendation modified.');
+  };
+
+  const handleModifySessionsQuick = (id: string, deltaSessions: number) => {
     setNextWeekItems((prev) =>
       prev.map((item) => {
         if (item.id === id) {
@@ -118,12 +156,12 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
     showToast('Regenerated proposed study focus items from live data.');
   };
 
-  // Commit accepted items to next week's mission (e.g. Next Monday 2026-09-28)
+  // Commit accepted/modified items to next week's mission (e.g. Next Monday 2026-09-28)
   const handleCommitNextWeekPlan = () => {
     const nextMonday = '2026-09-28';
-    const accepted = nextWeekItems.filter((i) => i.status !== 'removed');
+    const accepted = nextWeekItems.filter((i) => i.status === 'accepted' || i.status === 'modified');
     if (accepted.length === 0) {
-      showToast('No accepted recommendations to commit.');
+      showToast('No accepted recommendations to commit. Accept or modify items first.');
       return;
     }
 
@@ -602,25 +640,25 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-indigo-400" />
-              <h2 className="text-lg font-bold text-white">NEXT WEEK FOCUS PLAN</h2>
+              <Calendar className="w-5 h-5 text-indigo-400" />
+              <h2 className="text-xl font-black text-white tracking-tight">NEXT WEEK</h2>
             </div>
             <p className="text-xs text-slate-400">
-              Data-grounded focus proposals. You control what enters your schedule: Accept, Modify, or Remove.
+              <span className="text-slate-300 font-semibold">Recommended focus:</span> Prioritized study targets derived from real learning telemetry.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handleRegenerateProposals}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Regenerate</span>
+              <span>[ REGENERATE ]</span>
             </button>
             <button
               onClick={handleCommitNextWeekPlan}
-              className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/20 cursor-pointer transition-colors"
+              className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-emerald-600/20 cursor-pointer transition-colors"
             >
               <Check className="w-3.5 h-3.5" />
               <span>Commit Accepted to Planner</span>
@@ -637,72 +675,158 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
                 item.status === 'accepted'
                   ? 'bg-slate-950/80 border-slate-800'
                   : item.status === 'modified'
-                  ? 'bg-indigo-950/20 border-indigo-800/40'
-                  : 'bg-slate-950/40 border-slate-800/50 opacity-60'
+                  ? 'bg-indigo-950/30 border-indigo-700/50'
+                  : item.status === 'skipped'
+                  ? 'bg-slate-950/40 border-amber-900/40 opacity-60'
+                  : 'bg-slate-950/50 border-slate-800'
               }`}
             >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                <div className="space-y-1 flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-indigo-900/60 text-indigo-300 border border-indigo-700/50">
-                      {item.subjectCode}
-                    </span>
-                    <span className="text-xs font-bold text-white truncate">{item.title}</span>
-                    <span className="text-[10px] font-mono text-slate-400">
-                      {item.targetSessions} session{item.targetSessions > 1 ? 's' : ''} ({item.estimatedMinutesPerSession}m each)
-                    </span>
+              {editingItemId === item.id ? (
+                /* Inline Modification Drawer */
+                <div className="space-y-3">
+                  <div className="text-xs font-bold text-indigo-300 uppercase tracking-wider">
+                    Modify Recommendation: {item.subjectCode}
                   </div>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    <strong className="text-slate-500">Reason: </strong>{item.reason}
-                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                        Title / Focus
+                      </label>
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                        Sessions Count
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="7"
+                        value={editSessions}
+                        onChange={(e) => setEditSessions(parseInt(e.target.value) || 1)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end gap-2 pt-1">
+                    <button
+                      onClick={() => setEditingItemId(null)}
+                      className="px-3 py-1 text-slate-400 hover:text-white text-xs rounded font-semibold cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => saveModification(item.id)}
+                      className="px-3.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg cursor-pointer"
+                    >
+                      Save Modification
+                    </button>
+                  </div>
                 </div>
-
-                {/* Human-In-The-Loop Actions: Accept, Modify, Remove */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5">
-                    <button
-                      onClick={() => handleModifyItem(item.id, -1)}
-                      className="px-2 py-1 text-slate-400 hover:text-white text-xs font-mono cursor-pointer"
-                      title="Decrease target sessions"
-                    >
-                      -
-                    </button>
-                    <span className="px-2 text-xs font-mono font-bold text-white">
-                      {item.targetSessions} sess
-                    </span>
-                    <button
-                      onClick={() => handleModifyItem(item.id, 1)}
-                      className="px-2 py-1 text-slate-400 hover:text-white text-xs font-mono cursor-pointer"
-                      title="Increase target sessions"
-                    >
-                      +
-                    </button>
+              ) : (
+                /* Standard Recommendation View */
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div className="space-y-1 flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-indigo-900/60 text-indigo-300 border border-indigo-700/50">
+                        {item.subjectCode}
+                      </span>
+                      <span className="text-sm font-bold text-white truncate">{item.title}</span>
+                      <span className="text-xs font-mono text-indigo-300 font-semibold bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                        {item.targetSessions} session{item.targetSessions > 1 ? 's' : ''} ({item.estimatedMinutesPerSession}m each)
+                      </span>
+                      {item.status === 'accepted' && (
+                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded">
+                          ACCEPTED
+                        </span>
+                      )}
+                      {item.status === 'modified' && (
+                        <span className="text-[10px] font-bold text-indigo-300 bg-indigo-950/60 border border-indigo-800/40 px-2 py-0.5 rounded">
+                          MODIFIED
+                        </span>
+                      )}
+                      {item.status === 'skipped' && (
+                        <span className="text-[10px] font-bold text-amber-400 bg-amber-950/60 border border-amber-800/40 px-2 py-0.5 rounded">
+                          SKIPPED
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      <strong className="text-slate-500">Reason: </strong>{item.reason}
+                    </p>
                   </div>
 
-                  {item.status !== 'accepted' ? (
+                  {/* Actions: [ ACCEPT ] [ MODIFY ] [ SKIP ] [ REMOVE ] */}
+                  <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                    {/* Session Count Adjuster */}
+                    <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5 mr-1">
+                      <button
+                        onClick={() => handleModifySessionsQuick(item.id, -1)}
+                        className="px-2 py-1 text-slate-400 hover:text-white text-xs font-mono cursor-pointer"
+                        title="Decrease sessions"
+                      >
+                        -
+                      </button>
+                      <span className="px-1.5 text-xs font-mono font-bold text-slate-200">
+                        {item.targetSessions}
+                      </span>
+                      <button
+                        onClick={() => handleModifySessionsQuick(item.id, 1)}
+                        className="px-2 py-1 text-slate-400 hover:text-white text-xs font-mono cursor-pointer"
+                        title="Increase sessions"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {/* [ ACCEPT ] */}
                     <button
                       onClick={() => handleAcceptItem(item.id)}
-                      className="px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                        item.status === 'accepted'
+                          ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/50'
+                          : 'bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-400 border border-emerald-600/30'
+                      }`}
                     >
-                      <Check className="w-3.5 h-3.5" />
-                      <span>Accept</span>
+                      [ ACCEPT ]
                     </button>
-                  ) : (
-                    <span className="text-[11px] text-emerald-400 font-semibold px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-800/40 flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" />
-                      <span>Accepted</span>
-                    </span>
-                  )}
 
-                  <button
-                    onClick={() => handleRemoveItem(item.id)}
-                    className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-950/20 rounded-lg transition-colors cursor-pointer"
-                    title="Remove from next week plan"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                    {/* [ MODIFY ] */}
+                    <button
+                      onClick={() => startModifying(item)}
+                      className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+                    >
+                      [ MODIFY ]
+                    </button>
+
+                    {/* [ SKIP ] */}
+                    <button
+                      onClick={() => handleSkipItem(item.id)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                        item.status === 'skipped'
+                          ? 'bg-amber-600/30 text-amber-300 border border-amber-500/50'
+                          : 'bg-amber-600/15 hover:bg-amber-600/25 text-amber-400 border border-amber-600/30'
+                      }`}
+                    >
+                      [ SKIP ]
+                    </button>
+
+                    {/* [ REMOVE ] */}
+                    <button
+                      onClick={() => handleRemoveItem(item.id)}
+                      className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-950/20 rounded-lg transition-colors cursor-pointer"
+                      title="[ REMOVE ]"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </div>
