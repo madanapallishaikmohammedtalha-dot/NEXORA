@@ -4,7 +4,7 @@
 
 NEXORA is built on a **hybrid local-first full-stack architecture**. The system is composed of:
 
-1. **Client-Side Single-Page Application (SPA)**: Written in React 18, TypeScript, and Tailwind CSS. It serves as the primary data orchestrator, holding all state locally and executing deterministic scheduling algorithms directly in the browser.
+1. **Client-Side Single-Page Application (SPA)**: Written in React 19, TypeScript, and Tailwind CSS 4. It serves as the primary data orchestrator, holding all state locally and executing deterministic scheduling algorithms directly in the browser.
 2. **Local Storage Persistence Layer**: Persists student state to browser `localStorage` under versioned schemas with instant JSON serialization/deserialization.
 3. **Node.js / Express Server Proxy**: Acts as a secure, stateless gateway to the Gemini API (`@google/genai`), keeping API keys out of client bundles and enforcing structured JSON schemas.
 4. **Vite Development & Static Asset Server**: Serves production-optimized static assets and proxies client API calls during development.
@@ -16,10 +16,10 @@ NEXORA is built on a **hybrid local-first full-stack architecture**. The system 
 ```mermaid
 graph TB
     subgraph Browser["Client Browser (Local-First Sandbox)"]
-        UI[React UI Components<br/>Dashboard, Planner, Timetable, Roadmaps, Tutor]
-        State[AppState Orchestrator<br/>App.tsx & React Hooks]
-        Scheduler[Deterministic Capacity & DAG Engine<br/>src/services/scheduler.ts]
-        AIService[Client AI Service & Offline Fallbacks<br/>src/services/ai.ts]
+        UI[React UI Components<br/>Dashboard, Planner, Timetable, Roadmaps, Tutor, Reviews, Holiday]
+        State[AppState Orchestrator<br/>App.tsx & DataService]
+        Scheduler[Deterministic Capacity & DAG Engine<br/>src/services/plannerEngine.ts & scheduler.ts]
+        AIService[AI Service & Provider Registry<br/>src/services/ai/]
         Storage[Persistence & Backup Engine<br/>src/services/storage.ts]
         LocalStore[(Browser LocalStorage<br/>nexora_os_v1)]
 
@@ -32,17 +32,15 @@ graph TB
 
     subgraph Server["Local Server Layer (Node.js / Express :3000)"]
         ServerEntry[server.ts]
-        ProxyEndpoints["API Gateway Routes<br/>/api/ai/plan-proposal<br/>/api/ai/tutor<br/>/api/ai/generate-roadmap"]
-        HeuristicFallback[Server-Side Deterministic Heuristics]
+        ProxyEndpoints["Active API Gateway Routes<br/>/api/ai/proxy/health<br/>/api/ai/proxy/generate-text<br/>/api/ai/proxy/generate-json<br/>/api/ai/proxy/custom/*"]
         GenAISDK[Google GenAI Client<br/>@google/genai]
 
         ServerEntry --> ProxyEndpoints
         ProxyEndpoints --> GenAISDK
-        ProxyEndpoints --> HeuristicFallback
     end
 
     subgraph External["External Cloud Infrastructure"]
-        GeminiCloud[Google Gemini Models<br/>gemini-3.8-flash / Pro]
+        GeminiCloud[Google Gemini Models<br/>gemini-3.8-flash]
     end
 
     AIService -->|HTTP REST (JSON)| ProxyEndpoints
@@ -65,9 +63,21 @@ graph TB
 ### 3.3 Secure Server-Side AI Proxy Pattern
 To uphold security standards and protect credentials:
 - Third-party API keys are never bundled into client-side JavaScript.
-- If a user configures their own Gemini key, it is transmitted in the HTTPS request body to the local `/api/ai/*` endpoint, which initializes a short-lived `GoogleGenAI` client for that request.
+- If a user configures their own Gemini key, it is transmitted in the HTTPS request body to the active `/api/ai/proxy/*` endpoints (`/api/ai/proxy/generate-json`, `/api/ai/proxy/generate-text`), which initializes a short-lived `GoogleGenAI` client for that request.
 - If no user key is provided, the server attempts to use the environment-provided `GEMINI_API_KEY`.
-- If no key is available or the network fails, both the server and client gracefully downgrade to local deterministic heuristic planners and first-principles scaffolds.
+- If no key is available or the network fails, the client AI subsystem seamlessly falls back through `ProviderRegistry` to `OfflineProvider` using local deterministic heuristic planners, Socratic scaffolding, and algorithmic reviews.
+
+### 3.4 Active Server API Routes
+
+| Method | Endpoint | Description | Auth / Key Transport |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/health` | Server uptime & deployment status check | Public (returns `{ status, hasServerApiKey, timestamp }`) |
+| `POST` | `/api/ai/proxy/health` | Verifies Gemini connectivity and credentials | Body: `{ userApiKey?: string }` |
+| `POST` | `/api/ai/proxy/generate-text` | Socratic tutoring & open-ended text inference | Body: `{ prompt, messages, systemInstruction, modelId, userApiKey }` |
+| `POST` | `/api/ai/proxy/generate-json` | Structured schema generation (plans, reviews, quizzes) | Body: `{ prompt, systemInstruction, schemaDescription, modelId, userApiKey }` |
+| `GET` | `/api/ai/proxy/custom/health` | Custom/self-hosted provider proxy health probe | Custom configuration |
+| `POST` | `/api/ai/proxy/custom/generate-text` | Custom proxy text generation endpoint | Custom body payload forwarding |
+| `POST` | `/api/ai/proxy/custom/generate-json` | Custom proxy structured JSON generation endpoint | Custom body payload forwarding |
 
 ---
 
@@ -78,24 +88,24 @@ sequenceDiagram
     autonumber
     actor User as Student
     participant View as Planner View
-    participant Store as State Engine
-    participant Engine as Scheduler (scheduler.ts)
-    participant ClientAI as Client AI (ai.ts)
-    participant API as Express API (/api/ai/plan-proposal)
-    participant LLM as Gemini API
+    participant Store as DataService / State
+    participant Engine as Planner Engine (plannerEngine.ts)
+    participant ClientAI as AIService / ProviderRegistry
+    participant API as Express Proxy (/api/ai/proxy/generate-json)
+    participant LLM as Gemini API (@google/genai)
 
     User->>View: Clicks "Request AI Advisory Proposal"
-    View->>Engine: calculateDailyCapacity(date, state)
-    Engine-->>View: Returns netAvailableMinutes, fixedBlocks
-    View->>ClientAI: requestAIPlanProposal(date, state, netMinutes, fixedBlocks, candidateTopics)
-    ClientAI->>API: POST /api/ai/plan-proposal {payload}
+    View->>Engine: deriveDayCapacity(date, state)
+    Engine-->>View: Returns netAvailableMinutes, timeBlocks, flexibleIntervals
+    View->>ClientAI: generateJSON({ prompt, schemaDescription })
     
     alt API Key Configured & Online
-        API->>LLM: generateContent(systemInstruction + constraints)
+        ClientAI->>API: POST /api/ai/proxy/generate-json
+        API->>LLM: generateContent(prompt + systemInstruction)
         LLM-->>API: Returns structured JSON proposal
-        API-->>ClientAI: Returns PlanProposalResult
-    else Offline / No Key / Error
-        API-->>ClientAI: Returns deterministic heuristic plan
+        API-->>ClientAI: Returns validated JSON payload
+    else Offline / No Key / Fallback
+        ClientAI->>ClientAI: OfflineProvider generates deterministic proposal
     end
 
     ClientAI-->>View: Delivers proposals to UI
@@ -141,45 +151,65 @@ $$\text{Status}(T) = \begin{cases}
 
 ```
 nexora/
-├── docs/                          # Comprehensive system documentation
-│   ├── PRODUCT.md                 # Product vision, strategy, personas
-│   ├── REQUIREMENTS.md            # Functional & non-functional requirements
-│   ├── ARCHITECTURE.md            # System architecture (this document)
-│   ├── DATABASE.md                # Schema, entity models, storage lifecycle
-│   ├── AI_SYSTEM.md               # AI architecture, advisory workflows
-│   ├── LEARNING_ENGINE.md         # Prerequisite DAG & active recall engine
-│   ├── PLANNER_ENGINE.md          # Capacity math, timetable logic
-│   ├── PROMPTS.md                 # System instructions & prompt templates
-│   ├── PROVIDERS.md               # Model providers & offline fallback specs
-│   ├── SECURITY.md                # Threat model & key safety architecture
-│   ├── TESTING.md                 # Verification, testing & QA strategies
-│   ├── ROADMAP.md                 # Current vs planned feature roadmap
-│   └── CHANGELOG.md               # Version release history
-├── public/                        # Static public assets
-├── src/                           # Frontend application source
-│   ├── components/                # Modular React UI components
-│   │   ├── Dashboard.tsx          # Capacity metrics & daily overview
-│   │   ├── DailyPlannerModule.tsx # Time-blocking & AI proposal workflow
-│   │   ├── TimetableModule.tsx    # 7-day recurring commitments schedule
-│   │   ├── RoadmapModule.tsx      # Curriculum topic DAG visualizer
-│   │   ├── AITutorModule.tsx      # Socratic coaching & quiz chat interface
-│   │   ├── ProgressModule.tsx     # Academic analytics & subject pacing
-│   │   ├── SemesterModule.tsx     # Term dates, courses, and holiday setup
-│   │   ├── SettingsModule.tsx     # Data backup, capacity limits, AI config
-│   │   ├── SessionTrackerModal.tsx# Pomodoro timer, energy & reflection modal
-│   │   └── OnboardingModal.tsx    # First-time user onboarding setup wizard
-│   ├── services/                  # Core deterministic & AI services
-│   │   ├── scheduler.ts           # Capacity math, timetable logic, DAG evaluator
-│   │   ├── ai.ts                  # Client AI bridge & heuristic fallback
-│   │   └── storage.ts             # LocalStorage engine, demo state, backup
-│   ├── types.ts                   # Core TypeScript domain models & schemas
-│   ├── App.tsx                    # Top-level state orchestrator & navigation
-│   ├── main.tsx                   # React root mount
-│   └── index.css                  # Global Tailwind CSS imports
-├── index.html                     # HTML entry point with metadata tags
-├── server.ts                      # Express API gateway & Vite dev middleware
-├── metadata.json                  # Application metadata & permissions
-├── package.json                   # Dependencies & npm scripts
-├── tsconfig.json                  # TypeScript compiler configuration
-└── vite.config.ts                 # Vite build & plugin configuration
+├── docs/                                  # Comprehensive system documentation
+│   ├── PRODUCT.md                         # Product vision, strategy, personas
+│   ├── REQUIREMENTS.md                    # Functional & non-functional requirements
+│   ├── ARCHITECTURE.md                    # System architecture (this document)
+│   ├── DATABASE.md                        # Schema, entity models, storage lifecycle
+│   ├── AI_SYSTEM.md                       # AI architecture, advisory workflows
+│   ├── LEARNING_ENGINE.md                 # Prerequisite DAG & active recall engine
+│   ├── PLANNER_ENGINE.md                  # Capacity math, timetable logic
+│   ├── PROMPTS.md                         # System instructions & prompt templates
+│   ├── PROVIDERS.md                       # Model providers & offline fallback specs
+│   ├── SECURITY.md                        # Threat model & key safety architecture
+│   ├── TESTING.md                         # Verification, testing & QA strategies
+│   ├── ROADMAP.md                         # Current vs planned feature roadmap
+│   └── CHANGELOG.md                       # Version release history
+├── public/                                # Static public assets
+├── src/                                   # Frontend application source
+│   ├── components/                        # Modular React UI components
+│   │   ├── AITutorModule.tsx              # Socratic coaching & quiz chat interface
+│   │   ├── DailyPlannerModule.tsx         # Time-blocking & AI proposal workflow
+│   │   ├── Dashboard.tsx                  # Capacity metrics & daily overview
+│   │   ├── HolidayModeModule.tsx          # Holiday preferences & multi-week planning
+│   │   ├── Navbar.tsx                     # Top navigation & date/mode indicator
+│   │   ├── OnboardingModal.tsx            # First-time user onboarding setup wizard
+│   │   ├── ProgressModule.tsx             # Academic analytics & subject pacing
+│   │   ├── RoadmapModule.tsx              # Curriculum topic DAG visualizer
+│   │   ├── SemesterAchievementReportModal.tsx # Term report & qualitative review
+│   │   ├── SemesterModule.tsx             # Term dates, courses, and holiday setup
+│   │   ├── SessionTrackerModal.tsx        # Focus timer, energy & reflection modal
+│   │   ├── SettingsModule.tsx             # Data backup, capacity limits, AI config
+│   │   ├── TimetableModule.tsx            # 7-day recurring commitments schedule
+│   │   └── WeeklyReviewModule.tsx         # Weekly analytics & proposal commitment
+│   ├── services/                          # Core deterministic & AI services
+│   │   ├── ai/                            # Multi-provider AI subsystem
+│   │   │   ├── providers/                 # AI provider adapters (Gemini, Custom, Offline)
+│   │   │   ├── registry.ts                # Provider registry & lifecycle
+│   │   │   ├── service.ts                 # Unified AIService client gateway
+│   │   │   ├── tutorService.ts            # Context-aware Socratic tutor service
+│   │   │   ├── weeklyReviewService.ts     # Weekly analytics AI review service
+│   │   │   ├── semesterReviewService.ts   # Semester milestone AI review service
+│   │   │   └── errors.ts                  # AI domain error classes
+│   │   ├── adaptivePlanner.ts             # Adaptive candidate selection & proposal
+│   │   ├── dataService.ts                 # Central data access & mutation service
+│   │   ├── holidayPlanner.ts              # Multi-week holiday focus & rest planning
+│   │   ├── learningEngine.ts              # Prerequisite DAG & topic mastery engine
+│   │   ├── plannerEngine.ts               # Interval arithmetic & capacity engine
+│   │   ├── scheduler.ts                   # Canonical local date & schedule utilities
+│   │   ├── seedData.ts                    # Realistic demo fixtures & initial state
+│   │   ├── semesterAnalytics.ts           # Semester status derivation & report metrics
+│   │   ├── storage.ts                     # LocalStorage persistence & backup engine
+│   │   ├── validation.ts                  # Schema validation & response sanitization
+│   │   └── weeklyAnalytics.ts             # Weekly consistency & pacing analytics
+│   ├── types.ts                           # Canonical TypeScript domain models & schemas
+│   ├── App.tsx                            # Top-level state orchestrator & navigation
+│   ├── main.tsx                           # React root mount
+│   └── index.css                          # Global Tailwind CSS imports
+├── index.html                             # HTML entry point with metadata tags
+├── server.ts                              # Express API gateway & Vite dev middleware
+├── metadata.json                          # Application metadata & permissions
+├── package.json                           # Dependencies & npm scripts
+├── tsconfig.json                          # TypeScript compiler configuration
+└── vite.config.ts                         # Vite build & plugin configuration
 ```

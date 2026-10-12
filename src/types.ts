@@ -16,13 +16,21 @@ export interface AvailableStudyPeriod {
   label?: string;    // e.g. "Afternoon Library Focus"
 }
 
+export type SemesterStatus = 'upcoming' | 'active' | 'completed' | 'break';
+
 export interface Semester {
   id: string;
   name: string; // e.g., "Fall 2026 - Year 3 Semester 1"
   startDate: string; // YYYY-MM-DD
-  endDate: string; // YYYY-MM-DD
-  expectedEndDate?: string; // YYYY-MM-DD
-  actualEndDate?: string;   // YYYY-MM-DD (filled when semester finishes)
+  endDate: string; // YYYY-MM-DD (matches actualEndDate || expectedEndDate)
+  expectedEndDate?: string; // YYYY-MM-DD (prediction)
+  actualEndDate?: string;   // YYYY-MM-DD (authoritative once entered)
+  status?: SemesterStatus;  // 'upcoming' | 'active' | 'completed' | 'break'
+  examPeriod?: { startDate: string; endDate: string };
+  revisionPeriod?: { startDate: string; endDate: string };
+  holidayStartDate?: string;
+  holidayEndDate?: string;
+  nextSemesterStartDate?: string;
   holidays: Holiday[];
   targetWeeklyStudyHours: number;
   isActive: boolean;
@@ -447,6 +455,8 @@ export interface AppState {
   sessions: StudySession[];
   goals: Goal[];
   timeBlocks?: Record<string, TimeBlock[]>; // Keyed by YYYY-MM-DD
+  semesterReviews?: Record<string, SemesterAchievementReport>; // Keyed by semesterId
+  activeHolidayPlan?: HolidayPlan;
 }
 
 // ==========================================
@@ -633,4 +643,160 @@ export type ActiveTab =
   | 'progress'
   | 'weekly_review'
   | 'semester'
+  | 'holiday'
   | 'settings';
+
+// ==========================================
+// Semester Review & Holiday Mode Types
+// ==========================================
+
+export type HolidayPriority = 
+  | 'dsa'
+  | 'aiml'
+  | 'web_dev'
+  | 'backend_dev'
+  | 'projects'
+  | 'git_github'
+  | 'internship_prep'
+  | 'communication'
+  | 'career_exploration'
+  | 'revision'
+  | 'rest';
+
+export interface HolidayPlanPreferences {
+  selectedPriorities: HolidayPriority[];
+  weeklyAvailableHours: number;
+  preferredStudyTime: 'morning' | 'afternoon' | 'evening' | 'flexible';
+  daysOff: DayOfWeek[]; // e.g. ['saturday', 'sunday']
+  maxDailyCapacityHours: number;
+  startDate: string;
+  endDate: string;
+  nextSemesterStartDate?: string;
+  customNotes?: string;
+}
+
+export interface HolidayWeekFocus {
+  weekNumber: number;
+  title: string;
+  focusAreas: string[];
+  plannedHours: number;
+  restDays: DayOfWeek[];
+  suggestedTasks: Array<{
+    id: string;
+    title: string;
+    priority: HolidayPriority;
+    estimatedMinutes: number;
+    reason: string;
+  }>;
+}
+
+export interface HolidayPlan {
+  id: string;
+  semesterId: string; // The completed semester this holiday follows
+  preferences: HolidayPlanPreferences;
+  availableDays: number;
+  weeks: HolidayWeekFocus[];
+  holidayGoals: Goal[];
+  createdAt: string;
+}
+
+export interface SubjectSemesterProgress {
+  subjectId: string;
+  code: string;
+  name: string;
+  credits: number;
+  color: string;
+  actualStudyMinutes: number;
+  targetWeeklyHours: number;
+  progressPercentage: number; // topics completed / total topics
+  averageComprehension: number;
+  totalTopics: number;
+  completedTopics: number;
+  inProgressTopics: number;
+}
+
+export interface CareerSkillProgress {
+  skill: string;
+  startingLevel: string; // e.g., "Beginner (20%)"
+  currentLevel: string;  // e.g., "Intermediate (65%)"
+  masteryPercentage: number;
+  evidence: string;      // e.g., "12 sessions, 8 focus hours, 4 projects"
+}
+
+export interface SemesterAchievementReport {
+  semesterId: string;
+  semesterName: string;
+  startDate: string;
+  endDate: string; // actualEndDate
+  durationDays: number;
+  totalPlannedStudyMinutes: number;
+  totalActualStudyMinutes: number;
+  executionPercentage: number;
+  completedSessionsCount: number;
+  skippedSessionsCount: number;
+  missedSessionsCount: number;
+  rescheduledSessionsCount: number;
+  averageComprehension: number;
+  averageEnergy: number;
+  consistencyScore: number;
+  
+  // Academic
+  subjectsStudiedCount: number;
+  subjectBreakdowns: SubjectSemesterProgress[];
+  
+  // Roadmap
+  topicsCompletedCount: number;
+  topicsInProgressCount: number;
+  topicsLockedCount: number;
+  masteryChanges: Array<{
+    topicId: string;
+    title: string;
+    subjectCode: string;
+    beforeMastery: number;
+    currentMastery: number;
+    delta: number;
+  }>;
+
+  // Goals
+  goalsCompletedCount: number;
+  goalsIncompleteCount: number;
+  goalsPartiallyCompletedCount: number;
+  goals: Array<{
+    id: string;
+    title: string;
+    targetValue: number;
+    currentValue: number;
+    unit: string;
+    status: GoalStatus;
+    progressPercentage: number;
+  }>;
+
+  // Categories (Minutes)
+  academicMinutes: number;
+  careerMinutes: number;
+  projectMinutes: number;
+  revisionMinutes: number;
+  projectsCompletedCount: number;
+  
+  // Career progress
+  careerSkills: CareerSkillProgress[];
+
+  // Qualitative Insights
+  strongestAreas: Array<{ name: string; reason: string }>;
+  needsAttention: Array<{ name: string; reason: string }>;
+  keyLearningPatterns: Array<{ title: string; description: string; evidence: string }>;
+
+  completedAt: string;
+}
+
+export interface AISemesterReviewResponse {
+  summary: string;
+  importantTrends: string[];
+  strengthsAndWeaknesses: {
+    strengths: string[];
+    weaknesses: string[];
+  };
+  recommendedFutureFocus: string[];
+  skillsWorthExploring: string[];
+  recommendedProjectDirections: string[];
+}

@@ -4,17 +4,16 @@
  * AI recommendation validation & sanitization, realistic session sizing, break injection,
  * morning check-in reality adjustments, mid-day adaptation, and user controls.
  */
-import { AppState, DailyCheckInInput, DailyMission, MissionItem, RoadmapTopic, Subject } from '../types';
+import { AppState, DailyCheckInInput, DailyMission } from '../types';
 import {
   collectEligiblePlanCandidates,
   validateAIPlanRecommendations,
   placeActivitiesIntoFlexibleWindows,
-  generateAdaptiveDailyMission,
   adaptMidDaySchedule,
   skipMissionItem,
   PlanCandidate,
 } from './adaptivePlanner';
-import { deriveDayCapacity, detectScheduleConflicts } from './plannerEngine';
+import { deriveDayCapacity } from './plannerEngine';
 import {
   SEED_GOALS,
   SEED_PROFILE,
@@ -108,7 +107,6 @@ export function runAdaptivePlannerTests(): {
 
     // 2.1 Prerequisite filtering
     const candidates = collectEligiblePlanCandidates(state);
-    const unreadyTopic = state.topics.find((t) => t.id === 'top-os-5'); // Has unmet prereq top-os-4
     const unreadyCand = candidates.find((c) => c.topicId === 'top-os-5');
     assert(
       suite2,

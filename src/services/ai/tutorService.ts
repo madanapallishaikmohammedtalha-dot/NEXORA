@@ -5,7 +5,6 @@ import {
   MissionItem, 
   PracticeProblem, 
   PracticeProblemSet, 
-  RoadmapTopic, 
   SoloCodeReview, 
   SoloCodingChallenge, 
   TestAssessment, 
@@ -13,7 +12,7 @@ import {
   TutorContext, 
   TutorMode 
 } from '../../types';
-import { evaluatePrerequisites, MASTERY_THRESHOLD_COMPLETED } from '../learningEngine';
+import { evaluatePrerequisites } from '../learningEngine';
 import { aiService } from './service';
 
 /**

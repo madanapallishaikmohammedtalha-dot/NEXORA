@@ -1,10 +1,8 @@
-import { AppState } from '../types';
 import { DataService, InMemoryStorageAdapter } from './dataService';
 import { SEED_PROFILE, SEED_SEMESTERS, SEED_SUBJECTS } from './seedData';
 import {
   detectCycleInTopics,
   validateGoal,
-  validateRoadmapTopic,
   validateSemester,
   validateStudySession,
   validateSubject,
@@ -18,6 +16,8 @@ import { runLearningEngineTests } from './learningEngineTests';
 import { runAdaptivePlannerTests } from './adaptivePlannerTests';
 import { runFocusSessionAndTutorTests } from './focusSessionAndTutorTests';
 import { runWeeklyReviewTests } from './weeklyReviewTests';
+import { runSemesterAndHolidayTests } from './semesterAndHolidayTests';
+import { runV1StabilizationTests } from './v1StabilizationTests';
 
 export interface TestResult {
   suite: string;
@@ -174,7 +174,7 @@ export function runDataLayerTests(): { total: number; passed: number; failed: nu
     assert('DataService CRUD', 'Invalid profile update is rejected by service barrier', profileThrew);
 
     // 2.3 Subject CRUD
-    const newSubject = service.saveSubject({
+    service.saveSubject({
       id: 'sub-ml',
       semesterId: 'sem-fall-2026',
       code: 'CS 480',
@@ -187,7 +187,7 @@ export function runDataLayerTests(): { total: number; passed: number; failed: nu
     assert('DataService CRUD', 'Subject creation succeeds', service.getSubjectById('sub-ml')?.name === 'Applied Machine Learning');
 
     // 2.4 Timetable CRUD
-    const newSlot = service.saveTimetableSlot({
+    service.saveTimetableSlot({
       id: 'tt-ml-1',
       semesterId: 'sem-fall-2026',
       subjectId: 'sub-ml',
@@ -214,7 +214,7 @@ export function runDataLayerTests(): { total: number; passed: number; failed: nu
     assert('DataService CRUD', 'TimeBlock creation persists for calendar date', service.getTimeBlocksForDate('2026-09-21').some((b) => b.id === 'tb-test-date'));
 
     // 2.6 Goal CRUD & Progress update
-    const savedGoal = service.saveGoal({
+    service.saveGoal({
       id: 'goal-unit-test',
       title: 'Solve 10 LeetCode Mediums',
       targetValue: 10,
@@ -401,6 +401,32 @@ export function runDataLayerTests(): { total: number; passed: number; failed: nu
     results.push(...weeklyReviewReport.results);
   } catch (err: any) {
     assert('Weekly Review & Next-Week Planning', 'Weekly Review test suite threw unexpected error', false, err?.message);
+  }
+
+  // -------------------------------------------------------------
+  // Test Suite 9: Semester Review, Semester Transition & Holiday Mode Tests
+  // (State transitions, expected vs actual dates, endSemester action,
+  // historical data preservation, semester analytics, subject/mastery/goal
+  // aggregations, holiday capacity, holiday planner, next semester creation,
+  // dashboard transitions, advisory AI review, no direct AI mutation)
+  // -------------------------------------------------------------
+  try {
+    const semesterHolidayReport = runSemesterAndHolidayTests();
+    results.push(...semesterHolidayReport.results);
+  } catch (err: any) {
+    assert('Semester Review & Holiday Mode', 'Semester Review & Holiday Mode test suite threw unexpected error', false, err?.message);
+  }
+
+  // -------------------------------------------------------------
+  // Test Suite 10: V1.0 Stabilization Hardening Tests
+  // (Deterministic date utility & propagation, onboarding historical
+  // semester preservation, midnight-crossing sleep interval mathematics)
+  // -------------------------------------------------------------
+  try {
+    const v1Report = runV1StabilizationTests();
+    results.push(...v1Report.results);
+  } catch (err: any) {
+    assert('V1.0 Stabilization Hardening', 'V1.0 Stabilization test suite threw unexpected error', false, err?.message);
   }
 
   const passed = results.filter((r) => r.passed).length;

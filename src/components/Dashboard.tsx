@@ -14,13 +14,12 @@ import {
   Target,
   ChevronRight,
   Coffee,
-  Sunrise,
   ShieldCheck,
-  Zap
 } from 'lucide-react';
 import { ActiveTab, AppState, DayOfWeek, MissionItem, ActivityType } from '../types';
-import { computePlannedVsActual, computeWeeklySubjectHours, formatDateReadable } from '../services/scheduler';
+import { computePlannedVsActual, computeWeeklySubjectHours, formatDateReadable, getTodayDateString } from '../services/scheduler';
 import { deriveDayCapacity } from '../services/plannerEngine';
+import { deriveSemesterState } from '../services/semesterAnalytics';
 
 interface DashboardProps {
   state: AppState;
@@ -37,15 +36,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onToggleItemStatus,
   onOpenFocusSession,
 }) => {
-  const todayStr = '2026-09-21';
+  const todayStr = getTodayDateString();
   const capacity = deriveDayCapacity(todayStr, state);
   const todaysMission = state.missions[todayStr];
   const items = todaysMission?.items || [];
   const plannedVsActual = computePlannedVsActual(items);
   const weeklyHours = computeWeeklySubjectHours(state);
 
-  const availableHours = (capacity.netAvailableStudyMinutes / 60).toFixed(1);
-  const fixedHours = (capacity.fixedCommitmentsMinutes / 60).toFixed(1);
   const remainingStudyMinutes = Math.max(0, capacity.netAvailableStudyMinutes - plannedVsActual.actualMinutes);
   const remainingStudyHours = (remainingStudyMinutes / 60).toFixed(1);
 
@@ -53,6 +50,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const pendingStudyItems = items.filter((i) => !i.isBreak && i.status !== 'completed' && i.status !== 'skipped');
   const currentActivity = pendingStudyItems[0];
   const nextActivity = pendingStudyItems[1];
+
+  // Derive semester state & transitions
+  const activeSemester = state.semesters.find((s) => s.id === state.activeSemesterId) || state.semesters[0];
+  const previousSemester = state.semesters.find((s) => s.id !== state.activeSemesterId && (s.status === 'completed' || s.actualEndDate));
+  const semesterState = activeSemester ? deriveSemesterState(activeSemester, todayStr) : 'active';
+  const isBreakMode = semesterState === 'break' || Boolean(state.activeHolidayPlan);
+  const isNewSemester = Boolean(previousSemester && state.semesters.length > 1 && semesterState === 'active');
 
   // Find next upcoming class/lab for today from timetable
   const dayNames: DayOfWeek[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -99,20 +103,51 @@ export const Dashboard: React.FC<DashboardProps> = ({
       >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase tracking-wider text-amber-400 bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-800/40">
-                Primary Mission • {formatDateReadable(todayStr)}
-              </span>
-              <span className="text-xs text-slate-400">Semester {state.activeSemesterId}</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              {isBreakMode ? (
+                <span className="text-xs font-black uppercase tracking-wider text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/60">
+                  SEMESTER BREAK • Holiday Mission
+                </span>
+              ) : isNewSemester ? (
+                <span className="text-xs font-black uppercase tracking-wider text-indigo-400 bg-indigo-950/80 px-2.5 py-0.5 rounded-full border border-indigo-800/60">
+                  NEW SEMESTER • Today's Mission
+                </span>
+              ) : (
+                <span className="text-xs font-black uppercase tracking-wider text-amber-400 bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-800/40">
+                  CURRENT SEMESTER • Today's Mission
+                </span>
+              )}
+
+              {isNewSemester && previousSemester ? (
+                <span className="text-xs text-slate-300 font-mono">
+                  Current: <strong className="text-white">{activeSemester?.name}</strong> • Previous: <strong className="text-emerald-400">{previousSemester.name} ✓ Completed</strong>
+                </span>
+              ) : (
+                <span className="text-xs text-slate-400 font-mono">{activeSemester?.name} • {formatDateReadable(todayStr)}</span>
+              )}
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              {currentActivity ? (
-                <span>Next Focus: <span className="text-indigo-300">{currentActivity.title}</span></span>
-              ) : items.length > 0 ? (
-                <span>All Mission Tasks Completed!</span>
+              {isBreakMode ? (
+                currentActivity ? (
+                  <span>Holiday Mission: <span className="text-emerald-300">{currentActivity.title}</span></span>
+                ) : (
+                  <span>SEMESTER BREAK • Holiday Mission</span>
+                )
+              ) : isNewSemester ? (
+                currentActivity ? (
+                  <span>Next Focus: <span className="text-indigo-300">{currentActivity.title}</span></span>
+                ) : (
+                  <span>NEW SEMESTER • Today's Mission</span>
+                )
               ) : (
-                <span>Today's Mission Awaiting Activation</span>
+                currentActivity ? (
+                  <span>Next Focus: <span className="text-indigo-300">{currentActivity.title}</span></span>
+                ) : items.length > 0 ? (
+                  <span>All Mission Tasks Completed!</span>
+                ) : (
+                  <span>CURRENT SEMESTER • Today's Mission</span>
+                )
               )}
             </h1>
 

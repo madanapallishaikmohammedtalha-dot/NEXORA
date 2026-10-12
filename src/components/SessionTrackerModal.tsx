@@ -10,18 +10,15 @@ import {
   BookOpen, 
   Clock, 
   Target, 
-  AlertTriangle,
-  Flame,
-  Award,
-  Calendar,
-  Layers,
-  ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
-  FileText
+  AlertTriangle, 
+  Flame, 
+  Layers, 
+  ArrowRight, 
+  CheckCircle2, 
 } from 'lucide-react';
-import { ActivityType, AppState, MissionItem, RoadmapTopic, StudySession, Subject } from '../types';
+import { ActivityType, AppState, MissionItem, StudySession } from '../types';
 import { dataService } from '../services/dataService';
+import { getTodayDateString } from '../services/scheduler';
 
 interface SessionTrackerModalProps {
   isOpen: boolean;
@@ -167,7 +164,7 @@ export const SessionTrackerModal: React.FC<SessionTrackerModalProps> = ({
 
   // Final Save & Commit via DataService
   const handleSaveAndCommit = () => {
-    const todayStr = '2026-09-21';
+    const todayStr = getTodayDateString();
     const newSession: Omit<StudySession, 'id'> = {
       missionItemId: activeMissionItem?.id,
       topicId: selectedTopicId || undefined,
@@ -580,6 +577,35 @@ export const SessionTrackerModal: React.FC<SessionTrackerModalProps> = ({
                 placeholder="e.g., Struggled with race conditions in edge cases; need more practice on semaphores"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
               />
+            </div>
+
+            {/* Mission Completion Status Toggle */}
+            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+              <span className="text-slate-300 font-medium">Mission Task Status</span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setCompletionState('completed')}
+                  className={`px-3 py-1 rounded-lg font-semibold text-[11px] transition-colors cursor-pointer ${
+                    completionState === 'completed'
+                      ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Completed
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCompletionState('partial')}
+                  className={`px-3 py-1 rounded-lg font-semibold text-[11px] transition-colors cursor-pointer ${
+                    completionState === 'partial'
+                      ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Partial
+                </button>
+              </div>
             </div>
 
             {/* Action buttons */}

@@ -1,6 +1,5 @@
-import { AppState, RoadmapTopic, StudySession } from '../types';
+import { RoadmapTopic, StudySession } from '../types';
 import {
-  calculateRoadmapProgress,
   calculateTopicProgress,
   detectCycleInTopics,
   evaluatePrerequisites,
@@ -12,9 +11,8 @@ import {
   MASTERY_THRESHOLD_PREREQ,
   recalculateRoadmapStatus,
   topologicalSortTopics,
-  validateTopicPrerequisites,
 } from './learningEngine';
-import { SEED_PROFILE, SEED_SEMESTERS, SEED_SUBJECTS, SEED_TIMETABLE, SEED_TOPICS } from './seedData';
+import { SEED_TOPICS } from './seedData';
 
 export interface LearningTestResult {
   suite: string;

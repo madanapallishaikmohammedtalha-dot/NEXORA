@@ -4,9 +4,6 @@ import {
   Goal,
   GoalHorizon,
   GoalStatus,
-  Holiday,
-  LearningProgress,
-  MissionItem,
   RoadmapTopic,
   Semester,
   SlotType,
@@ -125,6 +122,22 @@ export function validateSemester(semester: Partial<Semester>): ValidationResult 
     if (semester.startDate >= semester.endDate) {
       errors.push({ field: 'endDate', message: 'End date must be strictly after start date' });
     }
+  }
+
+  if (semester.expectedEndDate && !isValidDateString(semester.expectedEndDate)) {
+    errors.push({ field: 'expectedEndDate', message: 'Valid expectedEndDate (YYYY-MM-DD) is required' });
+  }
+
+  if (semester.actualEndDate && !isValidDateString(semester.actualEndDate)) {
+    errors.push({ field: 'actualEndDate', message: 'Valid actualEndDate (YYYY-MM-DD) is required' });
+  }
+
+  if (semester.holidayStartDate && !isValidDateString(semester.holidayStartDate)) {
+    errors.push({ field: 'holidayStartDate', message: 'Valid holidayStartDate (YYYY-MM-DD) is required' });
+  }
+
+  if (semester.holidayEndDate && !isValidDateString(semester.holidayEndDate)) {
+    errors.push({ field: 'holidayEndDate', message: 'Valid holidayEndDate (YYYY-MM-DD) is required' });
   }
 
   if (semester.targetWeeklyStudyHours !== undefined) {

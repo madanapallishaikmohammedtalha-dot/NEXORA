@@ -43,7 +43,8 @@ import {
 import { 
   formatDateReadable, 
   timeToMinutes, 
-  minutesToTime 
+  minutesToTime,
+  getTodayDateString
 } from '../services/scheduler';
 import { 
   deriveDayCapacity, 
@@ -71,14 +72,14 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
   onStartSessionForItem,
   onToggleItemStatus,
 }) => {
-  const [selectedDate, setSelectedDate] = useState<string>('2026-09-21');
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayDateString());
   const [isLoadingPlan, setIsLoadingPlan] = useState<boolean>(false);
   const [showTimelineDetails, setShowTimelineDetails] = useState<boolean>(false);
 
   // Check-In Modal State
   const [showCheckInModal, setShowCheckInModal] = useState<boolean>(false);
   const [checkInInput, setCheckInInput] = useState<DailyCheckInInput>({
-    date: '2026-09-21',
+    date: getTodayDateString(),
     energyLevel: 'medium',
     tired: false,
     reachedHomeLate: false,

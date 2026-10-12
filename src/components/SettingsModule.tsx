@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  Key, 
   Download, 
   Upload, 
-  RotateCcw, 
   User, 
-  ShieldCheck, 
   Sparkles, 
   Database,
   Check,
@@ -15,7 +12,6 @@ import {
   XCircle,
   SlidersHorizontal,
   Activity,
-  Zap
 } from 'lucide-react';
 import { AppState, UserProfile } from '../types';
 import { runDataLayerTests, TestResult } from '../services/dataLayerTests';

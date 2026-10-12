@@ -39,11 +39,16 @@ graph TD
 
 ### 3.1 T1: API Key Exfiltration & Exposure
 * **Risk**: Exposure of student Gemini API keys or server credentials through source code commits, browser devtools inspection, or client bundles.
-* **Mitigation**:
+* **Storage Invariant**:
+  - In V1.0, user-entered API keys are stored in **unencrypted plain text** in the browser's origin-scoped `localStorage` under `nexora_os_v1` (`state.profile.apiKey`).
+  - No client-side cryptographic encryption at rest is applied. Students using public or shared computers should clear their custom API key before ending their session or use server-side environment variables instead.
+* **Transport Invariant**:
+  - When custom credentials are provided, the key is transmitted in the JSON request body (`{ userApiKey: "..." }`) via standard POST requests to the local Express proxy endpoints (`/api/ai/proxy/*`).
+  - No custom authorization headers, Bearer tokens, or encryption envelopes are used for transport.
+* **Server Processing Invariant**:
   - API keys are **strictly forbidden** from client-side bundles (`VITE_` prefix is prohibited for sensitive tokens).
-  - The server reads the platform-managed `GEMINI_API_KEY` from `process.env`.
-  - If a student provides their own key via Settings, it resides in the browser's origin-isolated `localStorage` and is transmitted directly to the local server proxy over loopback HTTP/HTTPS.
-  - The server creates ephemeral, garbage-collected `GoogleGenAI` instances per request. Keys are never logged to console or persisted to disk.
+  - The server reads the platform-managed `GEMINI_API_KEY` from `process.env` when no user key is provided.
+  - The server creates ephemeral, garbage-collected `GoogleGenAI` instances per request. Keys are never logged to console, written to log files, or persisted to disk.
 
 ---
 

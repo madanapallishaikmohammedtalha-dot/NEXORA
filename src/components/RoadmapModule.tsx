@@ -28,7 +28,6 @@ import {
   ActiveTab, 
   AppState, 
   LearningCategory, 
-  LearningDomainInfo,
   RoadmapTopic, 
   TopicStatus 
 } from '../types';
@@ -593,7 +592,6 @@ export const RoadmapModule: React.FC<RoadmapModuleProps> = ({
                   const isCompleted = topic.status === 'completed' || topic.masteryLevel >= MASTERY_THRESHOLD_COMPLETED;
                   const topicProgress = calculateTopicProgress(topic, state.sessions);
                   const prerequisites = getPrerequisites(topic.id, state.topics);
-                  const dependents = getDependents(topic.id, state.topics);
 
                   return (
                     <div

@@ -18,13 +18,23 @@ import {
   ProposedDailyMission,
   WeeklyAnalyticsReport,
   NextWeekProposedItem,
+  SemesterAchievementReport,
+  SemesterStatus,
+  HolidayPlan,
 } from '../types';
 import { INITIAL_SEEDED_STATE } from './seedData';
 import {
   computeWeeklyAnalytics,
   generateDeterministicNextWeekProposals,
-  getWeekBoundaries,
 } from './weeklyAnalytics';
+import {
+  computeSemesterAnalytics,
+  deriveSemesterState,
+} from './semesterAnalytics';
+import { getTodayDateString } from './scheduler';
+import {
+  generateHolidayPlan,
+} from './holidayPlanner';
 import {
   validateGoal,
   validateRoadmapTopic,
@@ -38,9 +48,7 @@ import {
 import {
   calculateRoadmapProgress as computeRoadmapProgress,
   calculateTopicProgress as computeTopicProgress,
-  DEFAULT_LEARNING_DOMAINS,
   detectCycleInTopics,
-  evaluatePrerequisites,
   getDependents as getDependentsHelper,
   getLockedTopics as getLockedTopicsHelper,
   getPrerequisites as getPrerequisitesHelper,
@@ -277,6 +285,190 @@ export class DataService {
 
     this.saveState({ ...state, semesters: updatedSemesters });
     return semester;
+  }
+
+  getSemesterState(semesterId: string, referenceDateStr: string = getTodayDateString()): SemesterStatus {
+    const sem = this.getState().semesters.find((s) => s.id === semesterId);
+    if (!sem) return 'upcoming';
+    return deriveSemesterState(sem, referenceDateStr);
+  }
+
+  /**
+   * END SEMESTER ACTION
+   * 1. Requires actual completion date.
+   * 2. Confirms active semester.
+   * 3. Generates semester review from stored data.
+   * 4. Marks semester completed.
+   * 5. Transitions into break mode if holiday period exists.
+   * 6. Preserves all historical data (sessions, timetables, goals, topics untouched).
+   */
+  endSemester(
+    semesterId: string,
+    actualEndDate: string,
+    holidayDetails?: {
+      holidayStartDate?: string;
+      holidayEndDate?: string;
+      nextSemesterStartDate?: string;
+    }
+  ): { report: SemesterAchievementReport; isBreakMode: boolean } {
+    const state = this.getState();
+    const semester = state.semesters.find((s) => s.id === semesterId);
+    if (!semester) {
+      throw new Error(`Semester ${semesterId} not found`);
+    }
+
+    if (!actualEndDate || actualEndDate.trim().length === 0) {
+      throw new Error('Actual semester completion date is required');
+    }
+
+    // 1. Generate deterministic achievement review before mutating status
+    const report = computeSemesterAnalytics(state, semesterId);
+    report.endDate = actualEndDate;
+
+    // 2. Mark semester completed and store actual end date
+    const holidayStart = holidayDetails?.holidayStartDate || semester.holidayStartDate;
+    const holidayEnd = holidayDetails?.holidayEndDate || semester.holidayEndDate;
+    const nextStart = holidayDetails?.nextSemesterStartDate || semester.nextSemesterStartDate;
+
+    const isBreakMode = Boolean(holidayStart && holidayEnd);
+
+    const updatedSemester: Semester = {
+      ...semester,
+      actualEndDate,
+      endDate: actualEndDate,
+      status: 'completed',
+      holidayStartDate: holidayStart,
+      holidayEndDate: holidayEnd,
+      nextSemesterStartDate: nextStart,
+    };
+
+    const updatedSemesters = state.semesters.map((s) =>
+      s.id === semesterId ? updatedSemester : s
+    );
+
+    // 3. Store the review into semesterReviews
+    const updatedReviews = {
+      ...(state.semesterReviews || {}),
+      [semesterId]: report,
+    };
+
+    // 4. If break mode and no active holiday plan, bootstrap a realistic default holiday plan
+    let activeHolidayPlan = state.activeHolidayPlan;
+    if (isBreakMode && !activeHolidayPlan && holidayStart && holidayEnd) {
+      activeHolidayPlan = generateHolidayPlan(
+        {
+          selectedPriorities: ['dsa', 'projects', 'revision', 'rest'],
+          weeklyAvailableHours: 15,
+          preferredStudyTime: 'flexible',
+          daysOff: ['saturday', 'sunday'],
+          maxDailyCapacityHours: 3.5,
+          startDate: holidayStart,
+          endDate: holidayEnd,
+          nextSemesterStartDate: nextStart,
+        },
+        state,
+        semesterId
+      );
+    }
+
+    // 5. Save state - preserving ALL historical data untouched
+    this.saveState({
+      ...state,
+      semesters: updatedSemesters,
+      semesterReviews: updatedReviews,
+      activeHolidayPlan,
+    });
+
+    return { report, isBreakMode };
+  }
+
+  getSemesterReview(semesterId: string): SemesterAchievementReport | undefined {
+    const state = this.getState();
+    if (state.semesterReviews && state.semesterReviews[semesterId]) {
+      return state.semesterReviews[semesterId];
+    }
+    // Compute on demand if not yet cached
+    const sem = state.semesters.find((s) => s.id === semesterId);
+    if (!sem) return undefined;
+    return computeSemesterAnalytics(state, semesterId);
+  }
+
+  saveHolidayPlan(plan: HolidayPlan): void {
+    const state = this.getState();
+    this.saveState({
+      ...state,
+      activeHolidayPlan: plan,
+    });
+  }
+
+  getHolidayPlan(): HolidayPlan | undefined {
+    return this.getState().activeHolidayPlan;
+  }
+
+  clearHolidayPlan(): void {
+    const state = this.getState();
+    this.saveState({
+      ...state,
+      activeHolidayPlan: undefined,
+    });
+  }
+
+  /**
+   * NEXT SEMESTER ACTION
+   * Creates new semester and switches active status while preserving 100% of past history.
+   */
+  createNextSemester(params: {
+    name: string;
+    startDate: string;
+    expectedEndDate: string;
+    subjects: Array<Omit<Subject, 'id' | 'semesterId'>>;
+    targetWeeklyStudyHours: number;
+  }): Semester {
+    const state = this.getState();
+    const newSemesterId = `sem-${Date.now()}`;
+
+    // Mark all existing semesters as inactive (history preserved!)
+    const updatedSemesters: Semester[] = state.semesters.map((s) => ({
+      ...s,
+      isActive: false,
+    }));
+
+    const newSemester: Semester = {
+      id: newSemesterId,
+      name: params.name.trim(),
+      startDate: params.startDate,
+      endDate: params.expectedEndDate,
+      expectedEndDate: params.expectedEndDate,
+      status: 'active',
+      holidays: [],
+      targetWeeklyStudyHours: params.targetWeeklyStudyHours || 18,
+      isActive: true,
+    };
+    updatedSemesters.push(newSemester);
+
+    // Create the new subjects for this semester
+    const newSubjects: Subject[] = params.subjects.map((s, idx) => ({
+      id: `sub-${newSemesterId}-${idx + 1}`,
+      semesterId: newSemesterId,
+      code: s.code.trim().toUpperCase(),
+      name: s.name.trim(),
+      color: s.color || '#3B82F6',
+      targetWeeklyHours: s.targetWeeklyHours || 4,
+      credits: s.credits || 3,
+      syllabusOverview: s.syllabusOverview,
+    }));
+
+    const allSubjects = [...state.subjects, ...newSubjects];
+
+    this.saveState({
+      ...state,
+      semesters: updatedSemesters,
+      subjects: allSubjects,
+      activeSemesterId: newSemesterId,
+      activeHolidayPlan: undefined, // transition from holiday mode to new term
+    });
+
+    return newSemester;
   }
 
   deleteSemester(semesterId: string): void {
@@ -979,14 +1171,14 @@ export class DataService {
   /**
    * Computes deterministic weekly analytics strictly from stored data
    */
-  getWeeklyAnalytics(referenceDate: string = '2026-09-21'): WeeklyAnalyticsReport {
+  getWeeklyAnalytics(referenceDate: string = getTodayDateString()): WeeklyAnalyticsReport {
     return computeWeeklyAnalytics(this.getState(), referenceDate);
   }
 
   /**
    * Generates proposed next-week focus priorities based on real data
    */
-  getNextWeekProposals(referenceDate: string = '2026-09-21'): NextWeekProposedItem[] {
+  getNextWeekProposals(referenceDate: string = getTodayDateString()): NextWeekProposedItem[] {
     const report = this.getWeeklyAnalytics(referenceDate);
     return generateDeterministicNextWeekProposals(report, this.getState());
   }
@@ -995,7 +1187,6 @@ export class DataService {
    * Commits an accepted next-week proposal into the student's roadmap or target mission
    */
   commitNextWeekItemToMission(targetDate: string, item: NextWeekProposedItem): MissionItem {
-    const state = this.getState();
     const missionItem: MissionItem = {
       id: `mi-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       subjectId: item.subjectId,

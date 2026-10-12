@@ -14,12 +14,10 @@
  * - Strict advisory AI boundary (no direct storage/state mutation)
  */
 
-import { AppState, StudySession, DailyMission, NextWeekProposedItem, RoadmapTopic } from '../types';
+import { AppState, StudySession, DailyMission, NextWeekProposedItem } from '../types';
 import { DataService, InMemoryStorageAdapter } from './dataService';
 import {
   computeWeeklyAnalytics,
-  calculateTransparentConsistencyScore,
-  detectLearningPatterns,
   generateDeterministicNextWeekProposals,
   getWeekBoundaries,
 } from './weeklyAnalytics';
@@ -302,6 +300,7 @@ export function runWeeklyReviewTests(): { total: number; passed: number; failed:
     const report = service.getWeeklyAnalytics('2026-09-21');
     const aiContext = buildWeeklyReviewAIContext(report, service.getState());
     const aiResponse = generateDeterministicAIWeeklyReview(aiContext, report);
+    assert(SUITE, 'Deterministic AI weekly review generates valid interpretation', Boolean(aiResponse && aiResponse.interpretation));
 
     const afterState = service.getState();
     assert(SUITE, 'AI advisory logic does NOT mutate sessions in storage', afterState.sessions.length === initialSavedState.sessions.length);

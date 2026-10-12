@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, Plus, Trash2, MapPin, AlertCircle, CheckCircle } from 'lucide-react';
+import { Clock, Plus, Trash2, MapPin, AlertCircle } from 'lucide-react';
 import { AppState, DayOfWeek, SlotType, TimetableSlot } from '../types';
 import { DAYS_OF_WEEK, DAY_NAMES, timeToMinutes } from '../services/scheduler';
 

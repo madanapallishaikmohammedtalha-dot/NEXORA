@@ -16,13 +16,11 @@ import {
   AIRateLimitError,
   AIModelUnavailableError,
   AINetworkError,
-  AIInvalidRequestError,
   normalizeProviderError,
   GenerateTextRequest,
   GenerateTextResponse,
   GenerateJsonRequest,
   GenerateJsonResponse,
-  ProviderCredentials,
   ProviderHealthStatus,
   AIProviderCapabilities,
   ModelProfile
@@ -269,7 +267,7 @@ export function runAIProviderTests(): {
         isOffline: false,
       };
 
-      public async generateText(req: GenerateTextRequest): Promise<GenerateTextResponse> {
+      public async generateText(_req: GenerateTextRequest): Promise<GenerateTextResponse> {
         return {
           text: `[HPC Node]: Processed query with ${this.defaultModelId}`,
           modelUsed: this.defaultModelId,
@@ -278,7 +276,7 @@ export function runAIProviderTests(): {
         };
       }
 
-      public async generateStructuredJson<T>(req: GenerateJsonRequest): Promise<GenerateJsonResponse<T>> {
+      public async generateStructuredJson<T>(_req: GenerateJsonRequest): Promise<GenerateJsonResponse<T>> {
         const dummy = { clusterNode: 'hpc-04', status: 'ok' } as T;
         return {
           data: dummy,

@@ -12,7 +12,9 @@ import {
   Sparkles,
   ShieldCheck,
   CheckCircle2,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Compass,
+  Sun
 } from 'lucide-react';
 import { 
   ActiveTab, 
@@ -29,6 +31,7 @@ import {
 } from './types';
 import { loadAppState, resetToDemoState, exportStateAsJSON, importStateFromJSON } from './services/storage';
 import { dataService } from './services/dataService';
+import { getTodayDateString } from './services/scheduler';
 import { Dashboard } from './components/Dashboard';
 import { DailyPlannerModule } from './components/DailyPlannerModule';
 import { TimetableModule } from './components/TimetableModule';
@@ -37,6 +40,7 @@ import { AITutorModule } from './components/AITutorModule';
 import { ProgressModule } from './components/ProgressModule';
 import { WeeklyReviewModule } from './components/WeeklyReviewModule';
 import { SemesterModule } from './components/SemesterModule';
+import { HolidayModeModule } from './components/HolidayModeModule';
 import { SettingsModule } from './components/SettingsModule';
 import { SessionTrackerModal } from './components/SessionTrackerModal';
 import { OnboardingModal } from './components/OnboardingModal';
@@ -185,7 +189,7 @@ export default function App() {
   };
 
   const handleAddTopicToDailyMission = (topic: RoadmapTopic) => {
-    const todayStr = '2026-09-21';
+    const todayStr = getTodayDateString();
     const newItem: MissionItem = {
       id: `mi-${Date.now()}`,
       topicId: topic.id,
@@ -274,10 +278,15 @@ export default function App() {
         ...updatedState.profile,
         hasCompletedOnboarding: true,
       },
+      semesterReviews: current.semesterReviews || {},
+      sessions: current.sessions || [],
+      topics: current.topics || [],
+      missions: current.missions || {},
+      timeBlocks: current.timeBlocks || {},
     };
     dataService.saveState(merged);
     setIsOnboardingOpen(false);
-    showToast('Welcome to NEXORA! Your academic operating system is live.');
+    showToast('Setup & Routine saved successfully');
   };
 
   const navTabs: Array<{ id: ActiveTab; label: string; icon: React.ReactNode }> = [
@@ -287,7 +296,9 @@ export default function App() {
     { id: 'roadmap', label: 'Roadmaps', icon: <GitBranch className="w-4 h-4" /> },
     { id: 'tutor', label: 'AI Tutor', icon: <Bot className="w-4 h-4" /> },
     { id: 'progress', label: 'Progress', icon: <BarChart3 className="w-4 h-4" /> },
-    { id: 'semester', label: 'Curriculum', icon: <BookOpen className="w-4 h-4" /> },
+    { id: 'weekly_review', label: 'Weekly Review', icon: <Compass className="w-4 h-4" /> },
+    { id: 'holiday', label: 'Holiday Mode', icon: <Sun className="w-4 h-4" /> },
+    { id: 'semester', label: 'Curriculum & Semester', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
   ];
 
@@ -453,6 +464,16 @@ export default function App() {
             onUpdateSemester={handleUpdateSemester}
             onSaveSubject={handleSaveSubject}
             onDeleteSubject={handleDeleteSubject}
+            onNavigateToTab={(tab) => setActiveTab(tab)}
+            showToast={showToast}
+          />
+        )}
+
+        {activeTab === 'holiday' && (
+          <HolidayModeModule
+            state={state}
+            onNavigateToTab={(tab) => setActiveTab(tab)}
+            showToast={showToast}
           />
         )}
 

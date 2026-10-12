@@ -1,4 +1,4 @@
-import { AppState, MissionItem, RoadmapTopic, TimetableSlot } from '../types';
+import { AppState, MissionItem } from '../types';
 import { 
   deriveDayCapacity, 
   detectScheduleConflicts, 
@@ -6,9 +6,6 @@ import {
   intervalsOverlap, 
   rebalanceDaySchedule, 
   rescheduleTask,
-  mergeIntervals,
-  subtractIntervals,
-  TimeInterval
 } from './plannerEngine';
 import { SEED_PROFILE, SEED_SEMESTERS, SEED_SUBJECTS, SEED_TIMETABLE, SEED_TOPICS } from './seedData';
 import { computePlannedVsActual, timeToMinutes } from './scheduler';

@@ -5,17 +5,11 @@ import {
   MissionItem, 
   MissionItemStatus,
   RoadmapTopic, 
-  TimetableSlot, 
-  UserProfile,
-  Goal
 } from '../types';
 import { 
-  DAYS_OF_WEEK, 
-  DAY_NAMES, 
   timeToMinutes, 
   minutesToTime, 
   getDayOfWeekFromDate, 
-  formatDateReadable, 
   getHolidayForDate,
   evaluatePrerequisites,
   computeWeeklySubjectHours
@@ -194,21 +188,67 @@ export function deriveDayCapacity(dateStr: string, state: AppState): CapacityCal
   // Parse wakeTime and sleepTime or fallback to sleepHours (default 8 hrs: 23:00 to 07:00)
   const wakeMin = profile.wakeTime ? timeToMinutes(profile.wakeTime) : 420; // 07:00
   const sleepMin = profile.sleepTime ? timeToMinutes(profile.sleepTime) : 1380; // 23:00
-  const sleepDurationHours = profile.sleepHours || 8;
-  const sleepMinutes = sleepDurationHours * 60;
+  const actualSleepDuration = sleepMin < wakeMin
+    ? (wakeMin - sleepMin)
+    : (1440 - sleepMin + wakeMin);
+  const sleepMinutes = profile.sleepHours ? profile.sleepHours * 60 : actualSleepDuration;
 
-  // Active waking day boundary [wakeMin, sleepMin]
-  const activeWakingWindow = {
-    start: Math.min(wakeMin, sleepMin),
-    end: Math.max(wakeMin, sleepMin),
-  };
+  // Protected Sleep Intervals within the 24h calendar day [0, 1440)
+  const sleepIntervals: TimeInterval[] = [];
+  if (sleepMin < wakeMin) {
+    // Overnight sleep schedule where bedtime is post-midnight (e.g. sleep: 01:30 [90], wake: 08:30 [510])
+    // The protected sleep interval within the calendar day is [sleepMin, wakeMin)
+    sleepIntervals.push({
+      start: sleepMin,
+      end: wakeMin,
+      label: 'Protected Sleep',
+      type: 'sleep',
+      isFixed: true,
+    });
+  } else {
+    // Standard night sleep schedule spanning across midnight (e.g. sleep: 23:30 [1410], wake: 07:30 [450])
+    // Sleep occurs from [0, wakeMin) and from [sleepMin, 1440)
+    if (wakeMin > 0) {
+      sleepIntervals.push({
+        start: 0,
+        end: wakeMin,
+        label: 'Protected Sleep',
+        type: 'sleep',
+        isFixed: true,
+      });
+    }
+    if (sleepMin < 1440) {
+      sleepIntervals.push({
+        start: sleepMin,
+        end: 1440,
+        label: 'Protected Sleep',
+        type: 'sleep',
+        isFixed: true,
+      });
+    }
+  }
 
   // 2. Fixed Commitments (Lectures, Labs, Tutorials, Commutes, Fixed Personal)
   const slotsForDay = state.timetable.filter(
     (slot) => slot.semesterId === state.activeSemesterId && slot.dayOfWeek === dayOfWeek
   );
 
-  const fixedSlots = slotsForDay.filter((s) => s.isFixed);
+  const activeSemester = state.semesters.find((s) => s.id === state.activeSemesterId);
+  const isBreakPeriod = Boolean(
+    holiday ||
+    (activeSemester?.holidayStartDate && activeSemester?.holidayEndDate &&
+      dateStr >= activeSemester.holidayStartDate && dateStr <= activeSemester.holidayEndDate) ||
+    activeSemester?.status === 'break'
+  );
+
+  // During break / holiday mode, timetable does not enforce college lectures unless added by user
+  const fixedSlots = slotsForDay.filter((s) => {
+    if (!s.isFixed) return false;
+    if (isBreakPeriod && (s.type === 'lecture' || s.type === 'lab' || s.type === 'tutorial' || s.type === 'commute')) {
+      return false;
+    }
+    return true;
+  });
   let fixedCommitmentsMinutes = 0;
   const fixedIntervals: TimeInterval[] = [];
 
@@ -231,7 +271,7 @@ export function deriveDayCapacity(dateStr: string, state: AppState): CapacityCal
       // Inter-slot transition buffer
       if (bufferMinutes > 0) {
         transitionBufferIntervals.push({
-          start: Math.max(activeWakingWindow.start, start - bufferMinutes),
+          start: Math.max(0, start - bufferMinutes),
           end: start,
           label: `Transition buffer (${slot.title})`,
           type: 'buffer',
@@ -239,7 +279,7 @@ export function deriveDayCapacity(dateStr: string, state: AppState): CapacityCal
         });
         transitionBufferIntervals.push({
           start: end,
-          end: Math.min(activeWakingWindow.end, end + bufferMinutes),
+          end: Math.min(1440, end + bufferMinutes),
           label: `Buffer (${slot.title})`,
           type: 'buffer',
           isFixed: true,
@@ -265,7 +305,7 @@ export function deriveDayCapacity(dateStr: string, state: AppState): CapacityCal
     );
     if (!hasPreCommute) {
       commuteIntervals.push({
-        start: Math.max(activeWakingWindow.start, earliestCampusStart - travelMinutes),
+        start: Math.max(0, earliestCampusStart - travelMinutes),
         end: earliestCampusStart,
         label: 'Campus Commute (Morning)',
         type: 'commute',
@@ -280,7 +320,7 @@ export function deriveDayCapacity(dateStr: string, state: AppState): CapacityCal
     if (!hasPostCommute) {
       commuteIntervals.push({
         start: latestCampusEnd,
-        end: Math.min(activeWakingWindow.end, latestCampusEnd + travelMinutes),
+        end: Math.min(1440, latestCampusEnd + travelMinutes),
         label: 'Campus Commute (Return)',
         type: 'commute',
         isFixed: true,
@@ -309,20 +349,25 @@ export function deriveDayCapacity(dateStr: string, state: AppState): CapacityCal
   // 6. Sustainable Study Capacity (75% to prevent burnout)
   const sustainableStudyMinutes = Math.floor(rawUncommitted * 0.75);
 
-  // 7. Hard Capacity Ceiling (max personal threshold)
-  const maxCapMinutes = Math.round((profile.dailyCapacityMaxHours || 4.5) * 60);
+  // 7. Hard Capacity Ceiling (max personal threshold or holiday plan ceiling)
+  let dailyMaxHours = profile.dailyCapacityMaxHours || 4.5;
+  if (isBreakPeriod && state.activeHolidayPlan?.preferences?.maxDailyCapacityHours) {
+    dailyMaxHours = state.activeHolidayPlan.preferences.maxDailyCapacityHours;
+  }
+  const maxCapMinutes = Math.round(dailyMaxHours * 60);
   const netAvailableStudyMinutes = Math.max(30, Math.min(sustainableStudyMinutes, maxCapMinutes));
   const safeBudgetMinutes = Math.floor(netAvailableStudyMinutes * 0.85);
 
-  // 8. Subtract all blocked intervals from the waking day to identify discrete Flexible Intervals
+  // 8. Subtract all blocked intervals from the full calendar day [0, 1440] to identify discrete Flexible Intervals
   const allBlockedIntervals: TimeInterval[] = [
+    ...sleepIntervals,
     ...fixedIntervals,
     ...transitionBufferIntervals,
     ...commuteIntervals,
     ...maintenanceIntervals,
   ];
 
-  const rawFlexibleIntervals = subtractIntervals(activeWakingWindow, allBlockedIntervals);
+  const rawFlexibleIntervals = subtractIntervals({ start: 0, end: 1440 }, allBlockedIntervals);
 
   // Filter out tiny slivers under 20 minutes (unusable for deep cognitive work)
   const flexibleIntervals = rawFlexibleIntervals
@@ -374,7 +419,6 @@ export function detectScheduleConflicts(
 ): ConflictDetail[] {
   const conflicts: ConflictDetail[] = [];
   const capacity = deriveDayCapacity(dateStr, state);
-  const profile = state.profile;
 
   const wakeMin = capacity.wakeTimeMinutes;
   const sleepMin = capacity.sleepTimeMinutes;
@@ -436,8 +480,14 @@ export function detectScheduleConflicts(
     const itemEnd = item.endTime ? timeToMinutes(item.endTime) : itemStart + item.plannedMinutes;
 
     // Check Sleep Encroachment
-    // If sleep spans overnight e.g. 23:30 to 07:30
-    const inSleep = (itemStart < wakeMin && itemEnd > 0) || (itemEnd > sleepMin) || (itemStart >= sleepMin);
+    let inSleep = false;
+    if (sleepMin < wakeMin) {
+      // Overnight sleep schedule where bedtime is post-midnight (e.g. 01:30 to 08:30)
+      inSleep = intervalsOverlap(itemStart, itemEnd, sleepMin, wakeMin);
+    } else {
+      // Standard night sleep spanning across midnight (e.g. 23:30 to 07:30)
+      inSleep = intervalsOverlap(itemStart, itemEnd, 0, wakeMin) || intervalsOverlap(itemStart, itemEnd, sleepMin, 1440);
+    }
     if (inSleep) {
       conflicts.push({
         type: 'overlap_sleep',

@@ -1,4 +1,4 @@
-import { AppState, DayOfWeek, MissionItem, RoadmapTopic, TimetableSlot } from '../types';
+import { AppState, DayOfWeek, MissionItem, RoadmapTopic } from '../types';
 
 export const DAYS_OF_WEEK: DayOfWeek[] = [
   'monday',
@@ -55,6 +55,18 @@ export function formatDateReadable(dateStr: string): string {
   });
 }
 
+/**
+ * Canonical deterministic local calendar date utility.
+ * Returns the current local calendar date in YYYY-MM-DD format without UTC shifts,
+ * preserving exact calendar dates for all timezones including Asia/Kolkata.
+ */
+export function getTodayDateString(now: Date = new Date()): string {
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 // Check if a date falls in a semester holiday or break
 export function getHolidayForDate(dateStr: string, state: AppState) {
   const activeSemester = state.semesters.find((s) => s.id === state.activeSemesterId);
@@ -75,11 +87,9 @@ export function getHolidayForDate(dateStr: string, state: AppState) {
 export function calculateDailyCapacity(dateStr: string, state: AppState) {
   const dayOfWeek = getDayOfWeekFromDate(dateStr);
   const profile = state.profile;
-  const activeSemester = state.semesters.find((s) => s.id === state.activeSemesterId);
 
   // Check if semester break
   const holiday = getHolidayForDate(dateStr, state);
-  const isWeekend = dayOfWeek === 'saturday' || dayOfWeek === 'sunday';
 
   // Fixed timetable slots for this day
   const slotsForDay = state.timetable.filter(

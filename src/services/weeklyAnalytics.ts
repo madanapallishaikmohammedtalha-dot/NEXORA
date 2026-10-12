@@ -19,22 +19,26 @@ import {
   WeeklySubjectBreakdown,
   WeeklyTopicMasteryChange,
 } from '../types';
+import { getTodayDateString } from './scheduler';
 
 /**
  * Helper to compute the calendar Monday and Sunday (YYYY-MM-DD) for a given reference date
  */
-export function getWeekBoundaries(referenceDateStr: string = '2026-09-21'): { start: string; end: string } {
-  const d = new Date(referenceDateStr + 'T12:00:00Z');
+export function getWeekBoundaries(referenceDateStr: string = getTodayDateString()): { start: string; end: string } {
+  const [y, m, d] = referenceDateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
   // Day: 0 = Sun, 1 = Mon, ..., 6 = Sat
-  const day = d.getUTCDay();
+  const day = date.getDay();
   const diffToMonday = (day === 0 ? -6 : 1) - day;
-  const monday = new Date(d);
-  monday.setUTCDate(d.getUTCDate() + diffToMonday);
+  const monday = new Date(y, m - 1, d + diffToMonday);
+  const sunday = new Date(y, m - 1, d + diffToMonday + 6);
 
-  const sunday = new Date(monday);
-  sunday.setUTCDate(monday.getUTCDate() + 6);
-
-  const format = (date: Date) => date.toISOString().split('T')[0];
+  const format = (dt: Date) => {
+    const yr = dt.getFullYear();
+    const mo = String(dt.getMonth() + 1).padStart(2, '0');
+    const da = String(dt.getDate()).padStart(2, '0');
+    return `${yr}-${mo}-${da}`;
+  };
   return {
     start: format(monday),
     end: format(sunday),
@@ -56,7 +60,7 @@ export function getSessionsInWeek(sessions: StudySession[], start: string, end: 
  */
 export function computeWeeklyAnalytics(
   state: AppState,
-  referenceDateStr: string = '2026-09-21'
+  referenceDateStr: string = getTodayDateString()
 ): WeeklyAnalyticsReport {
   const { start, end } = getWeekBoundaries(referenceDateStr);
   const weekSessions = getSessionsInWeek(state.sessions, start, end);
@@ -792,7 +796,7 @@ export function generateDeterministicNextWeekProposals(
   }
 
   // 4. Revision & Spaced Retrieval if topics were studied with low comprehension
-  const { start, end } = getWeekBoundaries('2026-09-21');
+  const { start, end } = { start: report.weekStartDate, end: report.weekEndDate };
   const weekSessions = getSessionsInWeek(state.sessions, start, end);
   const lowCompTopics = weekSessions.filter((s) => s.comprehensionRating <= 3 && s.topicId);
   if (lowCompTopics.length > 0 || report.revisionMinutes < 45) {

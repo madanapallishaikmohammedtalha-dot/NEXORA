@@ -9,54 +9,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned for v1.0.0
-- Web Audio API notification chimes for Pomodoro interval completion.
-- Global keyboard navigation shortcuts (`Cmd/Ctrl + 1..8`, `Space` for focus timer).
-- High-contrast night theme toggle for low-light study environments.
-- Rich Markdown editor for curriculum topic notes.
+### Planned for v1.1.0
+- FSRS / SM-2 spaced repetition algorithmic memory retrievability modeling.
+- Automated active recall flashcard generation from Socratic coaching sessions.
+- RFC 5545 iCalendar (`.ics`) subscription export feed.
+
+---
+
+## [1.0.0] - 2026-10-09
+
+### Added
+- **Learning Roadmap**:
+  - Prerequisite Directed Acyclic Graph (DAG) dependency graph with topological cycle detection.
+  - Multi-domain curriculum graphs spanning academic subjects, career skills (DSA, Systems, Web Development, AI/ML), and project engineering tracks.
+  - Pedagogical stages (*Foundations*, *Core Mechanisms*, *Applied Systems*, *Advanced Synthesis*).
+  - Dynamic status transitions (`locked`, `ready`, `in_progress`, `completed`).
+  - Evidence-backed mastery progression (`studied`, `practiced`, `assessed`, `mastered`).
+  - Student override capability to unlock prerequisite-blocked topics with explicit advisory warnings.
+- **Adaptive Daily Planning**:
+  - Deterministic capacity engine in `src/services/plannerEngine.ts` modeling the strict 1,440-minute day.
+  - Daily check-in capturing fatigue, transit delays, and urgent coursework to dynamically adapt available study capacity.
+  - Overnight sleep schedule protection supporting post-midnight sleep hours without task encroachment.
+  - Candidate topic selection prioritizing pacing deficits, prerequisite readiness, and active milestones.
+  - Staged AI advisory proposals with human-in-the-loop diff cards, reasoning transparency, and selective item acceptance.
+- **Focus Sessions**:
+  - Integrated Pomodoro focus timer with presets (25m, 45m, 60m) and custom intervals.
+  - Precision tracking of scheduled vs actual study minutes.
+  - Cognitive reflection modal recording comprehension ratings (1–5★), energy flow (1–5), roadblocks, and takeaways.
+  - Automated mastery level boosts tied to comprehension evidence.
+- **Context-Aware AI Tutor**:
+  - 8 specialized coaching modes: Explain (intuition-first 5-step breakdown), Why (motivation & real failure cases), Example, Analogy, Practice (progressive hints), Test (multi-format assessment), Explain-Back (rubric scoring 0–100), and Answer Review.
+  - Deep curriculum awareness injecting active semester, course catalog code, topic name, and current mastery level.
+  - Locked prerequisite warning banner preventing premature study of advanced topics.
+  - Strict advisory boundary: AI tutor is incapable of modifying roadmaps or marking topics completed unilaterally.
+- **Weekly Review & Longitudinal Analytics**:
+  - Automated calendar-week aggregation (Monday–Sunday) tracking planned vs actual minutes and execution percentage.
+  - Transparent 0–100 consistency score factoring sessions completed, execution ratio, subject diversity, streak continuity, and reflection depth.
+  - Subject pacing matrix comparing logged hours against semester credit targets to surface deficits.
+  - Topic mastery change delta tracking and behavioral learning pattern detection.
+  - Actionable next-week study proposals with data-backed rationale that students can accept, modify, or commit directly to upcoming missions.
+- **Semester Transition & Holiday Mode**:
+  - Semester state machine deriving operational states (`upcoming`, `active`, `completed`, `break`).
+  - Semester Achievement Report aggregating total hours, subject progress, mastery shifts, goal completions, and qualitative trends.
+  - Safe term conclusion preserving all historical study sessions, enrolled courses, and reviews without data loss.
+  - Holiday mode preferences: vacation study goals, daily capacity caps, weekly available hours, and protected rest days.
+  - Multi-week holiday focus roadmaps ensuring study blocks never encroach on designated rest days.
+- **Hardening & V1.0 Architecture**:
+  - Deterministic local calendar date utility (`getTodayDateString()`) preventing timezone day shifts for global users.
+  - Historical semester preservation in `OnboardingModal.tsx` ensuring re-running the setup wizard never deletes prior semesters.
+  - Robust non-convex interval arithmetic in `plannerEngine.ts` correctly partitioning awake and sleep hours across midnight.
+  - Multi-provider AI architecture separating `AIService`, `ProviderRegistry`, `GeminiProvider`, `CustomProxyProvider`, and `OfflineProvider`.
+  - Schema validation and defensive sanitization boundaries (`src/services/validation.ts`) ensuring error recovery without UI crashes.
+  - Comprehensive automated test suite with 309 passing unit and integration tests across all modules.
 
 ---
 
 ## [0.9.0] - 2026-09-21
 
 ### Added
-- **Deterministic Capacity Engine**:
-  - Implemented `calculateDailyCapacity()` in `src/services/scheduler.ts` deriving study budgets from 1,440 minutes minus sleep, fixed classes, meals, and transition buffers.
-  - Configurable daily maximum safety cap (`dailyCapacityMaxHours`) to protect student cognitive health.
-  - Support for semester holiday and reading week capacity overrides.
-- **Weekly College Timetable**:
-  - 7-day recurring schedule grid (Monday–Sunday) in `src/components/TimetableModule.tsx`.
-  - Taxonomy for fixed vs. flexible slots (`lecture`, `lab`, `tutorial`, `commute`, `personal`, `study_window`).
-  - Automated transition buffer calculations around campus commitments.
-- **Curriculum Roadmaps & Prerequisite DAG**:
-  - Directed Acyclic Graph dependency model in `src/types.ts` (`prerequisiteTopicIds`).
-  - Dynamic status evaluation (`locked`, `ready`, `in_progress`, `completed`).
-  - Mastery progression mechanics with visual progress bars and prerequisite dependency inspection cards.
-- **Daily Mission Planner & Advisory AI Diff Staging**:
-  - Interactive time-blocking checklist in `src/components/DailyPlannerModule.tsx`.
-  - Advisory AI plan generation via `/api/ai/plan-proposal`.
-  - Structured diff review card displaying proposed tasks, rationale, priority scores, and granular item selection.
-  - Manual item creation, editing, deletion, and status toggling (`pending`, `in_progress`, `completed`, `skipped`).
-- **Socratic AI Academic Tutor**:
-  - Interactive tutoring chat in `src/components/AITutorModule.tsx`.
-  - 4 specialized operational modes: Socratic Probing, Step-by-Step Analogies, Concept Quizzes, and Prerequisite Breakdowns.
-  - Contextual grounding against active curriculum topics and student mastery levels.
-- **AI Syllabus & Roadmap Generator**:
-  - Automated decomposition of course descriptions and notes into 5–7 prerequisite-linked DAG topics via `/api/ai/generate-roadmap`.
-- **Focus Session Tracker & Reflection Modal**:
-  - Integrated Pomodoro focus timer with 25m, 45m, and 60m presets in `src/components/SessionTrackerModal.tsx`.
-  - End-of-session cognitive reflection capturing planned vs. actual duration, comprehension rating (1–5★), and cognitive energy rating (1–5).
-  - Automated mastery level boosts tied to comprehension ratings.
-- **Academic Progress & Analytics**:
-  - Subject pacing tracker measuring weekly logged hours against target credit hours.
-  - Historical study session logs with qualitative takeaways.
-- **Semester & Course Catalog Manager**:
-  - Multi-semester configuration, term date boundaries, credit hours, and color coding in `src/components/SemesterModule.tsx`.
-  - Mid-semester reading weeks and holiday management.
-- **Local-First Data Sovereignty & Settings**:
-  - Complete client storage in `localStorage` under `nexora_os_v1`.
-  - One-click JSON backup export (`exportStateAsJSON`) and validated restoration (`importStateFromJSON`).
-  - Custom Gemini API key and model selection support.
-- **Server-Side AI Proxy**:
-  - Express server (`server.ts`) integrating `@google/genai` TypeScript SDK.
-  - Dual-layer deterministic fallback system guaranteeing full offline utility when no API key is present.
+- Initial prototype release of capacity engine, 7-day timetable, curriculum DAG, and basic Gemini API proxy integration.

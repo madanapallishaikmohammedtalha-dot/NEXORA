@@ -10,10 +10,11 @@ import {
   Settings, 
   Play, 
   HardDrive,
-  Compass
+  Compass,
+  Sun
 } from 'lucide-react';
 import { ActiveTab, AppState } from '../types';
-import { calculateDailyCapacity } from '../services/scheduler';
+import { calculateDailyCapacity, getTodayDateString } from '../services/scheduler';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -28,7 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   state,
   onOpenFocusSession,
 }) => {
-  const todayStr = '2026-09-21';
+  const todayStr = getTodayDateString();
   const capacity = calculateDailyCapacity(todayStr, state);
   const activeSemester = state.semesters.find((s) => s.id === state.activeSemesterId);
 
@@ -40,6 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'tutor', label: 'AI Tutor', icon: Bot },
     { id: 'progress', label: 'Progress', icon: BarChart3 },
     { id: 'weekly_review', label: 'Weekly Review', icon: Compass },
+    { id: 'holiday', label: 'Holiday Mode', icon: Sun },
     { id: 'semester', label: 'Semester & Subjects', icon: BookOpen },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];

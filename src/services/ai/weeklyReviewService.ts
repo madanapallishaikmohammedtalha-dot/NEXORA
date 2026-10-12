@@ -18,7 +18,6 @@ import {
   AIWeeklyReviewContext,
   AIWeeklyReviewResponse,
   AppState,
-  NextWeekProposedItem,
   WeeklyAnalyticsReport,
 } from '../../types';
 import { aiService } from './service';
@@ -120,7 +119,6 @@ export function generateDeterministicAIWeeklyReview(
   context: AIWeeklyReviewContext,
   report: WeeklyAnalyticsReport
 ): AIWeeklyReviewResponse {
-  const comp = context.metrics.averageComprehension;
   const exec = context.metrics.executionPercentage;
 
   const interpretation = exec >= 80

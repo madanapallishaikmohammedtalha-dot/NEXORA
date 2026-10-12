@@ -8,24 +8,15 @@ import {
   Sparkles,
   TrendingUp,
   Brain,
-  Zap,
-  ArrowRight,
-  ShieldAlert,
-  ChevronRight,
-  Plus,
   Trash2,
-  Edit2,
   RefreshCw,
   Info,
   Check,
-  X,
   Target,
   BookOpen,
   Award,
   Layers,
-  HelpCircle,
   Lightbulb,
-  AlertCircle
 } from 'lucide-react';
 import {
   AppState,
@@ -34,6 +25,7 @@ import {
   AIWeeklyReviewResponse,
 } from '../types';
 import { dataService } from '../services/dataService';
+import { getTodayDateString } from '../services/scheduler';
 import { requestAIWeeklyReview, generateDeterministicAIWeeklyReview, buildWeeklyReviewAIContext } from '../services/ai/weeklyReviewService';
 
 interface WeeklyReviewModuleProps {
@@ -48,10 +40,9 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
   showToast = (msg) => console.log(msg),
 }) => {
   // Reference date for review (Monday of active week)
-  const [referenceDate, setReferenceDate] = useState<string>('2026-09-21');
+  const referenceDate = useMemo(() => getTodayDateString(), []);
   const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
   const [aiReview, setAiReview] = useState<AIWeeklyReviewResponse | null>(null);
-  const [aiError, setAiError] = useState<string | null>(null);
 
   // Compute deterministic report
   const report: WeeklyAnalyticsReport = useMemo(() => {
@@ -72,14 +63,13 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
   // Handle request for AI Meta-Review
   const handleGenerateAIReview = async () => {
     setIsAiLoading(true);
-    setAiError(null);
     try {
       const response = await requestAIWeeklyReview(report, state);
       setAiReview(response);
       showToast('AI Weekly Review & Meta-Cognitive Insights generated.');
     } catch (err: any) {
       console.error('Failed to generate AI weekly review:', err);
-      setAiError(err.message || 'AI review generation failed. Using local engine.');
+      showToast('Remote AI review unavailable. Generated deterministic local review.');
       const fallback = generateDeterministicAIWeeklyReview(buildWeeklyReviewAIContext(report, state), report);
       setAiReview(fallback);
     } finally {
@@ -156,9 +146,18 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
     showToast('Regenerated proposed study focus items from live data.');
   };
 
-  // Commit accepted/modified items to next week's mission (e.g. Next Monday 2026-09-28)
+  // Commit accepted/modified items to next week's mission dynamically
   const handleCommitNextWeekPlan = () => {
-    const nextMonday = '2026-09-28';
+    const [y, m, d] = referenceDate.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    const day = date.getDay();
+    const diffToMonday = (day === 0 ? -6 : 1) - day;
+    const nextMonDate = new Date(y, m - 1, d + diffToMonday + 7);
+    const yr = nextMonDate.getFullYear();
+    const mo = String(nextMonDate.getMonth() + 1).padStart(2, '0');
+    const da = String(nextMonDate.getDate()).padStart(2, '0');
+    const nextMonday = `${yr}-${mo}-${da}`;
+
     const accepted = nextWeekItems.filter((i) => i.status === 'accepted' || i.status === 'modified');
     if (accepted.length === 0) {
       showToast('No accepted recommendations to commit. Accept or modify items first.');
@@ -170,6 +169,9 @@ export const WeeklyReviewModule: React.FC<WeeklyReviewModuleProps> = ({
         dataService.commitNextWeekItemToMission(nextMonday, item);
       });
       showToast(`Committed ${accepted.length} focus priorities to next week (${nextMonday})!`);
+      if (onNavigateToTab) {
+        onNavigateToTab('planner');
+      }
     } catch (err: any) {
       showToast(`Commit error: ${err.message}`);
     }

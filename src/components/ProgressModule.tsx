@@ -6,10 +6,8 @@ import {
   Star, 
   Zap, 
   BookOpen, 
-  Calendar,
-  CheckCircle2,
+  CheckCircle2, 
   Target,
-  Flag
 } from 'lucide-react';
 import { AppState } from '../types';
 import { computeWeeklySubjectHours } from '../services/scheduler';

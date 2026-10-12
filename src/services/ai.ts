@@ -1,15 +1,11 @@
 import { AppState, TutorContext, TutorMode } from '../types';
 import { aiService } from './ai/service';
-import { 
-  askContextAwareTutor, 
-  constructTutorSystemPrompt,
-  buildTutorContext,
-  generateDeterministicTutorFallback 
-} from './ai/tutorService';
+import { askContextAwareTutor } from './ai/tutorService';
 
 export * from './ai/index';
 export * from './ai/tutorService';
 export * from './ai/weeklyReviewService';
+export * from './ai/semesterReviewService';
 
 export interface PlanProposalResult {
   rationale: string;

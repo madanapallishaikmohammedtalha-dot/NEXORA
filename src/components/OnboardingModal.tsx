@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Sparkles, 
   Calendar, 
   BookOpen, 
   Clock, 
@@ -12,7 +11,6 @@ import {
   Code2, 
   Plus, 
   Trash2, 
-  MapPin, 
   Moon, 
   Sun,
   Lock,
@@ -21,8 +19,6 @@ import {
   CheckCircle2,
   X,
   GraduationCap,
-  Layers,
-  Building2,
   Car
 } from 'lucide-react';
 import { 
@@ -41,7 +37,6 @@ import {
   checkSlotConflict, 
   detectAllScheduleConflicts, 
   parseTimeToMinutes, 
-  ScheduleConflict 
 } from '../services/validation';
 
 interface OnboardingModalProps {
@@ -81,13 +76,17 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   const [travelTimeMinutes, setTravelTimeMinutes] = useState(initialState.profile.travelTimeMinutes || 30);
 
   // 2. Current Semester & Academic Dates
-  const [semesterName, setSemesterName] = useState(initialState.semesters[0]?.name || 'Fall 2026 (Semester 5)');
-  const [startDate, setStartDate] = useState(initialState.semesters[0]?.startDate || '2026-09-01');
-  const [expectedEndDate, setExpectedEndDate] = useState(initialState.semesters[0]?.expectedEndDate || initialState.semesters[0]?.endDate || '2026-12-20');
-  const [actualEndDate, setActualEndDate] = useState(initialState.semesters[0]?.actualEndDate || '');
-  const [breakName, setBreakName] = useState(initialState.semesters[0]?.holidays[0]?.name || 'Mid-Term Reading Week');
-  const [breakStart, setBreakStart] = useState(initialState.semesters[0]?.holidays[0]?.startDate || '2026-10-18');
-  const [breakEnd, setBreakEnd] = useState(initialState.semesters[0]?.holidays[0]?.endDate || '2026-10-25');
+  const currentActiveSem = initialState.semesters.find((s) => s.id === initialState.activeSemesterId)
+    || initialState.semesters.find((s) => s.isActive && s.status !== 'completed')
+    || initialState.semesters[0];
+
+  const [semesterName, setSemesterName] = useState(currentActiveSem?.name || 'Fall 2026 (Semester 5)');
+  const [startDate, setStartDate] = useState(currentActiveSem?.startDate || '2026-09-01');
+  const [expectedEndDate, setExpectedEndDate] = useState(currentActiveSem?.expectedEndDate || currentActiveSem?.endDate || '2026-12-20');
+  const [actualEndDate, setActualEndDate] = useState(currentActiveSem?.actualEndDate || '');
+  const [breakName, setBreakName] = useState(currentActiveSem?.holidays?.[0]?.name || 'Mid-Term Reading Week');
+  const [breakStart, setBreakStart] = useState(currentActiveSem?.holidays?.[0]?.startDate || '2026-10-18');
+  const [breakEnd, setBreakEnd] = useState(currentActiveSem?.holidays?.[0]?.endDate || '2026-10-25');
 
   // 3. College Schedule & Fixed Commitments
   const [timetableSlots, setTimetableSlots] = useState<TimetableSlot[]>(() => {
@@ -480,43 +479,72 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
   // Final Submit
   const handleFinalSubmit = () => {
-    const semId = initialState.activeSemesterId || `sem-${Date.now()}`;
-    const newSemester: Semester = {
-      id: semId,
-      name: semesterName.trim() || 'Current Semester',
+    const existingSemesters = initialState.semesters || [];
+    const activeSemesterId = initialState.activeSemesterId;
+    const existingActiveSem = existingSemesters.find((s) => s.id === activeSemesterId);
+    const targetSemId = existingActiveSem ? existingActiveSem.id : (activeSemesterId || `sem-${Date.now()}`);
+
+    const updatedActiveSemester: Semester = {
+      ...(existingActiveSem || {}),
+      id: targetSemId,
+      name: semesterName.trim() || existingActiveSem?.name || 'Current Semester',
       startDate,
       endDate: expectedEndDate,
       expectedEndDate,
-      actualEndDate: actualEndDate.trim() || undefined,
+      actualEndDate: actualEndDate.trim() || existingActiveSem?.actualEndDate || undefined,
       targetWeeklyStudyHours: totalWeeklyTargetStudyHours || 18,
       isActive: true,
+      status: existingActiveSem?.status || 'active',
       holidays: breakName.trim()
         ? [
             {
-              id: `hol-${Date.now()}`,
+              id: existingActiveSem?.holidays?.[0]?.id || `hol-${Date.now()}`,
               name: breakName.trim(),
               startDate: breakStart,
               endDate: breakEnd,
               type: 'break',
             },
+            ...(existingActiveSem?.holidays?.slice(1) || []),
           ]
-        : [],
+        : (existingActiveSem?.holidays || []),
     };
 
-    const updatedSubjects = subjectsList.map((s) => ({ ...s, semesterId: semId }));
-    const updatedTimetable = timetableSlots.map((s) => ({ ...s, semesterId: semId }));
+    // Preserve every existing completed semester and any historical terms
+    let updatedSemestersList: Semester[];
+    if (existingActiveSem) {
+      updatedSemestersList = existingSemesters.map((s) => (s.id === targetSemId ? updatedActiveSemester : s));
+    } else {
+      updatedSemestersList = [...existingSemesters, updatedActiveSemester];
+    }
 
-    const mappedGoals: Goal[] = learningGoals.map((g, idx) => ({
-      id: g.id.startsWith('g-') ? `goal-${Date.now()}-${idx}` : g.id,
-      semesterId: semId,
-      title: g.title,
-      targetValue: g.targetValue,
-      currentValue: 0,
-      unit: g.unit,
-      horizon: g.horizon,
-      status: 'active',
-      createdAt: new Date().toISOString(),
-    }));
+    // Preserve subjects belonging to other historical semesters
+    const otherSemesterSubjects = (initialState.subjects || []).filter((s) => s.semesterId !== targetSemId);
+    const updatedTargetSubjects = subjectsList.map((s) => ({ ...s, semesterId: targetSemId }));
+    const updatedSubjects = [...otherSemesterSubjects, ...updatedTargetSubjects];
+
+    // Preserve timetable blocks belonging to other historical semesters
+    const otherSemesterTimetable = (initialState.timetable || []).filter((s) => s.semesterId !== targetSemId);
+    const updatedTargetTimetable = timetableSlots.map((s) => ({ ...s, semesterId: targetSemId }));
+    const updatedTimetable = [...otherSemesterTimetable, ...updatedTargetTimetable];
+
+    // Preserve existing goals and progress
+    const existingGoalsMap = new Map((initialState.goals || []).map((g) => [g.id, g]));
+    const mappedGoals: Goal[] = learningGoals.map((g, idx) => {
+      const existing = existingGoalsMap.get(g.id);
+      return {
+        id: g.id.startsWith('g-') ? (existing ? existing.id : `goal-${Date.now()}-${idx}`) : g.id,
+        semesterId: targetSemId,
+        title: g.title,
+        targetValue: g.targetValue,
+        currentValue: existing?.currentValue || 0,
+        unit: g.unit,
+        horizon: g.horizon,
+        status: existing?.status || 'active',
+        createdAt: existing?.createdAt || new Date().toISOString(),
+      };
+    });
+    const otherSemesterGoals = (initialState.goals || []).filter((g) => g.semesterId && g.semesterId !== targetSemId);
+    const updatedGoals = [...otherSemesterGoals, ...mappedGoals];
 
     onComplete({
       profile: {
@@ -537,12 +565,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
         currentProjects: initialState.profile.currentProjects || ['POSIX Multithreaded Job Worker', 'LSM-Tree Key-Value Store'],
         hasCompletedOnboarding: true,
       },
-      semesters: [newSemester],
-      activeSemesterId: semId,
+      semesters: updatedSemestersList,
+      activeSemesterId: targetSemId,
       subjects: updatedSubjects,
       timetable: updatedTimetable,
       studyPeriods,
-      goals: mappedGoals,
+      goals: updatedGoals,
     });
   };
 

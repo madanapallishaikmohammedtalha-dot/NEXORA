@@ -60,7 +60,7 @@ export abstract class BaseAIProvider implements AIProvider {
    * Safe execution wrapper that measures latency and normalizes errors
    */
   protected async executeSafely<T>(
-    operationName: string,
+    _operationName: string,
     modelId: string,
     fn: () => Promise<T>
   ): Promise<{ result: T; latencyMs: number }> {

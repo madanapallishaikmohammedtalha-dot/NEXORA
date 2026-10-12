@@ -1,5 +1,5 @@
 import { AppState } from '../types';
-import { DataService, dataService, STORAGE_KEY } from './dataService';
+import { dataService, STORAGE_KEY } from './dataService';
 import { INITIAL_SEEDED_STATE } from './seedData';
 
 export { STORAGE_KEY };

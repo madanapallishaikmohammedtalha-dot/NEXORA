@@ -39,10 +39,11 @@ graph TD
     I --> L[Return Deterministic Heuristic Plan]
 ```
 
-### Key Safety Guarantees:
+### Key Safety & Storage Details:
 - Student-entered API keys are **never hard-coded** into static JavaScript bundles.
-- Keys are transmitted exclusively via local HTTPS/HTTP to the local server proxy.
-- The server does not write student keys to any persistent database or system log files.
+- **Storage**: Keys are stored in plain text inside browser `localStorage` under `state.profile.apiKey` (unencrypted at rest in V1.0).
+- **Transport**: Keys are transmitted inside the JSON request body (`userApiKey`) via HTTP/HTTPS POST payloads to `/api/ai/proxy/*` without custom authorization headers or Bearer tokens.
+- **Server Ephemerality**: The server reads the key per-request, creates a short-lived `GoogleGenAI` instance, and never writes student keys to persistent databases or system log files.
 
 ---
 

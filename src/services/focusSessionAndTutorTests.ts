@@ -6,7 +6,7 @@
  */
 import { AppState, MissionItem, RoadmapTopic, StudySession, Subject } from '../types';
 import { DataService, InMemoryStorageAdapter } from './dataService';
-import { SEED_PROFILE, SEED_SEMESTERS, SEED_SUBJECTS } from './seedData';
+import { SEED_PROFILE, SEED_SEMESTERS } from './seedData';
 import { 
   buildTutorContext, 
   constructTutorSystemPrompt, 

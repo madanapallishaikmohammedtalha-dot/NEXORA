@@ -8,14 +8,11 @@ import {
   MissionItem,
   MissionItemStatus,
   ProposedDailyMission,
-  RoadmapTopic,
-  StudySession,
   Subject,
 } from '../types';
 import {
   deriveDayCapacity,
   detectScheduleConflicts,
-  subtractIntervals,
   TimeInterval,
 } from './plannerEngine';
 import { evaluatePrerequisites, MASTERY_THRESHOLD_COMPLETED } from './learningEngine';
@@ -223,6 +220,27 @@ export function collectEligiblePlanCandidates(
       }
     }
 
+    // Factor 16: Holiday Break Priority Alignment (Requirement 10)
+    const activeSem = state.semesters.find((s) => s.id === state.activeSemesterId);
+    const isBreakMode = activeSem?.status === 'break' || (activeSem?.holidayStartDate && activeSem?.holidayEndDate);
+    if (state.activeHolidayPlan && isBreakMode) {
+      const prefs = state.activeHolidayPlan.preferences.selectedPriorities;
+      for (const p of prefs) {
+        if (
+          (p === 'dsa' && (activityType === 'dsa_practice' || topic.title.toLowerCase().includes('algorithm') || topic.title.toLowerCase().includes('data structure') || topic.category?.toLowerCase().includes('dsa'))) ||
+          (p === 'projects' && (activityType === 'project_work' || domain === 'project')) ||
+          (p === 'aiml' && (topic.title.toLowerCase().includes('ai') || topic.title.toLowerCase().includes('machine learning'))) ||
+          (p === 'web_dev' && (topic.title.toLowerCase().includes('web') || topic.title.toLowerCase().includes('frontend') || topic.title.toLowerCase().includes('react'))) ||
+          (p === 'backend_dev' && (topic.title.toLowerCase().includes('backend') || topic.title.toLowerCase().includes('database') || topic.title.toLowerCase().includes('api'))) ||
+          (p === 'git_github' && (topic.title.toLowerCase().includes('git') || topic.title.toLowerCase().includes('version control'))) ||
+          (p === 'revision' && activityType === 'revision')
+        ) {
+          score += 30;
+          break;
+        }
+      }
+    }
+
     if (checkIn?.tired && (activityType === 'project_work' || activityType === 'dsa_practice')) {
       score -= 15; // De-prioritize heavy coding when tired
     }
@@ -287,7 +305,7 @@ export function collectEligiblePlanCandidates(
  * Does not penalize user or stack schedule debt.
  */
 export function skipMissionItem(
-  dateStr: string,
+  _dateStr: string,
   itemId: string,
   currentMission: DailyMission
 ): DailyMission {
