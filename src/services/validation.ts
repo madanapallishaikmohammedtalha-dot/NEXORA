@@ -709,3 +709,50 @@ export function detectAllScheduleConflicts(
 
   return allConflicts;
 }
+
+/**
+ * Validates a LearnerMemory record before persisting to storage.
+ */
+export function validateLearnerMemory(memory: any): { isValid: boolean; errors: ValidationError[] } {
+  const errors: ValidationError[] = [];
+  if (!memory || typeof memory !== 'object') {
+    return { isValid: false, errors: [{ field: 'memory', message: 'Memory must be an object' }] };
+  }
+  if (!memory.id || typeof memory.id !== 'string') {
+    errors.push({ field: 'id', message: 'Memory id is required' });
+  }
+  const validCategories = ['strength', 'needs_practice', 'misconception', 'effective_method', 'learning_context', 'priority'];
+  if (!memory.category || !validCategories.includes(memory.category)) {
+    errors.push({ field: 'category', message: `Category must be one of: ${validCategories.join(', ')}` });
+  }
+  if (!memory.title || typeof memory.title !== 'string' || !memory.title.trim()) {
+    errors.push({ field: 'title', message: 'Title is required' });
+  }
+  if (!memory.detail || typeof memory.detail !== 'string') {
+    errors.push({ field: 'detail', message: 'Detail is required' });
+  }
+  if (typeof memory.confidence === 'number' && (memory.confidence < 0 || memory.confidence > 1)) {
+    errors.push({ field: 'confidence', message: 'Confidence must be between 0.0 and 1.0' });
+  }
+  return { isValid: errors.length === 0, errors };
+}
+
+/**
+ * Validates a user-imported JSON backup before applying it to application state.
+ */
+export function validateBackupImport(parsed: any): { isValid: boolean; errors: ValidationError[] } {
+  const errors: ValidationError[] = [];
+  if (!parsed || typeof parsed !== 'object') {
+    return { isValid: false, errors: [{ field: 'backup', message: 'Backup file must contain a valid JSON object' }] };
+  }
+  if (!parsed.profile || typeof parsed.profile !== 'object') {
+    errors.push({ field: 'profile', message: 'Backup missing valid profile data' });
+  }
+  if (!Array.isArray(parsed.semesters)) {
+    errors.push({ field: 'semesters', message: 'Backup missing semesters array' });
+  }
+  if (!Array.isArray(parsed.subjects)) {
+    errors.push({ field: 'subjects', message: 'Backup missing subjects array' });
+  }
+  return { isValid: errors.length === 0, errors };
+}

@@ -75,6 +75,22 @@ export function buildTutorContext(
   const avgComprehension = totalSessions > 0 ? Number((sumComprehension / totalSessions).toFixed(1)) : 3.0;
   const recentRatings = topicSessions.slice(0, 5).map((s) => s.comprehensionRating);
 
+  // Relevant persistent learner memories (selected specifically to avoid sending full history)
+  const memories = state.learnerMemories || [];
+  const relevantMemories = memories
+    .filter((m) => {
+      if (m.topicId && m.topicId === targetTopicId) return true;
+      if (m.subjectId && currentSubject && m.subjectId === currentSubject.id) return true;
+      if (m.category === 'misconception' || m.category === 'needs_practice' || m.category === 'effective_method') return true;
+      return false;
+    })
+    .slice(0, 4)
+    .map((m) => ({
+      category: m.category,
+      title: m.title,
+      detail: m.detail,
+    }));
+
   return {
     semester: activeSemester ? { id: activeSemester.id, name: activeSemester.name } : undefined,
     subject: currentSubject ? { id: currentSubject.id, code: currentSubject.code, name: currentSubject.name } : undefined,
@@ -98,6 +114,8 @@ export function buildTutorContext(
     currentObjective: missionItem?.objective || missionItem?.reason || (currentTopic ? `Master ${currentTopic.title} via conceptual depth and problem solving` : undefined),
     isLocked,
     missingPrerequisites,
+    relevantMemories,
+    preferredExplanationStyle: state.profile.preferredExplanationStyle || 'intuition_first',
   };
 }
 
@@ -243,11 +261,25 @@ LOCKED TOPIC NOTICE:
 This topic "${topicTitle}" is currently LOCKED because its prerequisites (${(context.missingPrerequisites || []).join(', ')}) are incomplete.
 Advise the student on the prerequisite dependencies and offer to teach foundational prerequisites first before diving into advanced mechanics.` : '';
 
+  const memoryNotes = context.relevantMemories && context.relevantMemories.length > 0
+    ? `\nPERSISTENT LEARNER MEMORY (TAILOR TEACHING TO THESE EVIDENCE-BACKED TRAITS):\n` +
+      context.relevantMemories.map((m) => `- [${m.category.toUpperCase()}] ${m.title}: ${m.detail}`).join('\n')
+    : '';
+
+  const styleGuide = context.preferredExplanationStyle === 'practical_examples'
+    ? 'PREFERRED EXPLANATION STYLE: Practical Examples First (ground in real code or architecture before abstract math).'
+    : context.preferredExplanationStyle === 'first_principles'
+    ? 'PREFERRED EXPLANATION STYLE: First Principles (derive from machine fundamentals, memory layout, and computational primitives).'
+    : context.preferredExplanationStyle === 'socratic_inquiry'
+    ? 'PREFERRED EXPLANATION STYLE: Socratic Inquiry (lead through probing questions and thought experiments).'
+    : 'PREFERRED EXPLANATION STYLE: Intuition First (start with clear physical or systems analogies, then mechanism).';
+
   return `You are NEXORA's Context-Aware Socratic AI Academic Tutor.
 You are not a generic chatbot. You are an expert STEM professor and cognitive coach.
 
 TEACHING PHILOSOPHY:
 - Teach progressively: NEVER dump the full answer immediately.
+- ${styleGuide}
 - For difficult questions, prefer guided questioning (Socratic method).
   Example:
   Student: "I don't know how to find the maximum element."
@@ -262,7 +294,7 @@ ACTIVE ACADEMIC CONTEXT:
 - Current Topic: ${topicTitle} (Status: ${context.topic?.status || 'active'}, Mastery: ${mastery}%)
 - Prerequisites: ${context.prerequisites && context.prerequisites.length > 0 ? context.prerequisites.map((p) => `${p.title} (${p.masteryLevel}%)`).join(', ') : 'None (Foundational topic)'}
 - Average Past Comprehension: ${context.comprehensionHistory?.averageComprehension || 3.0}/5 (${context.comprehensionHistory?.totalSessions || 0} sessions logged)
-- Current Session Objective: ${context.currentObjective || 'Active conceptual mastery and retention'}
+- Current Session Objective: ${context.currentObjective || 'Active conceptual mastery and retention'}${memoryNotes}
 ${lockedWarning}
 
 AI BOUNDARIES & SAFETY:

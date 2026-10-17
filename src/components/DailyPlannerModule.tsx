@@ -451,38 +451,38 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
   const getActivityBadge = (type?: ActivityType) => {
     switch (type) {
       case 'college_work':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">College Work</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#FFFBEB] text-[#A6630A] border border-[#FDE68A]">College Work</span>;
       case 'dsa_practice':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">DSA Practice</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20">DSA Practice</span>;
       case 'career_learning':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">Career Skill</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20">Career Skill</span>;
       case 'project_work':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/30">Project</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB]">Project</span>;
       case 'revision':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">Revision</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#ECFDF5] text-[#16845B] border border-[#A7F3D0]">Revision</span>;
       case 'break':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-400">Rest Break</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#F5F6FA] text-[#667085] border border-[#E5E7EB]">Rest Break</span>;
       case 'academic_study':
       default:
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/30">Academic Study</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20">Academic Study</span>;
     }
   };
 
   return (
     <div className="space-y-6">
       {/* TOP HEADER & CONTROLS */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-[#E5E7EB] p-5 rounded-2xl shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#5865D8]">
               Daily Planner & Mission Control
             </span>
-            <span className="text-xs text-slate-400">• {formatDateReadable(selectedDate)}</span>
+            <span className="text-xs text-[#667085]">• {formatDateReadable(selectedDate)}</span>
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tight">
+          <h2 className="text-2xl font-bold text-[#242938] tracking-tight">
             Today’s Mission
           </h2>
-          <p className="text-xs text-slate-400 mt-1 max-w-xl">
+          <p className="text-xs text-[#667085] mt-1 max-w-xl">
             Deterministic capacity modeling, sleep protection, and adaptive AI planning loop.
           </p>
         </div>
@@ -497,14 +497,14 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
               setSelectedDate(e.target.value);
               setStagedProposal(null);
             }}
-            className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+            className="bg-white border border-[#E5E7EB] rounded-xl px-3 py-2 text-xs text-[#242938] focus:outline-none focus:border-[#5865D8]"
           />
 
           {/* Morning Check-In Button */}
           <button
             id="open-check-in-btn"
             onClick={handleOpenCheckIn}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-semibold text-xs rounded-xl shadow-sm transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white font-semibold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
           >
             <Sunrise className="w-4 h-4" />
             <span>Plan My Day</span>
@@ -514,10 +514,10 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
           <button
             id="open-rebalance-btn"
             onClick={handleOpenRebalance}
-            className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold rounded-xl transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs font-semibold rounded-xl transition-all cursor-pointer shadow-xs"
             title="Adapt schedule for remaining day"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-indigo-400" />
+            <RotateCcw className="w-3.5 h-3.5 text-[#5865D8]" />
             <span>Replan Remaining</span>
           </button>
         </div>
@@ -527,16 +527,16 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
       {conflicts.length > 0 && (
         <div 
           id="planner-conflict-banner"
-          className="bg-rose-950/40 border border-rose-800/80 rounded-2xl p-4 space-y-2 text-rose-200"
+          className="bg-[#FEF2F2] border border-[#FECACA] rounded-2xl p-4 space-y-2 text-[#C43D4B]"
         >
-          <div className="flex items-center gap-2 text-xs font-bold text-rose-300">
-            <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0" />
+          <div className="flex items-center gap-2 text-xs font-bold text-[#C43D4B]">
+            <ShieldAlert className="w-4 h-4 text-[#C43D4B] shrink-0" />
             <span>Detected {conflicts.length} Deterministic Schedule Conflict{conflicts.length > 1 ? 's' : ''}:</span>
           </div>
-          <div className="space-y-1.5 pl-6 text-xs text-rose-300/90">
+          <div className="space-y-1.5 pl-6 text-xs text-[#C43D4B]/90">
             {conflicts.map((c, i) => (
               <div key={i} className="flex items-start gap-1.5">
-                <span className="text-rose-400 font-bold">•</span>
+                <span className="text-[#C43D4B] font-bold">•</span>
                 <span>{c.message}</span>
               </div>
             ))}
@@ -545,55 +545,55 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
       )}
 
       {/* CAPACITY & TIMELINE SUMMARY BAR */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-              <div className="text-[11px] text-slate-400 uppercase font-semibold">Net Study Capacity</div>
-              <div className="text-xl font-black text-emerald-400">
+            <div className="bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
+              <div className="text-[11px] text-[#667085] uppercase font-semibold">Net Study Capacity</div>
+              <div className="text-xl font-bold text-[#16845B]">
                 {(capacity.netAvailableStudyMinutes / 60).toFixed(1)}h
-                <span className="text-xs font-normal text-slate-500 ml-1">({capacity.netAvailableStudyMinutes}m)</span>
+                <span className="text-xs font-normal text-[#667085] ml-1">({capacity.netAvailableStudyMinutes}m)</span>
               </div>
-              <div className="text-[10px] text-slate-400">Fixed + sleep deducted</div>
+              <div className="text-[10px] text-[#667085]">Fixed + sleep deducted</div>
             </div>
 
-            <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-              <div className="text-[11px] text-slate-400 uppercase font-semibold">Planned Study</div>
-              <div className="text-xl font-black text-indigo-400">
+            <div className="bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
+              <div className="text-[11px] text-[#667085] uppercase font-semibold">Planned Study</div>
+              <div className="text-xl font-bold text-[#5865D8]">
                 {(plannedVsActual.plannedMinutes / 60).toFixed(1)}h
-                <span className="text-xs font-normal text-slate-500 ml-1">({plannedVsActual.plannedMinutes}m)</span>
+                <span className="text-xs font-normal text-[#667085] ml-1">({plannedVsActual.plannedMinutes}m)</span>
               </div>
-              <div className="text-[10px] text-slate-400">
+              <div className="text-[10px] text-[#667085]">
                 {capacity.netAvailableStudyMinutes >= plannedVsActual.plannedMinutes ? (
-                  <span className="text-emerald-400">Within safe limit</span>
+                  <span className="text-[#16845B]">Within safe limit</span>
                 ) : (
-                  <span className="text-rose-400 font-semibold">Exceeds limit</span>
+                  <span className="text-[#C43D4B] font-semibold">Exceeds limit</span>
                 )}
               </div>
             </div>
 
-            <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-              <div className="text-[11px] text-slate-400 uppercase font-semibold">Completed Actual</div>
-              <div className="text-xl font-black text-cyan-400">
+            <div className="bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
+              <div className="text-[11px] text-[#667085] uppercase font-semibold">Completed Actual</div>
+              <div className="text-xl font-bold text-[#242938]">
                 {(plannedVsActual.actualMinutes / 60).toFixed(1)}h
-                <span className="text-xs font-normal text-slate-500 ml-1">({plannedVsActual.actualMinutes}m)</span>
+                <span className="text-xs font-normal text-[#667085] ml-1">({plannedVsActual.actualMinutes}m)</span>
               </div>
-              <div className="text-[10px] text-slate-400">{plannedVsActual.completionRate}% completion rate</div>
+              <div className="text-[10px] text-[#667085]">{plannedVsActual.completionRate}% completion rate</div>
             </div>
 
-            <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-              <div className="text-[11px] text-slate-400 uppercase font-semibold">Fixed Campus Time</div>
-              <div className="text-xl font-black text-amber-400">
+            <div className="bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
+              <div className="text-[11px] text-[#667085] uppercase font-semibold">Fixed Campus Time</div>
+              <div className="text-xl font-bold text-[#A6630A]">
                 {(capacity.fixedCommitmentsMinutes / 60).toFixed(1)}h
               </div>
-              <div className="text-[10px] text-slate-400">{capacity.fixedIntervals.length} protected blocks</div>
+              <div className="text-[10px] text-[#667085]">{capacity.fixedIntervals.length} protected blocks</div>
             </div>
           </div>
 
           <div className="flex items-center gap-2 self-start md:self-auto">
             <button
               onClick={() => setShowTimelineDetails(!showTimelineDetails)}
-              className="text-xs text-slate-400 hover:text-white flex items-center gap-1 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700/80 transition-colors"
+              className="text-xs text-[#667085] hover:text-[#242938] flex items-center gap-1 px-3 py-2 rounded-lg bg-[#F5F6FA] hover:bg-[#E5E7EB] transition-colors border border-[#E5E7EB]"
             >
               <span>{showTimelineDetails ? 'Hide Timeline Windows' : 'View Capacity Windows'}</span>
               {showTimelineDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -603,39 +603,39 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
         {/* Expandable Flexible Intervals & Fixed Commitments Timeline */}
         {showTimelineDetails && (
-          <div className="pt-4 border-t border-slate-800 space-y-3">
-            <div className="text-xs font-semibold text-slate-300">
+          <div className="pt-4 border-t border-[#E5E7EB] space-y-3">
+            <div className="text-xs font-semibold text-[#242938]">
               Deterministic Schedule Segments for {selectedDate}:
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800/80 space-y-2">
-                <div className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+              <div className="bg-[#F5F6FA] p-3.5 rounded-xl border border-[#E5E7EB] space-y-2">
+                <div className="text-xs font-bold text-[#16845B] flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5" />
                   <span>Available Flexible Study Windows ({capacity.flexibleIntervals.length})</span>
                 </div>
-                <div className="space-y-1 text-xs text-slate-300">
+                <div className="space-y-1 text-xs text-[#242938]">
                   {capacity.flexibleIntervals.map((iv, idx) => (
-                    <div key={idx} className="flex justify-between py-1 border-b border-slate-900 last:border-0">
-                      <span className="font-mono text-emerald-300">{minutesToTime(iv.start)} – {minutesToTime(iv.end)}</span>
-                      <span className="text-slate-400">{iv.end - iv.start} mins free</span>
+                    <div key={idx} className="flex justify-between py-1 border-b border-[#E5E7EB] last:border-0">
+                      <span className="font-mono text-[#16845B]">{minutesToTime(iv.start)} – {minutesToTime(iv.end)}</span>
+                      <span className="text-[#667085]">{iv.end - iv.start} mins free</span>
                     </div>
                   ))}
                   {capacity.flexibleIntervals.length === 0 && (
-                    <div className="text-slate-500 py-1">No flexible windows available today.</div>
+                    <div className="text-[#667085] py-1">No flexible windows available today.</div>
                   )}
                 </div>
               </div>
 
-              <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800/80 space-y-2">
-                <div className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+              <div className="bg-[#F5F6FA] p-3.5 rounded-xl border border-[#E5E7EB] space-y-2">
+                <div className="text-xs font-bold text-[#A6630A] flex items-center gap-1.5">
                   <ShieldAlert className="w-3.5 h-3.5" />
                   <span>Protected Fixed Commitments & Transit</span>
                 </div>
-                <div className="space-y-1 text-xs text-slate-300">
+                <div className="space-y-1 text-xs text-[#242938]">
                   {capacity.fixedIntervals.map((iv, idx) => (
-                    <div key={idx} className="flex justify-between py-1 border-b border-slate-900 last:border-0">
+                    <div key={idx} className="flex justify-between py-1 border-b border-[#E5E7EB] last:border-0">
                       <span>{iv.label || 'Commitment'}</span>
-                      <span className="font-mono text-amber-300">{minutesToTime(iv.start)} – {minutesToTime(iv.end)}</span>
+                      <span className="font-mono text-[#A6630A]">{minutesToTime(iv.start)} – {minutesToTime(iv.end)}</span>
                     </div>
                   ))}
                 </div>
@@ -649,72 +649,71 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
       {stagedProposal && (
         <div 
           id="daily-mission-review-card"
-          className="bg-gradient-to-b from-indigo-950/60 to-slate-900 border-2 border-indigo-500/60 rounded-2xl p-6 shadow-xl space-y-5 animate-in fade-in duration-200"
+          className="bg-white border-2 border-[#5865D8]/40 rounded-2xl p-6 shadow-sm space-y-5 animate-in fade-in duration-200"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-indigo-900/60 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E5E7EB] pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <h3 className="text-lg font-black text-white">Daily Mission Review Card</h3>
-                <span className="text-xs bg-indigo-500/20 text-indigo-300 px-2.5 py-0.5 rounded-full font-semibold border border-indigo-500/30">
+                <Sparkles className="w-4 h-4 text-[#5865D8]" />
+                <h3 className="text-lg font-bold text-[#242938]">Daily Mission Review Card</h3>
+                <span className="text-xs bg-[#EEF0FF] text-[#5865D8] px-2.5 py-0.5 rounded-full font-semibold border border-[#5865D8]/20">
                   Staged for Review
                 </span>
               </div>
-              <p className="text-xs text-indigo-200/90 mt-1 max-w-2xl">
+              <p className="text-xs text-[#667085] mt-1 max-w-2xl">
                 {stagedProposal.rationale}
               </p>
             </div>
 
             {/* Capacity Stats */}
-            <div className="flex items-center gap-4 bg-slate-900/80 p-2.5 rounded-xl border border-indigo-800/50">
+            <div className="flex items-center gap-4 bg-[#F5F6FA] p-2.5 rounded-xl border border-[#E5E7EB]">
               <div className="text-center">
-                <div className="text-[10px] text-slate-400 uppercase font-semibold">Today's Capacity</div>
-                <div className="text-sm font-bold text-white">{stagedProposal.todayCapacityMinutes}m</div>
+                <div className="text-[10px] text-[#667085] uppercase font-semibold">Today's Capacity</div>
+                <div className="text-sm font-bold text-[#242938]">{stagedProposal.todayCapacityMinutes}m</div>
               </div>
               <div className="text-center">
-                <div className="text-[10px] text-slate-400 uppercase font-semibold">Used</div>
-                <div className="text-sm font-bold text-indigo-300">{stagedProposal.usedCapacityMinutes}m</div>
+                <div className="text-[10px] text-[#667085] uppercase font-semibold">Used</div>
+                <div className="text-sm font-bold text-[#5865D8]">{stagedProposal.usedCapacityMinutes}m</div>
               </div>
               <div className="text-center">
-                <div className="text-[10px] text-slate-400 uppercase font-semibold">Free Buffer</div>
-                <div className="text-sm font-bold text-emerald-400">{stagedProposal.freeCapacityMinutes}m</div>
+                <div className="text-[10px] text-[#667085] uppercase font-semibold">Free Buffer</div>
+                <div className="text-sm font-bold text-[#16845B]">{stagedProposal.freeCapacityMinutes}m</div>
               </div>
             </div>
           </div>
 
           {/* Staged Items List */}
           <div className="space-y-3">
-            <div className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between">
+            <div className="text-xs font-bold text-[#242938] uppercase tracking-wider flex items-center justify-between">
               <span>Recommended Learning Activities ({stagedProposal.items.filter((i) => !i.isBreak).length}):</span>
-              <span className="text-[11px] text-slate-400 font-normal">Accept, edit, replace, remove, or skip any recommendation</span>
+              <span className="text-[11px] text-[#667085] font-normal">Accept, edit, replace, remove, or skip any recommendation</span>
             </div>
 
             <div className="space-y-2.5">
               {stagedProposal.items.map((item, idx) => {
                 const isEditing = editingItemId === item.id;
-                // Calculate display number for non-break learning items
                 const studyIdx = stagedProposal.items.slice(0, idx + 1).filter((i) => !i.isBreak).length;
 
                 if (isEditing) {
                   return (
-                    <div key={item.id} className="bg-slate-950 p-4 rounded-xl border border-indigo-500 space-y-3">
+                    <div key={item.id} className="bg-[#F5F6FA] p-4 rounded-xl border border-[#5865D8] space-y-3">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div className="sm:col-span-2">
-                          <label className="text-[10px] text-slate-400 block mb-1">Title</label>
+                          <label className="text-[10px] text-[#667085] block mb-1">Title</label>
                           <input
                             type="text"
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white"
+                            className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] text-slate-400 block mb-1">Minutes</label>
+                          <label className="text-[10px] text-[#667085] block mb-1">Minutes</label>
                           <input
                             type="number"
                             value={editMinutes}
                             onChange={(e) => setEditMinutes(Number(e.target.value))}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white"
+                            className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                           />
                         </div>
                       </div>
@@ -722,14 +721,14 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                         <button
                           type="button"
                           onClick={() => setEditingItemId(null)}
-                          className="px-3 py-1 text-xs text-slate-400 hover:text-white"
+                          className="px-3 py-1 text-xs text-[#667085] hover:text-[#242938] cursor-pointer"
                         >
                           Cancel
                         </button>
                         <button
                           type="button"
                           onClick={() => handleSaveEditItem(item.id)}
-                          className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg cursor-pointer"
+                          className="px-3 py-1 bg-[#5865D8] hover:bg-[#4854C4] text-white text-xs font-semibold rounded-lg cursor-pointer"
                         >
                           Save
                         </button>
@@ -743,33 +742,33 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                     key={item.id}
                     className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border gap-3 ${
                       item.isBreak
-                        ? 'bg-slate-950/40 border-slate-800/50 text-slate-400'
-                        : 'bg-slate-950/80 border-slate-800 text-slate-200'
+                        ? 'bg-[#F5F6FA] border-[#E5E7EB] text-[#667085]'
+                        : 'bg-white border-[#E5E7EB] text-[#242938] shadow-xs'
                     }`}
                   >
                     <div className="flex items-start sm:items-center gap-3">
                       {!item.isBreak && (
-                        <div className="w-6 h-6 rounded-full bg-indigo-900/60 border border-indigo-700/60 text-indigo-300 font-bold text-xs flex items-center justify-center shrink-0">
+                        <div className="w-6 h-6 rounded-full bg-[#EEF0FF] border border-[#5865D8]/20 text-[#5865D8] font-bold text-xs flex items-center justify-center shrink-0">
                           {studyIdx}
                         </div>
                       )}
-                      <div className="font-mono text-xs text-indigo-400 font-semibold shrink-0 bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800">
+                      <div className="font-mono text-xs text-[#5865D8] font-semibold shrink-0 bg-[#F5F6FA] px-2.5 py-1 rounded-md border border-[#E5E7EB]">
                         {item.scheduledTime || 'TBD'} – {item.endTime || 'TBD'}
                       </div>
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-white text-sm">
+                          <span className="font-bold text-[#242938] text-sm">
                             {!item.isBreak ? `${studyIdx}. ${item.title}` : item.title}
                           </span>
                           {getActivityBadge(item.activityType)}
                           {item.priority === 'high' && (
-                            <span className="text-[10px] font-bold text-amber-400 bg-amber-950/60 px-2 py-0.2 rounded border border-amber-800/40">
+                            <span className="text-[10px] font-bold text-[#A6630A] bg-[#FFFBEB] px-2 py-0.2 rounded border border-[#FDE68A]">
                               HIGH
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-slate-400 flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-slate-300">Duration: {item.plannedMinutes}m</span>
+                        <div className="text-xs text-[#667085] flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-[#242938]">Duration: {item.plannedMinutes}m</span>
                           {item.reason && (
                             <>
                               <span>•</span>
@@ -781,8 +780,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                     </div>
 
                     {/* Item controls: Edit, Replace, Skip, Remove */}
-                    <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800">
-                      <span className="text-xs font-bold text-slate-300 mr-1.5">
+                    <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-[#E5E7EB]">
+                      <span className="text-xs font-bold text-[#242938] mr-1.5">
                         {item.plannedMinutes}m
                       </span>
 
@@ -791,7 +790,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                           <button
                             type="button"
                             onClick={() => handleStartEditItem(item)}
-                            className="px-2 py-1 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
+                            className="px-2 py-1 text-[#667085] hover:text-[#242938] hover:bg-[#F5F6FA] rounded-lg text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
                             title="Edit activity"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
@@ -800,7 +799,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                           <button
                             type="button"
                             onClick={() => setReplacingItemId(item.id)}
-                            className="px-2 py-1 text-slate-300 hover:text-cyan-300 hover:bg-slate-800 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
+                            className="px-2 py-1 text-[#667085] hover:text-[#5865D8] hover:bg-[#F5F6FA] rounded-lg text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
                             title="Replace topic with candidate"
                           >
                             <RefreshCw className="w-3.5 h-3.5" />
@@ -809,7 +808,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                           <button
                             type="button"
                             onClick={() => handleSkipStagedItem(item.id)}
-                            className="px-2 py-1 text-amber-400 hover:text-amber-300 hover:bg-slate-800 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
+                            className="px-2 py-1 text-[#A6630A] hover:bg-[#FFFBEB] rounded-lg text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
                             title="Skip this activity for today"
                           >
                             <RotateCcw className="w-3.5 h-3.5" />
@@ -821,7 +820,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveStagedItem(item.id)}
-                        className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-[#667085] hover:text-[#C43D4B] hover:bg-[#FEF2F2] rounded-lg transition-colors cursor-pointer"
                         title="Remove from plan"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -834,12 +833,12 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
           </div>
 
           {/* Action Bar with Exact Prompt Buttons: ACCEPT PLAN, EDIT, REGENERATE, CANCEL */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-indigo-900/60">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#E5E7EB]">
             <button
               id="cancel-proposal-btn"
               type="button"
               onClick={() => setStagedProposal(null)}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer uppercase tracking-wider"
+              className="px-4 py-2 bg-white hover:bg-[#F5F6FA] text-[#667085] hover:text-[#242938] border border-[#E5E7EB] text-xs font-bold rounded-xl transition-colors cursor-pointer uppercase tracking-wider"
             >
               [ CANCEL ]
             </button>
@@ -852,7 +851,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   const firstStudy = stagedProposal.items.find((i) => !i.isBreak);
                   if (firstStudy) handleStartEditItem(firstStudy);
                 }}
-                className="flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold rounded-xl transition-colors cursor-pointer uppercase tracking-wider"
+                className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs font-bold rounded-xl transition-colors cursor-pointer uppercase tracking-wider"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 <span>[ EDIT ]</span>
@@ -862,7 +861,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                 id="regenerate-proposal-btn"
                 type="button"
                 onClick={() => handleGenerateAdaptivePlan()}
-                className="flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-700/60 text-xs font-bold rounded-xl transition-colors cursor-pointer uppercase tracking-wider"
+                className="flex items-center gap-1.5 px-4 py-2 bg-[#EEF0FF] hover:bg-[#E0E4FC] text-[#5865D8] border border-[#5865D8]/30 text-xs font-bold rounded-xl transition-colors cursor-pointer uppercase tracking-wider"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>[ REGENERATE ]</span>
@@ -872,7 +871,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                 id="accept-mission-btn"
                 type="button"
                 onClick={handleAcceptStagedProposal}
-                className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold rounded-xl shadow-lg transition-all cursor-pointer uppercase tracking-wider"
+                className="flex items-center gap-2 px-6 py-2.5 bg-[#5865D8] hover:bg-[#4854C4] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer uppercase tracking-wider"
               >
                 <Check className="w-4 h-4 stroke-[3]" />
                 <span>[ ACCEPT PLAN ]</span>
@@ -885,15 +884,15 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
       {/* ACTIVE DAILY MISSION LIST */}
       <div 
         id="active-mission-container"
-        className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4"
+        className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-xs space-y-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="font-bold text-base text-white flex items-center gap-2">
-              <Target className="w-4 h-4 text-emerald-400" />
+            <h3 className="font-bold text-base text-[#242938] flex items-center gap-2">
+              <Target className="w-4 h-4 text-[#5865D8]" />
               <span>Active Scheduled Mission</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-[#667085] mt-0.5">
               {currentMission.items.length === 0
                 ? 'No activities scheduled for this day yet.'
                 : `${currentMission.items.length} items configured (${currentMission.allocatedMinutes}m total allocated study time).`}
@@ -903,7 +902,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsAddingManual(true)}
-              className="flex items-center gap-1 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+              className="flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] rounded-xl text-xs font-semibold transition-colors cursor-pointer shadow-xs"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Custom Task</span>
@@ -915,27 +914,27 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
         {isAddingManual && (
           <form
             onSubmit={handleAddManualItem}
-            className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3"
+            className="bg-[#F5F6FA] p-4 rounded-xl border border-[#E5E7EB] space-y-3"
           >
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
               <div className="sm:col-span-2">
-                <label className="text-[10px] text-slate-400 block mb-1">Task Title *</label>
+                <label className="text-[10px] text-[#667085] block mb-1">Task Title *</label>
                 <input
                   type="text"
                   placeholder="e.g., Assignment Draft or DSA Practice"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-[10px] text-slate-400 block mb-1">Activity Type</label>
+                <label className="text-[10px] text-[#667085] block mb-1">Activity Type</label>
                 <select
                   value={newActivityType}
                   onChange={(e) => setNewActivityType(e.target.value as ActivityType)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                 >
                   <option value="academic_study">Academic Study</option>
                   <option value="college_work">College Work</option>
@@ -947,20 +946,20 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
               </div>
 
               <div>
-                <label className="text-[10px] text-slate-400 block mb-1">Duration & Start</label>
+                <label className="text-[10px] text-[#667085] block mb-1">Duration & Start</label>
                 <div className="flex gap-2">
                   <input
                     type="number"
                     value={newMinutes}
                     onChange={(e) => setNewMinutes(Number(e.target.value))}
-                    className="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white"
+                    className="w-16 bg-white border border-[#E5E7EB] rounded-lg px-2 py-1.5 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                     placeholder="Mins"
                   />
                   <input
                     type="time"
                     value={newScheduledTime}
                     onChange={(e) => setNewScheduledTime(e.target.value)}
-                    className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white"
+                    className="flex-1 bg-white border border-[#E5E7EB] rounded-lg px-2 py-1.5 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                   />
                 </div>
               </div>
@@ -970,13 +969,13 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
               <button
                 type="button"
                 onClick={() => setIsAddingManual(false)}
-                className="px-3 py-1 text-xs text-slate-400 hover:text-white"
+                className="px-3 py-1 text-xs text-[#667085] hover:text-[#242938] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold"
+                className="px-4 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg text-xs font-semibold cursor-pointer"
               >
                 Add Task
               </button>
@@ -986,15 +985,15 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
         {/* Empty State */}
         {currentMission.items.length === 0 && !stagedProposal && (
-          <div className="text-center py-12 bg-slate-950/40 rounded-xl border border-dashed border-slate-800 space-y-3">
-            <Compass className="w-10 h-10 text-slate-600 mx-auto" />
-            <h4 className="text-sm font-semibold text-slate-300">No Mission Active Today</h4>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          <div className="text-center py-12 bg-[#F5F6FA] rounded-xl border border-dashed border-[#E5E7EB] space-y-3">
+            <Compass className="w-10 h-10 text-[#667085] mx-auto opacity-50" />
+            <h4 className="text-sm font-semibold text-[#242938]">No Mission Active Today</h4>
+            <p className="text-xs text-[#667085] max-w-sm mx-auto">
               Click "Plan My Day" to run the morning check-in and generate an adaptive study mission based on your real energy and capacity.
             </p>
             <button
               onClick={handleOpenCheckIn}
-              className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold rounded-xl inline-flex items-center gap-1.5 cursor-pointer shadow"
+              className="px-4 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white text-xs font-semibold rounded-xl inline-flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
               <Sunrise className="w-3.5 h-3.5" />
               <span>Begin Morning Check-In</span>
@@ -1015,14 +1014,14 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   key={item.id}
                   className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border gap-3 transition-colors ${
                     isDone
-                      ? 'bg-emerald-950/20 border-emerald-900/40 text-slate-300'
+                      ? 'bg-[#F5F6FA] border-[#E5E7EB] text-[#667085]'
                       : isMissed
-                      ? 'bg-rose-950/20 border-rose-900/40 text-slate-400'
+                      ? 'bg-[#FEF2F2] border-[#FECACA] text-[#C43D4B]'
                       : isRescheduled
-                      ? 'bg-amber-950/10 border-amber-900/30 text-slate-400'
+                      ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#A6630A]'
                       : item.isBreak
-                      ? 'bg-slate-950/40 border-slate-800/60 text-slate-400'
-                      : 'bg-slate-950/70 border-slate-800 text-slate-200'
+                      ? 'bg-[#F5F6FA] border-[#E5E7EB] text-[#667085]'
+                      : 'bg-white border-[#E5E7EB] text-[#242938] shadow-xs'
                   }`}
                 >
                   <div className="flex items-start sm:items-center gap-3">
@@ -1031,50 +1030,50 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                       <button
                         onClick={() => onToggleItemStatus(selectedDate, item.id)}
                         className={`mt-0.5 sm:mt-0 p-1 rounded-lg transition-colors cursor-pointer ${
-                          isDone ? 'text-emerald-400 bg-emerald-950' : 'text-slate-500 hover:text-slate-300'
+                          isDone ? 'text-[#16845B]' : 'text-[#667085] hover:text-[#242938]'
                         }`}
                         title={isDone ? 'Mark as pending' : 'Mark as completed'}
                       >
-                        {isDone ? <CheckCircle2 className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+                        {isDone ? <CheckCircle2 className="w-5 h-5 text-[#16845B]" /> : <Circle className="w-5 h-5 text-[#667085]" />}
                       </button>
                     ) : (
-                      <Coffee className="w-5 h-5 text-slate-500 shrink-0 mt-0.5 sm:mt-0" />
+                      <Coffee className="w-5 h-5 text-[#667085] shrink-0 mt-0.5 sm:mt-0" />
                     )}
 
-                    <div className="font-mono text-xs text-indigo-400 shrink-0 bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800">
+                    <div className="font-mono text-xs text-[#5865D8] shrink-0 bg-[#F5F6FA] px-2.5 py-1 rounded-md border border-[#E5E7EB]">
                       {item.scheduledTime || 'TBD'} – {item.endTime || 'TBD'}
                     </div>
 
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`font-semibold text-sm ${isDone ? 'line-through text-slate-400' : 'text-white'}`}>
+                        <span className={`font-semibold text-sm ${isDone ? 'line-through text-[#667085]' : 'text-[#242938]'}`}>
                           {item.title}
                         </span>
                         {getActivityBadge(item.activityType)}
                         {item.priority === 'high' && (
-                          <span className="text-[10px] font-bold text-amber-400 bg-amber-950/60 px-2 py-0.2 rounded border border-amber-800/40">
+                          <span className="text-[10px] font-bold text-[#A6630A] bg-[#FFFBEB] px-2 py-0.2 rounded border border-[#FDE68A]">
                             HIGH
                           </span>
                         )}
                         {isMissed && (
-                          <span className="text-[10px] font-bold text-rose-400 bg-rose-950 px-2 py-0.2 rounded">
+                          <span className="text-[10px] font-bold text-[#C43D4B] bg-[#FEF2F2] px-2 py-0.2 rounded border border-[#FECACA]">
                             MISSED / IN POOL
                           </span>
                         )}
                         {item.status === 'skipped' && (
-                          <span className="text-[10px] font-bold text-amber-400 bg-amber-950 px-2 py-0.2 rounded border border-amber-800/40">
+                          <span className="text-[10px] font-bold text-[#A6630A] bg-[#FFFBEB] px-2 py-0.2 rounded border border-[#FDE68A]">
                             SKIPPED
                           </span>
                         )}
                         {isRescheduled && (
-                          <span className="text-[10px] font-bold text-amber-400 bg-amber-950 px-2 py-0.2 rounded">
+                          <span className="text-[10px] font-bold text-[#A6630A] bg-[#FFFBEB] px-2 py-0.2 rounded border border-[#FDE68A]">
                             RESCHEDULED
                           </span>
                         )}
                       </div>
 
                       {item.reason && (
-                        <div className="text-xs text-slate-400 leading-relaxed">
+                        <div className="text-xs text-[#667085] leading-relaxed">
                           {item.reason}
                         </div>
                       )}
@@ -1082,18 +1081,18 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800">
+                  <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-[#E5E7EB]">
                     <div className="text-right text-xs pr-2 font-mono">
                       {item.actualMinutes > 0 ? (
-                        <span className="text-emerald-400 font-bold">{item.actualMinutes}m / </span>
+                        <span className="text-[#16845B] font-bold">{item.actualMinutes}m / </span>
                       ) : null}
-                      <span className="text-slate-300 font-semibold">{item.plannedMinutes}m</span>
+                      <span className="text-[#667085] font-semibold">{item.plannedMinutes}m</span>
                     </div>
 
                     {!isDone && !isRescheduled && !item.isBreak && item.status !== 'skipped' && (
                       <button
                         onClick={() => onStartSessionForItem(item)}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold cursor-pointer shadow"
+                        className="flex items-center gap-1 px-3 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg text-xs font-semibold cursor-pointer shadow-xs"
                         title="Start active session timer"
                       >
                         <Play className="w-3 h-3 fill-current" />
@@ -1104,7 +1103,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                     {!isDone && !isRescheduled && !item.isBreak && item.status !== 'skipped' && (
                       <button
                         onClick={() => handleSkipActiveItem(item.id)}
-                        className="p-1.5 text-slate-400 hover:text-amber-400 rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                        className="p-1.5 text-[#667085] hover:text-[#A6630A] rounded hover:bg-[#FFFBEB] transition-colors cursor-pointer"
                         title="Skip activity for today (returns to curriculum pool)"
                       >
                         <RotateCcw className="w-3.5 h-3.5" />
@@ -1117,7 +1116,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                         setTargetRescheduleDate(selectedDate);
                         setTargetRescheduleTime(item.scheduledTime || '16:00');
                       }}
-                      className="p-1.5 text-slate-400 hover:text-amber-300 rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                      className="p-1.5 text-[#667085] hover:text-[#5865D8] rounded hover:bg-[#EEF0FF] transition-colors cursor-pointer"
                       title="Move or Reschedule"
                     >
                       <MoveRight className="w-3.5 h-3.5" />
@@ -1125,7 +1124,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
                     <button
                       onClick={() => handleDeleteItem(item.id)}
-                      className="p-1.5 text-slate-500 hover:text-rose-400 rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                      className="p-1.5 text-[#667085] hover:text-[#C43D4B] rounded hover:bg-[#FEF2F2] transition-colors cursor-pointer"
                       title="Delete activity"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1140,28 +1139,28 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
       {/* CHECK-IN MODAL ("PLAN MY DAY") */}
       {showCheckInModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 max-w-lg w-full space-y-5 shadow-2xl text-slate-100 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-lg w-full space-y-5 shadow-2xl text-[#242938] max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-3">
               <div className="flex items-center gap-2">
-                <Sunrise className="w-5 h-5 text-amber-400" />
-                <h3 className="font-bold text-base text-white">Morning Check-In: Plan My Day</h3>
+                <Sunrise className="w-5 h-5 text-[#5865D8]" />
+                <h3 className="font-bold text-base text-[#242938]">Morning Check-In: Plan My Day</h3>
               </div>
               <button
                 onClick={() => setShowCheckInModal(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#667085] hover:text-[#242938]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-[#667085]">
               Tell NEXORA about today’s reality. Your constraints will adjust recommendation priorities while preserving sleep and capacity limits.
             </p>
 
             {/* Quick Reality Preset Chips */}
             <div className="space-y-1.5">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#667085]">
                 Quick Reality Presets
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -1170,8 +1169,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   onClick={() => setCheckInInput((prev) => ({ ...prev, hasUrgentAssignment: !prev.hasUrgentAssignment }))}
                   className={`px-2.5 py-1 text-xs rounded-lg border transition-all ${
                     checkInInput.hasUrgentAssignment
-                      ? 'bg-amber-600/30 text-amber-300 border-amber-500'
-                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                      ? 'bg-[#FFFBEB] text-[#A6630A] border-[#FDE68A]'
+                      : 'bg-white text-[#667085] border-[#E5E7EB] hover:border-[#5865D8]'
                   }`}
                 >
                   📝 Assignment due tomorrow
@@ -1182,8 +1181,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   onClick={() => setCheckInInput((prev) => ({ ...prev, reachedHomeLate: !prev.reachedHomeLate, lateArrivalMinutes: 45 }))}
                   className={`px-2.5 py-1 text-xs rounded-lg border transition-all ${
                     checkInInput.reachedHomeLate
-                      ? 'bg-amber-600/30 text-amber-300 border-amber-500'
-                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                      ? 'bg-[#FFFBEB] text-[#A6630A] border-[#FDE68A]'
+                      : 'bg-white text-[#667085] border-[#E5E7EB] hover:border-[#5865D8]'
                   }`}
                 >
                   🚌 Reached home late
@@ -1194,8 +1193,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   onClick={() => setCheckInInput((prev) => ({ ...prev, hasCollegeWorkToday: prev.hasCollegeWorkToday === false ? true : false }))}
                   className={`px-2.5 py-1 text-xs rounded-lg border transition-all ${
                     checkInInput.hasCollegeWorkToday === false
-                      ? 'bg-cyan-600/30 text-cyan-300 border-cyan-500'
-                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                      ? 'bg-[#EEF0FF] text-[#5865D8] border-[#5865D8]/30'
+                      : 'bg-white text-[#667085] border-[#E5E7EB] hover:border-[#5865D8]'
                   }`}
                 >
                   🎓 No college work today
@@ -1206,8 +1205,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   onClick={() => setCheckInInput((prev) => ({ ...prev, tired: !prev.tired, energyLevel: !prev.tired ? 'low' : 'medium' }))}
                   className={`px-2.5 py-1 text-xs rounded-lg border transition-all ${
                     checkInInput.tired
-                      ? 'bg-rose-600/30 text-rose-300 border-rose-500'
-                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                      ? 'bg-[#FEF2F2] text-[#C43D4B] border-[#FECACA]'
+                      : 'bg-white text-[#667085] border-[#E5E7EB] hover:border-[#5865D8]'
                   }`}
                 >
                   😴 I feel tired
@@ -1218,8 +1217,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   onClick={() => setCheckInInput((prev) => ({ ...prev, extraMinutes: prev.extraMinutes === 30 ? 0 : 30 }))}
                   className={`px-2.5 py-1 text-xs rounded-lg border transition-all ${
                     checkInInput.extraMinutes === 30
-                      ? 'bg-emerald-600/30 text-emerald-300 border-emerald-500'
-                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                      ? 'bg-[#ECFDF5] text-[#16845B] border-[#A7F3D0]'
+                      : 'bg-white text-[#667085] border-[#E5E7EB] hover:border-[#5865D8]'
                   }`}
                 >
                   ⏱️ 30 extra minutes
@@ -1230,8 +1229,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   onClick={() => setCheckInInput((prev) => ({ ...prev, focusTopicOrSkill: prev.focusTopicOrSkill === 'Java' ? '' : 'Java' }))}
                   className={`px-2.5 py-1 text-xs rounded-lg border transition-all ${
                     checkInInput.focusTopicOrSkill === 'Java'
-                      ? 'bg-indigo-600/30 text-indigo-300 border-indigo-500'
-                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                      ? 'bg-[#EEF0FF] text-[#5865D8] border-[#5865D8]/30'
+                      : 'bg-white text-[#667085] border-[#E5E7EB] hover:border-[#5865D8]'
                   }`}
                 >
                   ☕ Focus on Java
@@ -1242,7 +1241,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
             <div className="space-y-4">
               {/* Energy Level & Tiredness */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-300">Today's Cognitive Energy</label>
+                <label className="block text-xs font-semibold text-[#242938]">Today's Cognitive Energy</label>
                 <div className="grid grid-cols-3 gap-2">
                   {(['high', 'medium', 'low'] as const).map((lvl) => (
                     <button
@@ -1251,8 +1250,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                       onClick={() => setCheckInInput((prev) => ({ ...prev, energyLevel: lvl, tired: lvl === 'low' }))}
                       className={`py-2 px-3 rounded-xl text-xs font-semibold border capitalize transition-all cursor-pointer ${
                         checkInInput.energyLevel === lvl
-                          ? 'bg-indigo-600 text-white border-indigo-500 shadow'
-                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                          ? 'bg-[#5865D8] text-white border-[#5865D8] shadow-xs'
+                          : 'bg-white text-[#667085] border-[#E5E7EB] hover:border-[#5865D8]'
                       }`}
                     >
                       {lvl === 'high' && '⚡ High Flow'}
@@ -1265,19 +1264,19 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
               {/* Day Circumstances */}
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-slate-300">Day Circumstances</label>
+                <label className="block text-xs font-semibold text-[#242938]">Day Circumstances</label>
                 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2.5 p-2.5 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer">
+                  <label className="flex items-center gap-2.5 p-2.5 bg-[#F5F6FA] rounded-xl border border-[#E5E7EB] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={checkInInput.hasUrgentAssignment}
                       onChange={(e) => setCheckInInput((prev) => ({ ...prev, hasUrgentAssignment: e.target.checked }))}
-                      className="rounded text-indigo-600 focus:ring-0"
+                      className="rounded text-[#5865D8] focus:ring-0"
                     />
                     <div className="text-xs">
-                      <span className="font-semibold text-white">I have an assignment due tomorrow</span>
-                      <div className="text-slate-400 text-[11px]">Prioritizes college submission draft first</div>
+                      <span className="font-semibold text-[#242938]">I have an assignment due tomorrow</span>
+                      <div className="text-[#667085] text-[11px]">Prioritizes college submission draft first</div>
                     </div>
                   </label>
 
@@ -1288,34 +1287,34 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                         placeholder="Assignment title or subject..."
                         value={checkInInput.assignmentDetails || ''}
                         onChange={(e) => setCheckInInput((prev) => ({ ...prev, assignmentDetails: e.target.value }))}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white"
+                        className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                       />
                     </div>
                   )}
 
-                  <label className="flex items-center gap-2.5 p-2.5 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer">
+                  <label className="flex items-center gap-2.5 p-2.5 bg-[#F5F6FA] rounded-xl border border-[#E5E7EB] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={checkInInput.reachedHomeLate}
                       onChange={(e) => setCheckInInput((prev) => ({ ...prev, reachedHomeLate: e.target.checked }))}
-                      className="rounded text-indigo-600 focus:ring-0"
+                      className="rounded text-[#5865D8] focus:ring-0"
                     />
                     <div className="text-xs">
-                      <span className="font-semibold text-white">I reached home late today</span>
-                      <div className="text-slate-400 text-[11px]">Offsets available study window start by 45 minutes</div>
+                      <span className="font-semibold text-[#242938]">I reached home late today</span>
+                      <div className="text-[#667085] text-[11px]">Offsets available study window start by 45 minutes</div>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-2.5 p-2.5 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer">
+                  <label className="flex items-center gap-2.5 p-2.5 bg-[#F5F6FA] rounded-xl border border-[#E5E7EB] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={checkInInput.hasCollegeWorkToday === false}
                       onChange={(e) => setCheckInInput((prev) => ({ ...prev, hasCollegeWorkToday: e.target.checked ? false : true }))}
-                      className="rounded text-indigo-600 focus:ring-0"
+                      className="rounded text-[#5865D8] focus:ring-0"
                     />
                     <div className="text-xs">
-                      <span className="font-semibold text-white">I have no college work today</span>
-                      <div className="text-slate-400 text-[11px]">Shifts all cognitive energy to career skills and projects</div>
+                      <span className="font-semibold text-[#242938]">I have no college work today</span>
+                      <div className="text-[#667085] text-[11px]">Shifts all cognitive energy to career skills and projects</div>
                     </div>
                   </label>
                 </div>
@@ -1323,7 +1322,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
               {/* Extra Time Buffer */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-300">
+                <label className="block text-xs font-semibold text-[#242938]">
                   Extra Available Study Buffer (Minutes)
                 </label>
                 <div className="flex gap-2">
@@ -1334,8 +1333,8 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                       onClick={() => setCheckInInput((prev) => ({ ...prev, extraMinutes: mins }))}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer ${
                         (checkInInput.extraMinutes || 0) === mins
-                          ? 'bg-emerald-600 text-white border-emerald-500'
-                          : 'bg-slate-950 text-slate-400 border-slate-800'
+                          ? 'bg-[#16845B] text-white border-[#16845B]'
+                          : 'bg-white text-[#667085] border-[#E5E7EB] hover:border-[#5865D8]'
                       }`}
                     >
                       {mins === 0 ? 'Standard' : `+${mins}m`}
@@ -1346,7 +1345,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
               {/* Focus Skill / Topic */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-300">
+                <label className="block text-xs font-semibold text-[#242938]">
                   Specific Focus Today (Optional)
                 </label>
                 <input
@@ -1354,7 +1353,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   placeholder="e.g. Java, Dynamic Programming, DBMS"
                   value={checkInInput.focusTopicOrSkill || ''}
                   onChange={(e) => setCheckInInput((prev) => ({ ...prev, focusTopicOrSkill: e.target.value }))}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-xl px-3 py-2 text-xs text-[#242938] placeholder-[#667085] focus:border-[#5865D8] focus:outline-none"
                 />
               </div>
 
@@ -1363,7 +1362,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowCheckInModal(false)}
-                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="flex-1 py-2.5 bg-white hover:bg-[#F5F6FA] text-[#667085] hover:text-[#242938] border border-[#E5E7EB] rounded-xl text-xs font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1372,7 +1371,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   id="generate-adaptive-plan-btn"
                   onClick={() => handleGenerateAdaptivePlan()}
                   disabled={isLoadingPlan}
-                  className="flex-1 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-2.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>{isLoadingPlan ? 'Analyzing...' : 'Generate Today’s Mission'}</span>
@@ -1385,47 +1384,47 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
       {/* MID-DAY REBALANCE MODAL */}
       {showRebalanceModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 max-w-lg w-full space-y-4 shadow-2xl text-slate-100">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-lg w-full space-y-4 shadow-2xl text-[#242938]">
+            <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-3">
               <div className="flex items-center gap-2">
-                <RotateCcw className="w-5 h-5 text-indigo-400" />
-                <h3 className="font-bold text-base text-white">Replan Remaining Day</h3>
+                <RotateCcw className="w-5 h-5 text-[#5865D8]" />
+                <h3 className="font-bold text-base text-[#242938]">Replan Remaining Day</h3>
               </div>
               <button
                 onClick={() => setShowRebalanceModal(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#667085] hover:text-[#242938]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-[#667085]">
               Adapts your schedule to current clock time. Completed tasks are preserved. Unfeasible tasks return to the curriculum pool without creating late-night schedule debt.
             </p>
 
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-1">Current Clock Time</label>
+                <label className="text-xs font-semibold text-[#242938] block mb-1">Current Clock Time</label>
                 <input
                   type="time"
                   value={rebalanceClockTime}
                   onChange={(e) => handleUpdateRebalanceTime(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-xl px-3 py-2 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                 />
               </div>
 
               {rebalancePreview && (
-                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 text-xs">
-                  <div className="flex justify-between font-semibold text-slate-300">
+                <div className="bg-[#F5F6FA] p-4 rounded-xl border border-[#E5E7EB] space-y-2 text-xs">
+                  <div className="flex justify-between font-semibold text-[#242938]">
                     <span>Remaining Feasible Tasks:</span>
-                    <span className="text-emerald-400">{rebalancePreview.rebalancedItems.length} items</span>
+                    <span className="text-[#16845B]">{rebalancePreview.rebalancedItems.length} items</span>
                   </div>
                   {rebalancePreview.droppedItems.length > 0 && (
-                    <div className="bg-rose-950/40 p-2.5 rounded-lg border border-rose-800/40 text-rose-300 space-y-1">
+                    <div className="bg-[#FEF2F2] p-2.5 rounded-lg border border-[#FECACA] text-[#C43D4B] space-y-1">
                       <div className="font-bold">Returned to Planning Pool ({rebalancePreview.droppedItems.length}):</div>
                       {rebalancePreview.droppedItems.map((d, i) => (
-                        <div key={i} className="text-[11px] text-rose-200">
+                        <div key={i} className="text-[11px] text-[#C43D4B]">
                           • {d.title} (no feasible window before protected bedtime)
                         </div>
                       ))}
@@ -1438,7 +1437,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowRebalanceModal(false)}
-                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="flex-1 py-2.5 bg-white hover:bg-[#F5F6FA] text-[#667085] border border-[#E5E7EB] rounded-xl text-xs font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1446,7 +1445,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                   type="button"
                   id="confirm-replan-btn"
                   onClick={handleConfirmRebalance}
-                  className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg cursor-pointer"
+                  className="flex-1 py-2.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer"
                 >
                   Apply Adapted Plan
                 </button>
@@ -1458,22 +1457,22 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
       {/* REPLACE TOPIC CANDIDATE MODAL */}
       {replacingItemId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-lg w-full space-y-4 shadow-2xl text-slate-100 max-h-[85vh] flex flex-col">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-lg w-full space-y-4 shadow-2xl text-[#242938] max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-3">
               <div className="flex items-center gap-2">
-                <RefreshCw className="w-5 h-5 text-cyan-400" />
-                <h3 className="font-bold text-base text-white">Substitute Candidate Topic</h3>
+                <RefreshCw className="w-5 h-5 text-[#5865D8]" />
+                <h3 className="font-bold text-base text-[#242938]">Substitute Candidate Topic</h3>
               </div>
               <button
                 onClick={() => setReplacingItemId(null)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#667085] hover:text-[#242938]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#667085]">
               Select an alternative candidate whose prerequisites are completed.
             </p>
 
@@ -1482,13 +1481,13 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                 <div
                   key={cand.id}
                   onClick={() => cand.topicId && handleReplaceStagedItem(replacingItemId, cand.topicId)}
-                  className="p-3 bg-slate-950 hover:bg-slate-800/80 rounded-xl border border-slate-800 hover:border-indigo-500/50 cursor-pointer transition-all space-y-1"
+                  className="p-3 bg-[#F5F6FA] hover:bg-[#EEF0FF] rounded-xl border border-[#E5E7EB] hover:border-[#5865D8]/40 cursor-pointer transition-all space-y-1"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-white text-xs">{cand.title}</span>
-                    <span className="text-[10px] text-slate-400">{cand.recommendedMinutes}m</span>
+                    <span className="font-semibold text-[#242938] text-xs">{cand.title}</span>
+                    <span className="text-[10px] text-[#667085]">{cand.recommendedMinutes}m</span>
                   </div>
-                  <div className="text-[11px] text-slate-400">{cand.reason}</div>
+                  <div className="text-[11px] text-[#667085]">{cand.reason}</div>
                 </div>
               ))}
             </div>
@@ -1498,43 +1497,43 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
 
       {/* RESCHEDULE MODAL */}
       {reschedulingItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 max-w-md w-full space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 max-w-md w-full space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <MoveRight className="w-4 h-4 text-amber-400" />
-                <h3 className="font-bold text-sm text-white">Move / Reschedule Task</h3>
+                <MoveRight className="w-4 h-4 text-[#A6630A]" />
+                <h3 className="font-bold text-sm text-[#242938]">Move / Reschedule Task</h3>
               </div>
               <button
                 onClick={() => setReschedulingItem(null)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#667085] hover:text-[#242938]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-300 bg-slate-800/60 p-3 rounded-xl">
-              Rescheduling: <strong className="text-white">{reschedulingItem.title}</strong> ({reschedulingItem.plannedMinutes}m)
+            <p className="text-xs text-[#667085] bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
+              Rescheduling: <strong className="text-[#242938]">{reschedulingItem.title}</strong> ({reschedulingItem.plannedMinutes}m)
             </p>
 
             <div className="space-y-3">
               <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Destination Date</label>
+                <label className="text-[11px] text-[#667085] block mb-1">Destination Date</label>
                 <input
                   type="date"
                   value={targetRescheduleDate}
                   onChange={(e) => setTargetRescheduleDate(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-400 block mb-1">New Start Time</label>
+                <label className="text-[11px] text-[#667085] block mb-1">New Start Time</label>
                 <input
                   type="time"
                   value={targetRescheduleTime}
                   onChange={(e) => setTargetRescheduleTime(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-xs text-[#242938] focus:border-[#5865D8] focus:outline-none"
                 />
               </div>
 
@@ -1545,7 +1544,7 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                     handleMarkAsMissed(reschedulingItem.id);
                     setReschedulingItem(null);
                   }}
-                  className="px-3 py-2 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="px-3 py-2 bg-[#FEF2F2] hover:bg-[#FEE2E2] text-[#C43D4B] border border-[#FECACA] rounded-xl text-xs font-semibold cursor-pointer"
                 >
                   Mark as Missed
                 </button>
@@ -1553,14 +1552,14 @@ export const DailyPlannerModule: React.FC<DailyPlannerProps> = ({
                 <button
                   type="button"
                   onClick={() => setReschedulingItem(null)}
-                  className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs cursor-pointer"
+                  className="px-3 py-2 bg-white hover:bg-[#F5F6FA] text-[#667085] border border-[#E5E7EB] rounded-xl text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmReschedule}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold cursor-pointer"
+                  className="px-4 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-semibold cursor-pointer shadow-xs"
                 >
                   Confirm Move
                 </button>

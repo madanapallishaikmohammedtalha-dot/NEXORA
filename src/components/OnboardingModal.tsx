@@ -585,28 +585,28 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
       <div 
         id="onboarding-modal-card"
-        className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden text-slate-100 my-6 flex flex-col max-h-[90vh]"
+        className="bg-white border border-[#E5E7EB] rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden text-[#242938] my-6 flex flex-col max-h-[90vh]"
       >
         {/* Progress Header */}
-        <div className="bg-slate-950 px-5 py-3.5 border-b border-slate-800 flex-shrink-0">
+        <div className="bg-[#F5F6FA] px-5 py-3.5 border-b border-[#E5E7EB] flex-shrink-0">
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white text-xs shadow-md">
+              <div className="w-8 h-8 rounded-lg bg-[#5865D8] flex items-center justify-center font-bold text-white text-xs shadow-xs">
                 NX
               </div>
               <div>
-                <h1 className="text-sm font-bold text-white flex items-center gap-2">
+                <h1 className="text-sm font-bold text-[#242938] flex items-center gap-2">
                   <span>{isEditing ? 'Edit Academic Setup & Routine' : 'NEXORA Academic Onboarding'}</span>
                   {isEditing && (
-                    <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
+                    <span className="text-[10px] bg-white text-[#5865D8] px-2 py-0.5 rounded border border-[#E5E7EB] font-medium">
                       Edit Mode
                     </span>
                   )}
                 </h1>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-[#667085]">
                   Step {step} of {totalSteps} — {stepsLabels[step - 1]}
                 </p>
               </div>
@@ -616,7 +616,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               {isEditing && onClose && (
                 <button
                   onClick={onClose}
-                  className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                  className="text-[#667085] hover:text-[#242938] p-1 rounded-lg hover:bg-[#E5E7EB] transition-colors"
                   title="Close without saving"
                 >
                   <X className="w-4 h-4" />
@@ -638,10 +638,10 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   onClick={() => setStep(stepNum)}
                   className={`h-1.5 rounded-full transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-indigo-500'
+                      ? 'bg-[#5865D8]'
                       : isPast
-                      ? 'bg-emerald-500/80'
-                      : 'bg-slate-800 hover:bg-slate-700'
+                      ? 'bg-[#16845B]'
+                      : 'bg-[#E5E7EB] hover:bg-[#D1D5DB]'
                   }`}
                   title={`Step ${stepNum}: ${label}`}
                 />
@@ -656,12 +656,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           {/* STEP 1: Profile & Daily Biological Rhythm */}
           {step === 1 && (
             <div className="space-y-5 animate-in fade-in duration-200">
-              <div className="border-b border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <GraduationCap className="w-4 h-4 text-indigo-400" />
+              <div className="border-b border-[#E5E7EB] pb-3">
+                <h2 className="text-sm font-bold text-[#242938] flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4 text-[#5865D8]" />
                   <span>Student Profile & Biological Rhythm</span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#667085] mt-1">
                   NEXORA grounds study schedules in your real biological rhythm, travel time, and sustainable cognitive bandwidth to prevent burnout.
                 </p>
               </div>
@@ -669,47 +669,47 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               {/* Basic Profile Inputs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
                 <div>
-                  <label className="text-slate-300 font-medium block mb-1">Full Name</label>
+                  <label className="text-[#242938] font-medium block mb-1">Full Name</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Alex Mercer"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-medium block mb-1">University / College</label>
+                  <label className="text-[#242938] font-medium block mb-1">University / College</label>
                   <input
                     type="text"
                     value={university}
                     onChange={(e) => setUniversity(e.target.value)}
                     placeholder="e.g. State Polytechnic University"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-medium block mb-1">Degree / Major</label>
+                  <label className="text-[#242938] font-medium block mb-1">Degree / Major</label>
                   <input
                     type="text"
                     value={degreeMajor}
                     onChange={(e) => setDegreeMajor(e.target.value)}
                     placeholder="e.g. Computer Science & Software Engineering"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-medium block mb-1">Current Academic Standing</label>
+                  <label className="text-[#242938] font-medium block mb-1">Current Academic Standing</label>
                   <select
                     value={currentYear}
                     onChange={(e) => setCurrentYear(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                   >
                     <option value="Year 1 (Freshman)">Year 1 (Freshman)</option>
                     <option value="Year 2 (Sophomore)">Year 2 (Sophomore)</option>
@@ -721,49 +721,49 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {/* Bio-Rhythm & Travel Section */}
-              <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-indigo-400" />
+              <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-2">
+                  <span className="text-xs font-semibold text-[#242938] flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-[#5865D8]" />
                     <span>Protected Sleep & Commute Buffers</span>
                   </span>
-                  <span className="text-[11px] px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 font-medium">
+                  <span className="text-[11px] px-2 py-0.5 rounded bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20 font-medium">
                     {calculatedSleepHours}h Sleep Protected
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                   <div>
-                    <label className="text-slate-400 block mb-1 flex items-center gap-1">
-                      <Sun className="w-3.5 h-3.5 text-amber-400" />
+                    <label className="text-[#667085] block mb-1 flex items-center gap-1">
+                      <Sun className="w-3.5 h-3.5 text-[#A6630A]" />
                       <span>Wake Time</span>
                     </label>
                     <input
                       type="time"
                       value={wakeTime}
                       onChange={(e) => setWakeTime(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1 flex items-center gap-1">
-                      <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                    <label className="text-[#667085] block mb-1 flex items-center gap-1">
+                      <Moon className="w-3.5 h-3.5 text-[#5865D8]" />
                       <span>Sleep Time</span>
                     </label>
                     <input
                       type="time"
                       value={sleepTime}
                       onChange={(e) => setSleepTime(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1 flex items-center gap-1">
-                      <Car className="w-3.5 h-3.5 text-emerald-400" />
+                    <label className="text-[#667085] block mb-1 flex items-center gap-1">
+                      <Car className="w-3.5 h-3.5 text-[#16845B]" />
                       <span>Commute / Travel Time</span>
                     </label>
                     <div className="flex items-center gap-1.5">
@@ -773,15 +773,15 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                         max={180}
                         value={travelTimeMinutes}
                         onChange={(e) => setTravelTimeMinutes(Number(e.target.value))}
-                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                        className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                       />
-                      <span className="text-slate-400 text-[11px]">min/trip</span>
+                      <span className="text-[#667085] text-[11px]">min/trip</span>
                     </div>
                   </div>
                 </div>
 
                 {calculatedSleepHours < 6 && (
-                  <div className="p-2.5 bg-amber-950/40 border border-amber-800/60 rounded-lg text-[11px] text-amber-300 flex items-center gap-2">
+                  <div className="p-2.5 bg-[#FFFBEB] border border-[#FDE68A] rounded-lg text-[11px] text-[#A6630A] flex items-center gap-2">
                     <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>Sleep duration is below 6 hours ({calculatedSleepHours}h). Consider increasing your rest window to safeguard cognitive retention.</span>
                   </div>
@@ -789,11 +789,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {/* Cognitive Capacity & Buffers */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-950/70 border border-slate-800 p-4 rounded-xl text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl text-xs">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-slate-300 font-medium">Daily Max Study Cap</label>
-                    <span className="text-indigo-400 font-bold font-mono">{dailyCapacityMaxHours} hours/day</span>
+                    <label className="text-[#242938] font-medium">Daily Max Study Cap</label>
+                    <span className="text-[#5865D8] font-bold font-mono">{dailyCapacityMaxHours} hours/day</span>
                   </div>
                   <input
                     type="range"
@@ -802,17 +802,17 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     step={0.5}
                     value={dailyCapacityMaxHours}
                     onChange={(e) => setDailyCapacityMaxHours(Number(e.target.value))}
-                    className="w-full accent-indigo-500 cursor-pointer"
+                    className="w-full accent-[#5865D8] cursor-pointer"
                   />
-                  <p className="text-[10px] text-slate-400 mt-1">
+                  <p className="text-[10px] text-[#667085] mt-1">
                     Academic recommendation: 3.5 to 5.0 hours of high-focus deep work per day.
                   </p>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-slate-300 font-medium">Inter-Block Buffer</label>
-                    <span className="text-indigo-400 font-bold font-mono">{defaultBufferMinutes} minutes</span>
+                    <label className="text-[#242938] font-medium">Inter-Block Buffer</label>
+                    <span className="text-[#5865D8] font-bold font-mono">{defaultBufferMinutes} minutes</span>
                   </div>
                   <input
                     type="range"
@@ -821,9 +821,9 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     step={5}
                     value={defaultBufferMinutes}
                     onChange={(e) => setDefaultBufferMinutes(Number(e.target.value))}
-                    className="w-full accent-indigo-500 cursor-pointer"
+                    className="w-full accent-[#5865D8] cursor-pointer"
                   />
-                  <p className="text-[10px] text-slate-400 mt-1">
+                  <p className="text-[10px] text-[#667085] mt-1">
                     Transition time allowed between classes, study sessions, and meals.
                   </p>
                 </div>
@@ -834,97 +834,97 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           {/* STEP 2: Current Semester & Dates */}
           {step === 2 && (
             <div className="space-y-5 animate-in fade-in duration-200">
-              <div className="border-b border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-indigo-400" />
+              <div className="border-b border-[#E5E7EB] pb-3">
+                <h2 className="text-sm font-bold text-[#242938] flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[#5865D8]" />
                   <span>Current Semester & Term Timeline</span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#667085] mt-1">
                   Anchor your academic calendar so NEXORA paces syllabus topics accurately leading into exam season.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
                 <div className="sm:col-span-2">
-                  <label className="text-slate-300 font-medium block mb-1">Semester Name</label>
+                  <label className="text-[#242938] font-medium block mb-1">Semester Name</label>
                   <input
                     type="text"
                     value={semesterName}
                     onChange={(e) => setSemesterName(e.target.value)}
                     placeholder="e.g. Fall 2026 (Semester 5)"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-medium block mb-1">Semester Start Date</label>
+                  <label className="text-[#242938] font-medium block mb-1">Semester Start Date</label>
                   <input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-medium block mb-1">Expected End Date (Exams Finish)</label>
+                  <label className="text-[#242938] font-medium block mb-1">Expected End Date (Exams Finish)</label>
                   <input
                     type="date"
                     value={expectedEndDate}
                     onChange={(e) => setExpectedEndDate(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                     required
                   />
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="text-slate-400 block mb-1">
-                    Actual End Date <span className="text-[10px] text-slate-500">(Optional — filled when semester is completed)</span>
+                  <label className="text-[#667085] block mb-1">
+                    Actual End Date <span className="text-[10px] text-[#667085]">(Optional — filled when semester is completed)</span>
                   </label>
                   <input
                     type="date"
                     value={actualEndDate}
                     onChange={(e) => setActualEndDate(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Mid-term Reading Week / Break */}
-              <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
-                <h3 className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                  <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+              <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3">
+                <h3 className="text-xs font-semibold text-[#242938] flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 text-[#5865D8]" />
                   <span>Mid-Term Break or Reading Week (Optional)</span>
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                   <div>
-                    <label className="text-slate-400 block mb-1">Break Name</label>
+                    <label className="text-[#667085] block mb-1">Break Name</label>
                     <input
                       type="text"
                       value={breakName}
                       onChange={(e) => setBreakName(e.target.value)}
                       placeholder="e.g. Mid-Term Reading Week"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Break Start</label>
+                    <label className="text-[#667085] block mb-1">Break Start</label>
                     <input
                       type="date"
                       value={breakStart}
                       onChange={(e) => setBreakStart(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Break End</label>
+                    <label className="text-[#667085] block mb-1">Break End</label>
                     <input
                       type="date"
                       value={breakEnd}
                       onChange={(e) => setBreakEnd(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -935,33 +935,33 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           {/* STEP 3: College Schedule & Fixed Commitments */}
           {step === 3 && (
             <div className="space-y-5 animate-in fade-in duration-200">
-              <div className="border-b border-slate-800 pb-3">
+              <div className="border-b border-[#E5E7EB] pb-3">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-amber-400" />
+                  <h2 className="text-sm font-bold text-[#242938] flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-[#A6630A]" />
                     <span>College Schedule & Fixed Commitments</span>
                   </h2>
-                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-amber-950/80 border border-amber-800/80 text-amber-300 font-semibold flex items-center gap-1">
+                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#FFFBEB] border border-[#FDE68A] text-[#A6630A] font-semibold flex items-center gap-1">
                     <Lock className="w-3 h-3" />
                     <span>Non-Negotiable Blocks</span>
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#667085] mt-1">
                   Fixed campus commitments (lectures, labs, tutorials, fixed commute) cannot be moved and directly deduct from your available study capacity.
                 </p>
               </div>
 
               {/* Conflict Error Alert */}
               {slotConflictError && (
-                <div className="p-3 bg-rose-950/60 border border-rose-800 rounded-xl text-xs text-rose-200 flex items-start gap-2.5">
-                  <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+                <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-xs text-[#C43D4B] flex items-start gap-2.5">
+                  <AlertTriangle className="w-4 h-4 text-[#C43D4B] flex-shrink-0 mt-0.5" />
                   <div className="flex-1">
                     <span className="font-semibold block">Time Conflict Detected</span>
-                    <span className="text-rose-300 text-[11px]">{slotConflictError}</span>
+                    <span className="text-[#C43D4B]/90 text-[11px]">{slotConflictError}</span>
                   </div>
                   <button 
                     onClick={() => setSlotConflictError(null)}
-                    className="text-rose-400 hover:text-white text-xs"
+                    className="text-[#C43D4B] hover:text-[#242938] text-xs cursor-pointer"
                   >
                     ✕
                   </button>
@@ -970,65 +970,65 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
               {/* Quick Presets */}
               <div>
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                <span className="text-[11px] font-semibold text-[#667085] uppercase tracking-wider block mb-2">
                   Quick Add Common Campus Blocks:
                 </span>
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => handleAddSlotPreset({ title: 'Operating Systems Lecture', day: 'monday', start: '09:00', end: '10:30', type: 'lecture', location: 'Hall 101' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-indigo-400" />
+                    <Plus className="w-3 h-3 text-[#5865D8]" />
                     <span>Mon OS Lecture (09:00-10:30)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAddSlotPreset({ title: 'Algorithms Lab Practical', day: 'tuesday', start: '14:00', end: '16:30', type: 'lab', location: 'Lab B12' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-indigo-400" />
+                    <Plus className="w-3 h-3 text-[#5865D8]" />
                     <span>Tue Lab (14:00-16:30)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAddSlotPreset({ title: 'Database Systems Recitation', day: 'wednesday', start: '11:00', end: '12:30', type: 'tutorial', location: 'Room 204' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-indigo-400" />
+                    <Plus className="w-3 h-3 text-[#5865D8]" />
                     <span>Wed Recitation (11:00-12:30)</span>
                   </button>
                 </div>
               </div>
 
               {/* Add Custom Fixed Slot Form */}
-              <form onSubmit={handleAddSlot} className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3 text-xs">
-                <div className="font-semibold text-slate-200 flex items-center justify-between">
+              <form onSubmit={handleAddSlot} className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3 text-xs">
+                <div className="font-semibold text-[#242938] flex items-center justify-between">
                   <span>Add Fixed Class / Lecture / Commitment</span>
-                  <span className="text-[10px] text-amber-400 flex items-center gap-1">
+                  <span className="text-[10px] text-[#A6630A] flex items-center gap-1">
                     <Lock className="w-3 h-3" /> Locks slot on timetable
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="sm:col-span-2">
-                    <label className="text-slate-400 block mb-1">Commitment Title</label>
+                    <label className="text-[#667085] block mb-1">Commitment Title</label>
                     <input
                       type="text"
                       value={newSlotTitle}
                       onChange={(e) => setNewSlotTitle(e.target.value)}
                       placeholder="e.g. Computer Networks Lecture"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1">Type</label>
+                    <label className="text-[#667085] block mb-1">Type</label>
                     <select
                       value={newSlotType}
                       onChange={(e) => setNewSlotType(e.target.value as any)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                     >
                       <option value="lecture">Lecture</option>
                       <option value="lab">Lab / Practical</option>
@@ -1039,11 +1039,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1">Day of Week</label>
+                    <label className="text-[#667085] block mb-1">Day of Week</label>
                     <select
                       value={newSlotDay}
                       onChange={(e) => setNewSlotDay(e.target.value as DayOfWeek)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white capitalize"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] capitalize focus:border-[#5865D8] focus:outline-none"
                     >
                       {DAYS_OF_WEEK.map((d) => (
                         <option key={d} value={d}>{DAY_NAMES[d]}</option>
@@ -1052,42 +1052,42 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1">Start Time (24h)</label>
+                    <label className="text-[#667085] block mb-1">Start Time (24h)</label>
                     <input
                       type="time"
                       value={newSlotStart}
                       onChange={(e) => setNewSlotStart(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1">End Time (24h)</label>
+                    <label className="text-[#667085] block mb-1">End Time (24h)</label>
                     <input
                       type="time"
                       value={newSlotEnd}
                       onChange={(e) => setNewSlotEnd(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="text-slate-400 block mb-1">Classroom / Location (Optional)</label>
+                    <label className="text-[#667085] block mb-1">Classroom / Location (Optional)</label>
                     <input
                       type="text"
                       value={newSlotLocation}
                       onChange={(e) => setNewSlotLocation(e.target.value)}
                       placeholder="e.g. Turing Hall 204"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                     />
                   </div>
 
                   <div className="flex items-end">
                     <button
                       type="submit"
-                      className="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add Fixed Slot</span>
@@ -1098,7 +1098,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
               {/* List of Configured Fixed Commitments */}
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+                <div className="flex items-center justify-between text-xs text-[#667085] font-medium">
                   <span>Enrolled Fixed Commitments ({timetableSlots.length})</span>
                   <span>{Math.round(totalWeeklyFixedMinutes / 60)} hrs / week</span>
                 </div>
@@ -1107,18 +1107,18 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   {timetableSlots.map((slot) => (
                     <div
                       key={slot.id}
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs"
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E5E7EB] text-xs shadow-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="p-1 rounded bg-amber-950/80 border border-amber-800/60 text-amber-400">
+                        <span className="p-1 rounded bg-[#FFFBEB] border border-[#FDE68A] text-[#A6630A]">
                           <Lock className="w-3.5 h-3.5" />
                         </span>
                         <div>
-                          <span className="font-semibold text-white">{slot.title}</span>
-                          <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-                            <span className="capitalize text-slate-300 font-medium">{slot.dayOfWeek}</span>
+                          <span className="font-semibold text-[#242938]">{slot.title}</span>
+                          <div className="flex items-center gap-2 text-[11px] text-[#667085] mt-0.5">
+                            <span className="capitalize text-[#242938] font-medium">{slot.dayOfWeek}</span>
                             <span>•</span>
-                            <span className="font-mono text-slate-300">{slot.startTime} – {slot.endTime}</span>
+                            <span className="font-mono text-[#242938]">{slot.startTime} – {slot.endTime}</span>
                             {slot.location && (
                               <>
                                 <span>•</span>
@@ -1132,7 +1132,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveSlot(slot.id)}
-                        className="text-slate-400 hover:text-rose-400 p-1 rounded transition-colors"
+                        className="text-[#667085] hover:text-[#C43D4B] p-1 rounded transition-colors cursor-pointer"
                         title="Remove commitment"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -1147,33 +1147,33 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           {/* STEP 4: Flexible Availability & Study Windows */}
           {step === 4 && (
             <div className="space-y-5 animate-in fade-in duration-200">
-              <div className="border-b border-slate-800 pb-3">
+              <div className="border-b border-[#E5E7EB] pb-3">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-emerald-400" />
+                  <h2 className="text-sm font-bold text-[#242938] flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-[#16845B]" />
                     <span>Flexible Availability & Study Windows</span>
                   </h2>
-                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-800/80 text-emerald-300 font-semibold flex items-center gap-1">
+                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-[#16845B] font-semibold flex items-center gap-1">
                     <Zap className="w-3 h-3" />
                     <span>Deep Work Zones</span>
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#667085] mt-1">
                   Designate recurring windows where you are free from college lectures and ready to study. NEXORA prioritizes scheduling study missions inside these blocks.
                 </p>
               </div>
 
               {/* Conflict Error Alert */}
               {periodConflictError && (
-                <div className="p-3 bg-rose-950/60 border border-rose-800 rounded-xl text-xs text-rose-200 flex items-start gap-2.5">
-                  <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+                <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-xs text-[#C43D4B] flex items-start gap-2.5">
+                  <AlertTriangle className="w-4 h-4 text-[#C43D4B] flex-shrink-0 mt-0.5" />
                   <div className="flex-1">
                     <span className="font-semibold block">Schedule Clash Detected</span>
-                    <span className="text-rose-300 text-[11px]">{periodConflictError}</span>
+                    <span className="text-[#C43D4B]/90 text-[11px]">{periodConflictError}</span>
                   </div>
                   <button 
                     onClick={() => setPeriodConflictError(null)}
-                    className="text-rose-400 hover:text-white text-xs"
+                    className="text-[#C43D4B] hover:text-[#242938] text-xs cursor-pointer"
                   >
                     ✕
                   </button>
@@ -1182,65 +1182,65 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
               {/* Quick Presets */}
               <div>
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                <span className="text-[11px] font-semibold text-[#667085] uppercase tracking-wider block mb-2">
                   Quick Add Focus Windows:
                 </span>
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => handleAddPeriodPreset({ day: 'tuesday', start: '17:00', end: '19:30', label: 'Tuesday Evening Focus' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-emerald-400" />
+                    <Plus className="w-3 h-3 text-[#16845B]" />
                     <span>Tue Eve (17:00-19:30)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAddPeriodPreset({ day: 'friday', start: '15:00', end: '18:00', label: 'Friday Afternoon Deep Work' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-emerald-400" />
+                    <Plus className="w-3 h-3 text-[#16845B]" />
                     <span>Fri Deep Work (15:00-18:00)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAddPeriodPreset({ day: 'saturday', start: '10:00', end: '13:00', label: 'Weekend Project Sprint' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-emerald-400" />
+                    <Plus className="w-3 h-3 text-[#16845B]" />
                     <span>Sat Morning Sprint (10:00-13:00)</span>
                   </button>
                 </div>
               </div>
 
               {/* Add Custom Study Period Form */}
-              <form onSubmit={handleAddStudyPeriod} className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3 text-xs">
-                <div className="font-semibold text-slate-200 flex items-center justify-between">
+              <form onSubmit={handleAddStudyPeriod} className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3 text-xs">
+                <div className="font-semibold text-[#242938] flex items-center justify-between">
                   <span>Add Dedicated Study Window</span>
-                  <span className="text-[10px] text-emerald-400 flex items-center gap-1">
+                  <span className="text-[10px] text-[#16845B] flex items-center gap-1">
                     <Zap className="w-3 h-3" /> Flexible study availability
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div className="sm:col-span-2">
-                    <label className="text-slate-400 block mb-1">Window Name</label>
+                    <label className="text-[#667085] block mb-1">Window Name</label>
                     <input
                       type="text"
                       value={newPeriodLabel}
                       onChange={(e) => setNewPeriodLabel(e.target.value)}
                       placeholder="e.g. Library Afternoon Sprint"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1">Day of Week</label>
+                    <label className="text-[#667085] block mb-1">Day of Week</label>
                     <select
                       value={newPeriodDay}
                       onChange={(e) => setNewPeriodDay(e.target.value as DayOfWeek)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white capitalize"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] capitalize focus:border-[#5865D8] focus:outline-none"
                     >
                       {DAYS_OF_WEEK.map((d) => (
                         <option key={d} value={d}>{DAY_NAMES[d]}</option>
@@ -1249,23 +1249,23 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1">Start Time (24h)</label>
+                    <label className="text-[#667085] block mb-1">Start Time (24h)</label>
                     <input
                       type="time"
                       value={newPeriodStart}
                       onChange={(e) => setNewPeriodStart(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1">End Time (24h)</label>
+                    <label className="text-[#667085] block mb-1">End Time (24h)</label>
                     <input
                       type="time"
                       value={newPeriodEnd}
                       onChange={(e) => setNewPeriodEnd(e.target.value)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
@@ -1273,7 +1273,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   <div className="sm:col-span-3 flex items-end">
                     <button
                       type="submit"
-                      className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add Flexible Study Window</span>
@@ -1284,27 +1284,27 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
               {/* List of Configured Study Windows */}
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+                <div className="flex items-center justify-between text-xs text-[#667085] font-medium">
                   <span>Configured Study Windows ({studyPeriods.length})</span>
-                  <span className="text-emerald-400 font-semibold">{Math.round(totalWeeklyFlexibleMinutes / 60)} hrs / week</span>
+                  <span className="text-[#16845B] font-semibold">{Math.round(totalWeeklyFlexibleMinutes / 60)} hrs / week</span>
                 </div>
 
                 <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1">
                   {studyPeriods.map((period) => (
                     <div
                       key={period.id}
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs"
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E5E7EB] text-xs shadow-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="p-1 rounded bg-emerald-950/80 border border-emerald-800/60 text-emerald-400">
+                        <span className="p-1 rounded bg-[#ECFDF5] border border-[#A7F3D0] text-[#16845B]">
                           <Zap className="w-3.5 h-3.5" />
                         </span>
                         <div>
-                          <span className="font-semibold text-white">{period.label || 'Study Window'}</span>
-                          <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-                            <span className="capitalize text-slate-300 font-medium">{period.dayOfWeek}</span>
+                          <span className="font-semibold text-[#242938]">{period.label || 'Study Window'}</span>
+                          <div className="flex items-center gap-2 text-[11px] text-[#667085] mt-0.5">
+                            <span className="capitalize text-[#242938] font-medium">{period.dayOfWeek}</span>
                             <span>•</span>
-                            <span className="font-mono text-emerald-300">{period.startTime} – {period.endTime}</span>
+                            <span className="font-mono text-[#16845B]">{period.startTime} – {period.endTime}</span>
                           </div>
                         </div>
                       </div>
@@ -1312,7 +1312,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveStudyPeriod(period.id)}
-                        className="text-slate-400 hover:text-rose-400 p-1 rounded transition-colors"
+                        className="text-[#667085] hover:text-[#C43D4B] p-1 rounded transition-colors cursor-pointer"
                         title="Remove window"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -1327,105 +1327,105 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           {/* STEP 5: Enrolled Subjects & Curricular Load */}
           {step === 5 && (
             <div className="space-y-5 animate-in fade-in duration-200">
-              <div className="border-b border-slate-800 pb-3">
+              <div className="border-b border-[#E5E7EB] pb-3">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-indigo-400" />
+                  <h2 className="text-sm font-bold text-[#242938] flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-[#5865D8]" />
                     <span>Enrolled Subjects & Study Targets</span>
                   </h2>
-                  <span className="text-xs text-slate-300 font-semibold">
-                    Total: <strong className="text-indigo-400">{totalWeeklyTargetStudyHours} hrs/week</strong>
+                  <span className="text-xs text-[#667085] font-semibold">
+                    Total: <strong className="text-[#5865D8]">{totalWeeklyTargetStudyHours} hrs/week</strong>
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#667085] mt-1">
                   Define your subjects and target study hours so daily study missions distribute effort fairly across all modules.
                 </p>
               </div>
 
               {/* Subject Presets */}
               <div>
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                <span className="text-[11px] font-semibold text-[#667085] uppercase tracking-wider block mb-2">
                   1-Click Subject Presets:
                 </span>
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => handleAddSubjectPreset({ code: 'CS 301', name: 'Operating Systems & Concurrency', hours: 5, color: '#3B82F6' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-blue-400" />
+                    <Plus className="w-3 h-3 text-[#5865D8]" />
                     <span>Operating Systems (CS 301)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAddSubjectPreset({ code: 'CS 302', name: 'Algorithms & Complexity', hours: 5, color: '#10B981' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-emerald-400" />
+                    <Plus className="w-3 h-3 text-[#16845B]" />
                     <span>Algorithms (CS 302)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleAddSubjectPreset({ code: 'CS 304', name: 'Database Management Systems', hours: 4, color: '#F59E0B' })}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    <Plus className="w-3 h-3 text-amber-400" />
+                    <Plus className="w-3 h-3 text-[#A6630A]" />
                     <span>Databases (CS 304)</span>
                   </button>
                 </div>
               </div>
 
               {/* Add Subject Form */}
-              <form onSubmit={handleAddSubject} className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3 text-xs">
-                <div className="font-semibold text-slate-200">Enrol Custom Course</div>
+              <form onSubmit={handleAddSubject} className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3 text-xs">
+                <div className="font-semibold text-[#242938]">Enrol Custom Course</div>
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div>
-                    <label className="text-slate-400 block mb-1">Course Code</label>
+                    <label className="text-[#667085] block mb-1">Course Code</label>
                     <input
                       type="text"
                       value={newSubCode}
                       onChange={(e) => setNewSubCode(e.target.value)}
                       placeholder="e.g. CS 305"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white uppercase font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] uppercase font-mono focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="text-slate-400 block mb-1">Course Title</label>
+                    <label className="text-[#667085] block mb-1">Course Title</label>
                     <input
                       type="text"
                       value={newSubName}
                       onChange={(e) => setNewSubName(e.target.value)}
                       placeholder="e.g. Computer Networks & Protocols"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-slate-400 block mb-1">Target Hours/Wk</label>
+                    <label className="text-[#667085] block mb-1">Target Hours/Wk</label>
                     <input
                       type="number"
                       min={1}
                       max={20}
                       value={newSubHours}
                       onChange={(e) => setNewSubHours(Number(e.target.value))}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
 
                   <div className="sm:col-span-4 flex items-center justify-between pt-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400 text-[11px]">Badge Color:</span>
+                      <span className="text-[#667085] text-[11px]">Badge Color:</span>
                       {['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EC4899', '#06B6D4'].map((col) => (
                         <button
                           key={col}
                           type="button"
                           onClick={() => setNewSubColor(col)}
                           className={`w-5 h-5 rounded-full border transition-all ${
-                            newSubColor === col ? 'scale-125 border-white' : 'border-transparent opacity-70'
+                            newSubColor === col ? 'scale-125 border-[#242938]' : 'border-transparent opacity-70'
                           }`}
                           style={{ backgroundColor: col }}
                         />
@@ -1434,7 +1434,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white font-semibold rounded-lg flex items-center gap-1.5 cursor-pointer shadow-xs"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add Course</span>
@@ -1448,7 +1448,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                 {subjectsList.map((sub) => (
                   <div
                     key={sub.id}
-                    className="p-3 bg-slate-800/80 border border-slate-700 rounded-xl flex items-center justify-between text-xs"
+                    className="p-3 bg-white border border-[#E5E7EB] rounded-xl flex items-center justify-between text-xs shadow-xs"
                   >
                     <div className="flex items-center gap-2.5">
                       <div
@@ -1456,8 +1456,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                         style={{ backgroundColor: sub.color }}
                       />
                       <div>
-                        <div className="font-semibold text-white">{sub.code}: {sub.name}</div>
-                        <div className="text-[11px] text-slate-400 mt-0.5">
+                        <div className="font-semibold text-[#242938]">{sub.code}: {sub.name}</div>
+                        <div className="text-[11px] text-[#667085] mt-0.5">
                           {sub.targetWeeklyHours} hrs/week target
                         </div>
                       </div>
@@ -1466,7 +1466,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     <button
                       type="button"
                       onClick={() => handleRemoveSubject(sub.id)}
-                      className="text-slate-400 hover:text-rose-400 p-1 rounded"
+                      className="text-[#667085] hover:text-[#C43D4B] p-1 rounded cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1479,24 +1479,24 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           {/* STEP 6: Skills, Career Interests & Learning Goals */}
           {step === 6 && (
             <div className="space-y-5 animate-in fade-in duration-200">
-              <div className="border-b border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Target className="w-4 h-4 text-indigo-400" />
+              <div className="border-b border-[#E5E7EB] pb-3">
+                <h2 className="text-sm font-bold text-[#242938] flex items-center gap-2">
+                  <Target className="w-4 h-4 text-[#5865D8]" />
                   <span>Skills, Career Interests & Learning Goals</span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#667085] mt-1">
                   Tell NEXORA what you know, where you want to work, and what concrete milestones you want to achieve this semester.
                 </p>
               </div>
 
               {/* Skill Levels Section */}
-              <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
+              <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                    <Code2 className="w-3.5 h-3.5 text-indigo-400" />
+                  <span className="text-xs font-semibold text-[#242938] flex items-center gap-1.5">
+                    <Code2 className="w-3.5 h-3.5 text-[#5865D8]" />
                     <span>Current Technical Skill Levels</span>
                   </span>
-                  <span className="text-[10px] text-slate-400">Select proficiency for each skill</span>
+                  <span className="text-[10px] text-[#667085]">Select proficiency for each skill</span>
                 </div>
 
                 {/* Add Custom Skill */}
@@ -1506,12 +1506,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     value={customSkillName}
                     onChange={(e) => setCustomSkillName(e.target.value)}
                     placeholder="Add a skill (e.g. Rust, Docker, Computer Networks)"
-                    className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-white"
+                    className="flex-1 bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                   />
                   <select
                     value={customSkillLevel}
                     onChange={(e) => setCustomSkillLevel(e.target.value as SkillProficiency)}
-                    className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white capitalize"
+                    className="bg-white border border-[#E5E7EB] rounded-lg px-2.5 py-1.5 text-[#242938] capitalize focus:border-[#5865D8] focus:outline-none"
                   >
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
@@ -1520,7 +1520,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   </select>
                   <button
                     type="submit"
-                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold cursor-pointer"
+                    className="px-3 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg font-semibold cursor-pointer shadow-xs"
                   >
                     Add
                   </button>
@@ -1531,20 +1531,20 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   {skillsList.map((skill) => (
                     <div
                       key={skill.name}
-                      className="px-2.5 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-xs flex items-center gap-2"
+                      className="px-2.5 py-1.5 bg-white border border-[#E5E7EB] rounded-lg text-xs flex items-center gap-2 shadow-xs"
                     >
-                      <span className="text-slate-200 font-medium">{skill.name}</span>
+                      <span className="text-[#242938] font-medium">{skill.name}</span>
                       <select
                         value={skill.level}
                         onChange={(e) => handleUpdateSkillLevel(skill.name, e.target.value as SkillProficiency)}
                         className={`text-[10px] rounded px-1.5 py-0.5 border font-semibold capitalize cursor-pointer ${
                           skill.level === 'beginner'
-                            ? 'bg-amber-950/60 border-amber-800 text-amber-300'
+                            ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#A6630A]'
                             : skill.level === 'intermediate'
-                            ? 'bg-blue-950/60 border-blue-800 text-blue-300'
+                            ? 'bg-[#EEF0FF] border-[#5865D8]/20 text-[#5865D8]'
                             : skill.level === 'advanced'
-                            ? 'bg-indigo-950/60 border-indigo-800 text-indigo-300'
-                            : 'bg-emerald-950/60 border-emerald-800 text-emerald-300'
+                            ? 'bg-[#EEF0FF] border-[#5865D8]/40 text-[#5865D8]'
+                            : 'bg-[#ECFDF5] border-[#A7F3D0] text-[#16845B]'
                         }`}
                       >
                         <option value="beginner">Beginner</option>
@@ -1555,7 +1555,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveSkill(skill.name)}
-                        className="text-slate-500 hover:text-rose-400 ml-0.5"
+                        className="text-[#667085] hover:text-[#C43D4B] ml-0.5 cursor-pointer"
                       >
                         ✕
                       </button>
@@ -1565,9 +1565,9 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {/* Career Interests Section */}
-              <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
-                <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5 text-indigo-400" />
+              <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3">
+                <span className="text-xs font-semibold text-[#242938] flex items-center gap-1.5">
+                  <Briefcase className="w-3.5 h-3.5 text-[#5865D8]" />
                   <span>Target Engineering Career Interests</span>
                 </span>
 
@@ -1577,11 +1577,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     value={newCareerInput}
                     onChange={(e) => setNewCareerInput(e.target.value)}
                     placeholder="e.g. Distributed Systems Engineer, Linux Kernel Developer"
-                    className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-white"
+                    className="flex-1 bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold cursor-pointer"
+                    className="px-3 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg font-semibold cursor-pointer shadow-xs"
                   >
                     Add
                   </button>
@@ -1591,13 +1591,13 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   {careerInterests.map((interest) => (
                     <span
                       key={interest}
-                      className="px-2.5 py-1 bg-indigo-950/50 border border-indigo-800/60 text-indigo-300 rounded-lg text-xs flex items-center gap-1.5"
+                      className="px-2.5 py-1 bg-white border border-[#E5E7EB] text-[#5865D8] rounded-lg text-xs flex items-center gap-1.5 shadow-xs font-medium"
                     >
                       <span>{interest}</span>
                       <button
                         type="button"
                         onClick={() => handleRemoveCareerInterest(interest)}
-                        className="text-indigo-400 hover:text-white"
+                        className="text-[#667085] hover:text-[#C43D4B] cursor-pointer"
                       >
                         ✕
                       </button>
@@ -1607,13 +1607,13 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {/* Learning Goals Section */}
-              <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
+              <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                    <Target className="w-3.5 h-3.5 text-indigo-400" />
+                  <span className="text-xs font-semibold text-[#242938] flex items-center gap-1.5">
+                    <Target className="w-3.5 h-3.5 text-[#5865D8]" />
                     <span>Measurable Learning Goals</span>
                   </span>
-                  <span className="text-[10px] text-slate-400">Weekly, semester or career horizons</span>
+                  <span className="text-[10px] text-[#667085]">Weekly, semester or career horizons</span>
                 </div>
 
                 {/* Add Goal Form */}
@@ -1624,7 +1624,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                       value={newGoalTitle}
                       onChange={(e) => setNewGoalTitle(e.target.value)}
                       placeholder="e.g. Build POSIX multithreaded job worker"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-white"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                       required
                     />
                   </div>
@@ -1632,7 +1632,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     <select
                       value={newGoalHorizon}
                       onChange={(e) => setNewGoalHorizon(e.target.value as any)}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white capitalize"
+                      className="w-full bg-white border border-[#E5E7EB] rounded-lg px-2 py-1.5 text-[#242938] capitalize focus:border-[#5865D8] focus:outline-none"
                     >
                       <option value="weekly">Weekly Target</option>
                       <option value="semester">Semester Milestone</option>
@@ -1645,18 +1645,18 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                       min={1}
                       value={newGoalTarget}
                       onChange={(e) => setNewGoalTarget(Number(e.target.value))}
-                      className="w-16 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white font-mono text-center"
+                      className="w-16 bg-white border border-[#E5E7EB] rounded-lg px-2 py-1.5 text-[#242938] font-mono text-center focus:border-[#5865D8] focus:outline-none"
                     />
                     <input
                       type="text"
                       value={newGoalUnit}
                       onChange={(e) => setNewGoalUnit(e.target.value)}
                       placeholder="unit"
-                      className="w-16 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-white text-center"
+                      className="w-16 bg-white border border-[#E5E7EB] rounded-lg px-2 py-1.5 text-[#242938] text-center focus:border-[#5865D8] focus:outline-none"
                     />
                     <button
                       type="submit"
-                      className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold cursor-pointer"
+                      className="px-3 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg font-semibold cursor-pointer shadow-xs"
                     >
                       Add
                     </button>
@@ -1668,23 +1668,23 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   {learningGoals.map((goal) => (
                     <div
                       key={goal.id}
-                      className="flex items-center justify-between p-2.5 bg-slate-800/80 border border-slate-700 rounded-lg text-xs"
+                      className="flex items-center justify-between p-2.5 bg-white border border-[#E5E7EB] rounded-lg text-xs shadow-xs"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="capitalize text-[10px] px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-semibold">
+                        <span className="capitalize text-[10px] px-2 py-0.5 rounded bg-[#F5F6FA] text-[#667085] font-semibold border border-[#E5E7EB]">
                           {goal.horizon}
                         </span>
-                        <span className="text-white font-medium">{goal.title}</span>
+                        <span className="text-[#242938] font-medium">{goal.title}</span>
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-indigo-400 font-semibold text-[11px]">
+                        <span className="font-mono text-[#5865D8] font-semibold text-[11px]">
                           Target: {goal.targetValue} {goal.unit}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleRemoveLearningGoal(goal.id)}
-                          className="text-slate-500 hover:text-rose-400"
+                          className="text-[#667085] hover:text-[#C43D4B] cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -1699,43 +1699,43 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           {/* STEP 7: Schedule Audit & Conflict Verification */}
           {step === 7 && (
             <div className="space-y-5 animate-in fade-in duration-200">
-              <div className="border-b border-slate-800 pb-3">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="border-b border-[#E5E7EB] pb-3">
+                <h2 className="text-sm font-bold text-[#242938] flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#16845B]" />
                   <span>Schedule Feasibility & Conflict Audit</span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#667085] mt-1">
                   NEXORA checks every time boundary to verify that your fixed lectures, transit, flexible study windows, and sleep schedule do not clash.
                 </p>
               </div>
 
               {/* Conflict Status Banner */}
               {allDetectedConflicts.length === 0 ? (
-                <div className="p-4 bg-emerald-950/40 border border-emerald-800/70 rounded-xl text-xs text-emerald-300 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-900/80 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                <div className="p-4 bg-[#ECFDF5] border border-[#A7F3D0] rounded-xl text-xs text-[#16845B] flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white border border-[#A7F3D0] flex items-center justify-center flex-shrink-0 text-[#16845B] shadow-xs">
+                    <CheckCircle2 className="w-5 h-5 text-[#16845B]" />
                   </div>
                   <div>
-                    <span className="font-bold text-emerald-200 text-sm block">0 Time Conflicts Detected</span>
-                    <span className="text-emerald-300/90 text-[11px]">
+                    <span className="font-bold text-[#16845B] text-sm block">0 Time Conflicts Detected</span>
+                    <span className="text-[#16845B]/90 text-[11px]">
                       Your college commitments, transit buffers, study windows, and sleep schedule are completely clash-free and physically realistic!
                     </span>
                   </div>
                 </div>
               ) : (
-                <div className="p-4 bg-rose-950/50 border border-rose-800 rounded-xl space-y-2 text-xs">
-                  <div className="flex items-center gap-2 text-rose-300 font-bold text-sm">
-                    <AlertTriangle className="w-4 h-4 text-rose-400" />
+                <div className="p-4 bg-[#FEF2F2] border border-[#FECACA] rounded-xl space-y-2 text-xs">
+                  <div className="flex items-center gap-2 text-[#C43D4B] font-bold text-sm">
+                    <AlertTriangle className="w-4 h-4 text-[#C43D4B]" />
                     <span>{allDetectedConflicts.length} Conflict(s) Need Attention</span>
                   </div>
-                  <p className="text-slate-300 text-[11px]">
+                  <p className="text-[#667085] text-[11px]">
                     The following slots have overlapping time bounds or encroach upon protected sleep hours:
                   </p>
                   <div className="space-y-1.5 pt-1">
                     {allDetectedConflicts.map((c) => (
-                      <div key={c.id} className="p-2 rounded bg-slate-900/90 border border-rose-900/60 text-[11px] text-rose-200 flex items-center justify-between">
+                      <div key={c.id} className="p-2 rounded bg-white border border-[#FECACA] text-[11px] text-[#C43D4B] flex items-center justify-between shadow-xs">
                         <div>
-                          <span className="font-semibold capitalize text-amber-300">[{c.dayOfWeek || 'Schedule'}]: </span>
+                          <span className="font-semibold capitalize text-[#A6630A]">[{c.dayOfWeek || 'Schedule'}]: </span>
                           <span>{c.message}</span>
                         </div>
                       </div>
@@ -1746,51 +1746,51 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
               {/* Key Schedule Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl text-center">
-                  <span className="text-[11px] text-slate-400 block">Protected Sleep</span>
-                  <span className="text-lg font-bold text-white font-mono">{calculatedSleepHours}h</span>
-                  <span className="text-[10px] text-slate-500 block">{wakeTime} – {sleepTime}</span>
+                <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-3 rounded-xl text-center">
+                  <span className="text-[11px] text-[#667085] block">Protected Sleep</span>
+                  <span className="text-lg font-bold text-[#242938] font-mono">{calculatedSleepHours}h</span>
+                  <span className="text-[10px] text-[#667085] block">{wakeTime} – {sleepTime}</span>
                 </div>
 
-                <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl text-center">
-                  <span className="text-[11px] text-slate-400 block">Fixed Classes</span>
-                  <span className="text-lg font-bold text-amber-400 font-mono">{Math.round(totalWeeklyFixedMinutes / 60)}h</span>
-                  <span className="text-[10px] text-slate-500 block">{timetableSlots.length} commitments</span>
+                <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-3 rounded-xl text-center">
+                  <span className="text-[11px] text-[#667085] block">Fixed Classes</span>
+                  <span className="text-lg font-bold text-[#A6630A] font-mono">{Math.round(totalWeeklyFixedMinutes / 60)}h</span>
+                  <span className="text-[10px] text-[#667085] block">{timetableSlots.length} commitments</span>
                 </div>
 
-                <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl text-center">
-                  <span className="text-[11px] text-slate-400 block">Flexible Study</span>
-                  <span className="text-lg font-bold text-emerald-400 font-mono">{Math.round(totalWeeklyFlexibleMinutes / 60)}h</span>
-                  <span className="text-[10px] text-slate-500 block">{studyPeriods.length} windows</span>
+                <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-3 rounded-xl text-center">
+                  <span className="text-[11px] text-[#667085] block">Flexible Study</span>
+                  <span className="text-lg font-bold text-[#16845B] font-mono">{Math.round(totalWeeklyFlexibleMinutes / 60)}h</span>
+                  <span className="text-[10px] text-[#667085] block">{studyPeriods.length} windows</span>
                 </div>
 
-                <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl text-center">
-                  <span className="text-[11px] text-slate-400 block">Target Study</span>
-                  <span className="text-lg font-bold text-indigo-400 font-mono">{totalWeeklyTargetStudyHours}h</span>
-                  <span className="text-[10px] text-slate-500 block">{subjectsList.length} courses</span>
+                <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-3 rounded-xl text-center">
+                  <span className="text-[11px] text-[#667085] block">Target Study</span>
+                  <span className="text-lg font-bold text-[#5865D8] font-mono">{totalWeeklyTargetStudyHours}h</span>
+                  <span className="text-[10px] text-[#667085] block">{subjectsList.length} courses</span>
                 </div>
               </div>
 
               {/* Visual Distinction: Fixed Commitments vs. Flexible Study Windows */}
-              <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3 text-xs">
-                <div className="font-semibold text-slate-200">Commitment Distinction Map</div>
+              <div className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3 text-xs">
+                <div className="font-semibold text-[#242938]">Commitment Distinction Map</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
-                  <div className="p-3 rounded-lg bg-amber-950/20 border border-amber-800/40 space-y-1">
-                    <div className="flex items-center gap-1.5 font-bold text-amber-300">
+                  <div className="p-3 rounded-lg bg-white border border-[#E5E7EB] space-y-1 shadow-xs">
+                    <div className="flex items-center gap-1.5 font-bold text-[#A6630A]">
                       <Lock className="w-3.5 h-3.5" />
                       <span>Fixed Commitments (Locked)</span>
                     </div>
-                    <p className="text-slate-400">
+                    <p className="text-[#667085]">
                       Campus lectures, laboratory sessions, recitations, and travel. These act as rigid constraints that NEXORA will never overwrite.
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-800/40 space-y-1">
-                    <div className="flex items-center gap-1.5 font-bold text-emerald-300">
+                  <div className="p-3 rounded-lg bg-white border border-[#E5E7EB] space-y-1 shadow-xs">
+                    <div className="flex items-center gap-1.5 font-bold text-[#16845B]">
                       <Zap className="w-3.5 h-3.5" />
                       <span>Flexible Availability (Study Zones)</span>
                     </div>
-                    <p className="text-slate-400">
+                    <p className="text-[#667085]">
                       Your designated deep work blocks. Daily study missions and revision tasks are placed inside these open windows.
                     </p>
                   </div>
@@ -1798,10 +1798,10 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {/* Ready Confirmation */}
-              <div className="p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl text-xs flex items-center justify-between">
+              <div className="p-3.5 bg-white border border-[#E5E7EB] rounded-xl text-xs flex items-center justify-between shadow-xs">
                 <div>
-                  <span className="font-semibold text-white block">Save to Local Database</span>
-                  <span className="text-slate-400 text-[11px]">
+                  <span className="font-semibold text-[#242938] block">Save to Local Database</span>
+                  <span className="text-[#667085] text-[11px]">
                     All settings and schedule constraints will be persisted locally in your browser and can be re-edited anytime.
                   </span>
                 </div>
@@ -1812,12 +1812,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
         </div>
 
         {/* Footer Navigation */}
-        <div className="bg-slate-950 px-6 py-3.5 border-t border-slate-800 flex items-center justify-between flex-shrink-0">
+        <div className="bg-[#F5F6FA] px-6 py-3.5 border-t border-[#E5E7EB] flex items-center justify-between flex-shrink-0">
           {step > 1 ? (
             <button
               type="button"
               onClick={() => setStep(step - 1)}
-              className="flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium cursor-pointer transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] rounded-xl text-xs font-medium cursor-pointer transition-colors shadow-xs"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back</span>
@@ -1828,7 +1828,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             <button
               type="button"
               onClick={() => setStep(step + 1)}
-              className="flex items-center gap-1.5 px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-sm cursor-pointer transition-colors"
+              className="flex items-center gap-1.5 px-5 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-semibold shadow-xs cursor-pointer transition-colors"
             >
               <span>Next: {stepsLabels[step]}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -1838,7 +1838,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               id="complete-onboarding-btn"
               type="button"
               onClick={handleFinalSubmit}
-              className="flex items-center gap-1.5 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-md cursor-pointer transition-colors"
+              className="flex items-center gap-1.5 px-6 py-2.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-semibold shadow-xs cursor-pointer transition-colors"
             >
               <Check className="w-4 h-4" />
               <span>{isEditing ? 'Save & Update Schedule' : 'Save & Launch NEXORA'}</span>

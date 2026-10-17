@@ -36,18 +36,18 @@ interface HolidayModeModuleProps {
   showToast?: (message: string) => void;
 }
 
-const PRIORITY_OPTIONS: Array<{ id: HolidayPriority; label: string; icon: any; color: string }> = [
-  { id: 'dsa', label: 'DSA', icon: Code2, color: 'text-amber-400 border-amber-500/40 bg-amber-950/20' },
-  { id: 'aiml', label: 'AI/ML', icon: Cpu, color: 'text-purple-400 border-purple-500/40 bg-purple-950/20' },
-  { id: 'web_dev', label: 'Web development', icon: Globe, color: 'text-blue-400 border-blue-500/40 bg-blue-950/20' },
-  { id: 'backend_dev', label: 'Backend development', icon: Database, color: 'text-emerald-400 border-emerald-500/40 bg-emerald-950/20' },
-  { id: 'projects', label: 'Projects', icon: Terminal, color: 'text-cyan-400 border-cyan-500/40 bg-cyan-950/20' },
-  { id: 'git_github', label: 'Git/GitHub', icon: GitBranch, color: 'text-orange-400 border-orange-500/40 bg-orange-950/20' },
-  { id: 'internship_prep', label: 'Internship preparation', icon: Briefcase, color: 'text-indigo-400 border-indigo-500/40 bg-indigo-950/20' },
-  { id: 'communication', label: 'Communication', icon: MessageSquare, color: 'text-rose-400 border-rose-500/40 bg-rose-950/20' },
-  { id: 'career_exploration', label: 'Career exploration', icon: Compass, color: 'text-yellow-400 border-yellow-500/40 bg-yellow-950/20' },
-  { id: 'revision', label: 'Revision', icon: Repeat, color: 'text-teal-400 border-teal-500/40 bg-teal-950/20' },
-  { id: 'rest', label: 'Rest', icon: Coffee, color: 'text-lime-400 border-lime-500/40 bg-lime-950/20' },
+const PRIORITY_OPTIONS: Array<{ id: HolidayPriority; label: string; icon: any }> = [
+  { id: 'dsa', label: 'DSA', icon: Code2 },
+  { id: 'aiml', label: 'AI/ML', icon: Cpu },
+  { id: 'web_dev', label: 'Web development', icon: Globe },
+  { id: 'backend_dev', label: 'Backend development', icon: Database },
+  { id: 'projects', label: 'Projects', icon: Terminal },
+  { id: 'git_github', label: 'Git/GitHub', icon: GitBranch },
+  { id: 'internship_prep', label: 'Internship preparation', icon: Briefcase },
+  { id: 'communication', label: 'Communication', icon: MessageSquare },
+  { id: 'career_exploration', label: 'Career exploration', icon: Compass },
+  { id: 'revision', label: 'Revision', icon: Repeat },
+  { id: 'rest', label: 'Rest', icon: Coffee },
 ];
 
 const DAYS: DayOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -184,23 +184,23 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
   return (
     <div className="space-y-7 pb-12 max-w-7xl mx-auto">
       {/* 1. Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950/40 via-teal-950/30 to-slate-900 border-2 border-emerald-500/40 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-800/60 flex items-center gap-1.5">
-                <Sun className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#16845B] bg-[#ECFDF5] px-3 py-1 rounded-full border border-[#A7F3D0] flex items-center gap-1.5">
+                <Sun className="w-3.5 h-3.5 text-[#A6630A]" />
                 <span>SEMESTER BREAK</span>
               </span>
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-[#667085] font-mono">
                 {holidayStart} → {holidayEnd}
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#242938] tracking-tight">
               Holiday Mode & Independent Learning Planner
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#667085] max-w-2xl leading-relaxed">
               No mandatory campus classes or commute bottlenecks. Set your independent focus areas, reserve rest days, and build portfolio momentum sustainably.
             </p>
           </div>
@@ -208,7 +208,7 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={handleGeneratePlan}
-              className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/25 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-2.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-semibold transition-colors shadow-xs flex items-center gap-2 cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>{currentPlan ? 'Regenerate Holiday Plan' : 'Generate Holiday Focus Plan'}</span>
@@ -216,9 +216,9 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
             {onNavigateToTab && (
               <button
                 onClick={() => onNavigateToTab('semester')}
-                className="px-5 py-2.5 bg-slate-900/90 hover:bg-slate-800 text-indigo-300 hover:text-indigo-200 border border-indigo-500/40 hover:border-indigo-400 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 bg-white hover:bg-[#F5F6FA] text-[#242938] hover:text-[#5865D8] border border-[#E5E7EB] rounded-xl text-xs font-semibold transition-colors shadow-xs flex items-center gap-2 cursor-pointer"
               >
-                <ArrowRight className="w-3.5 h-3.5 text-indigo-400" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#5865D8]" />
                 <span>Begin Next Semester Setup</span>
               </button>
             )}
@@ -226,28 +226,28 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
         </div>
 
         {/* Holiday Duration Summary Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-emerald-900/40 mt-6 text-xs">
-          <div className="bg-slate-950/60 p-3 rounded-xl border border-emerald-900/40">
-            <span className="text-[10px] text-slate-400 uppercase font-bold block">Holiday Starts:</span>
-            <span className="font-mono text-white font-bold">{holidayStart}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-[#E5E7EB] mt-6 text-xs">
+          <div className="bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
+            <span className="text-[10px] text-[#667085] uppercase font-bold block">Holiday Starts:</span>
+            <span className="font-mono text-[#242938] font-bold">{holidayStart}</span>
           </div>
-          <div className="bg-slate-950/60 p-3 rounded-xl border border-emerald-900/40">
-            <span className="text-[10px] text-slate-400 uppercase font-bold block">Holiday Ends:</span>
-            <span className="font-mono text-white font-bold">{holidayEnd}</span>
+          <div className="bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
+            <span className="text-[10px] text-[#667085] uppercase font-bold block">Holiday Ends:</span>
+            <span className="font-mono text-[#242938] font-bold">{holidayEnd}</span>
           </div>
-          <div className="bg-slate-950/60 p-3 rounded-xl border border-emerald-900/40">
-            <span className="text-[10px] text-slate-400 uppercase font-bold block">Available Days:</span>
-            <span className="font-mono text-emerald-300 font-bold">{capacityPreview.availableDays} days ({capacityPreview.totalStudyDays} study, {capacityPreview.restDaysCount} rest)</span>
+          <div className="bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
+            <span className="text-[10px] text-[#667085] uppercase font-bold block">Available Days:</span>
+            <span className="font-mono text-[#16845B] font-bold">{capacityPreview.availableDays} days ({capacityPreview.totalStudyDays} study, {capacityPreview.restDaysCount} rest)</span>
           </div>
-          <div className="bg-slate-950/60 p-3 rounded-xl border border-emerald-900/40 flex items-center justify-between">
+          <div className="bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB] flex items-center justify-between">
             <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Next Semester:</span>
-              <span className="font-mono text-indigo-300 font-bold">{nextSemesterStart}</span>
+              <span className="text-[10px] text-[#667085] uppercase font-bold block">Next Semester:</span>
+              <span className="font-mono text-[#5865D8] font-bold">{nextSemesterStart}</span>
             </div>
             {onNavigateToTab && (
               <button
                 onClick={() => onNavigateToTab('semester')}
-                className="text-[11px] text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                className="text-[11px] text-[#5865D8] hover:text-[#4854C4] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                 title="Begin Next Semester Setup"
               >
                 <span>Setup</span>
@@ -261,17 +261,17 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
       {/* 2. Priority Selection & Capacity Controls */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Priority Chips Selection */}
-        <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="lg:col-span-2 bg-white border border-[#E5E7EB] rounded-2xl p-6 space-y-4 shadow-xs">
+          <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-3">
             <div className="space-y-0.5">
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+              <h2 className="text-sm font-bold text-[#242938] uppercase tracking-wider">
                 Holiday Focus Priorities
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#667085]">
                 Choose the domains you want to master during this break (multiple allowed).
               </p>
             </div>
-            <span className="text-xs text-emerald-400 font-mono">
+            <span className="text-xs text-[#5865D8] font-mono font-semibold">
               {selectedPriorities.length} selected
             </span>
           </div>
@@ -286,8 +286,8 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
                   onClick={() => togglePriority(opt.id)}
                   className={`p-3 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
                     isSelected
-                      ? `${opt.color} shadow-sm ring-1 ring-emerald-500/30`
-                      : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                      ? 'bg-[#EEF0FF] border-[#5865D8]/40 text-[#5865D8] shadow-xs'
+                      : 'bg-[#F5F6FA] border-[#E5E7EB] text-[#667085] hover:text-[#242938] hover:bg-[#EEF0FF]/30'
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
@@ -299,16 +299,16 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
         </div>
 
         {/* Schedule & Capacity Constraints */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider border-b border-slate-800 pb-3">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 space-y-4 shadow-xs">
+          <h2 className="text-sm font-bold text-[#242938] uppercase tracking-wider border-b border-[#E5E7EB] pb-3">
             Sustainable Capacity Settings
           </h2>
 
           <div className="space-y-3.5 text-xs">
             <div>
-              <div className="flex justify-between text-slate-300 font-semibold mb-1">
+              <div className="flex justify-between text-[#242938] font-semibold mb-1">
                 <span>Weekly Available Hours</span>
-                <span className="text-emerald-400 font-mono">{weeklyHours}h / week</span>
+                <span className="text-[#5865D8] font-mono">{weeklyHours}h / week</span>
               </div>
               <input
                 type="range"
@@ -317,14 +317,14 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
                 step="1"
                 value={weeklyHours}
                 onChange={(e) => setWeeklyHours(Number(e.target.value))}
-                className="w-full accent-emerald-500"
+                className="w-full accent-[#5865D8]"
               />
             </div>
 
             <div>
-              <div className="flex justify-between text-slate-300 font-semibold mb-1">
+              <div className="flex justify-between text-[#242938] font-semibold mb-1">
                 <span>Daily Study Ceiling</span>
-                <span className="text-indigo-400 font-mono">{dailyCap}h / day</span>
+                <span className="text-[#5865D8] font-mono">{dailyCap}h / day</span>
               </div>
               <input
                 type="range"
@@ -333,16 +333,16 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
                 step="0.5"
                 value={dailyCap}
                 onChange={(e) => setDailyCap(Number(e.target.value))}
-                className="w-full accent-indigo-500"
+                className="w-full accent-[#5865D8]"
               />
             </div>
 
             <div>
-              <label className="text-slate-300 font-semibold block mb-1">Preferred Study Window</label>
+              <label className="text-[#242938] font-semibold block mb-1">Preferred Study Window</label>
               <select
                 value={preferredTime}
                 onChange={(e) => setPreferredTime(e.target.value as any)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500"
+                className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] text-xs focus:outline-none focus:border-[#5865D8]"
               >
                 <option value="morning">Morning (Fresh focus, zero distractions)</option>
                 <option value="afternoon">Afternoon (Post-lunch build blocks)</option>
@@ -352,7 +352,7 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
             </div>
 
             <div>
-              <label className="text-slate-300 font-semibold block mb-1.5">
+              <label className="text-[#242938] font-semibold block mb-1.5">
                 Days Completely Off (Protected Rest)
               </label>
               <div className="grid grid-cols-4 gap-1.5 font-mono text-[11px]">
@@ -364,8 +364,8 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
                       onClick={() => toggleDayOff(day)}
                       className={`py-1 rounded-lg border text-center uppercase font-bold transition-all cursor-pointer ${
                         isOff
-                          ? 'bg-amber-950/60 border-amber-800 text-amber-300'
-                          : 'bg-slate-950/40 border-slate-800 text-slate-500 hover:text-slate-300'
+                          ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#A6630A]'
+                          : 'bg-[#F5F6FA] border-[#E5E7EB] text-[#667085] hover:text-[#242938]'
                       }`}
                     >
                       {day.slice(0, 3)}
@@ -380,21 +380,21 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
 
       {/* 3. HOLIDAY PLANNER: REALISTIC WEEKLY FOCUS AREAS */}
       {currentPlan && (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-7 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-7 space-y-6 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E5E7EB] pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-emerald-400" />
-                <h2 className="text-lg font-black text-white tracking-tight">
+                <Calendar className="w-5 h-5 text-[#5865D8]" />
+                <h2 className="text-lg font-bold text-[#242938] tracking-tight">
                   HOLIDAY PLANNER — WEEKLY FOCUS BLOCKS
                 </h2>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#667085]">
                 Paced, realistic weekly themes that leave ample room for rest and leisure without burnout.
               </p>
             </div>
 
-            <div className="text-xs text-slate-400 font-mono bg-slate-950/80 px-3 py-1.5 rounded-xl border border-slate-800">
+            <div className="text-xs text-[#667085] font-mono bg-[#F5F6FA] px-3 py-1.5 rounded-xl border border-[#E5E7EB]">
               Total Budget: ~{capacityPreview.totalAvailableHours}h across {currentPlan.weeks.length} weeks
             </div>
           </div>
@@ -403,35 +403,35 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
             {currentPlan.weeks.map((week) => (
               <div
                 key={week.weekNumber}
-                className="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-3.5 relative overflow-hidden"
+                className="bg-[#F5F6FA] border border-[#E5E7EB] rounded-2xl p-5 space-y-3.5 relative overflow-hidden"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/40">
+                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20">
                       Week {week.weekNumber}
                     </span>
-                    <span className="text-xs font-bold text-white truncate">{week.title}</span>
+                    <span className="text-xs font-bold text-[#242938] truncate">{week.title}</span>
                   </div>
-                  <span className="text-xs font-mono text-slate-400">
+                  <span className="text-xs font-mono text-[#667085]">
                     {week.plannedHours}h target
                   </span>
                 </div>
 
                 <div className="space-y-2">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block">
+                  <span className="text-[10px] uppercase font-bold text-[#667085] block">
                     Core Study Focus:
                   </span>
                   <div className="space-y-1.5">
                     {week.suggestedTasks.map((t) => (
                       <div
                         key={t.id}
-                        className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800/80 flex items-start justify-between gap-2 text-xs"
+                        className="p-2.5 rounded-xl bg-white border border-[#E5E7EB] flex items-start justify-between gap-2 text-xs shadow-xs"
                       >
                         <div className="space-y-0.5">
-                          <span className="font-semibold text-slate-200 block">{t.title}</span>
-                          <span className="text-[11px] text-slate-400">{t.reason}</span>
+                          <span className="font-semibold text-[#242938] block">{t.title}</span>
+                          <span className="text-[11px] text-[#667085]">{t.reason}</span>
                         </div>
-                        <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40 shrink-0">
+                        <span className="text-[10px] font-mono text-[#16845B] bg-[#ECFDF5] px-1.5 py-0.5 rounded border border-[#A7F3D0] shrink-0">
                           {t.estimatedMinutes}m
                         </span>
                       </div>
@@ -439,12 +439,12 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
                   </div>
                 </div>
 
-                <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1 border-t border-slate-900">
-                  <span className="flex items-center gap-1 text-amber-400">
+                <div className="text-[11px] text-[#667085] flex items-center justify-between pt-1 border-t border-[#E5E7EB]">
+                  <span className="flex items-center gap-1 text-[#A6630A]">
                     <Coffee className="w-3.5 h-3.5" />
                     <span>Rest days: {week.restDays.map((d) => d.slice(0, 3)).join(', ') || 'Flexible'}</span>
                   </span>
-                  <span className="text-slate-500">Unconstrained by campus</span>
+                  <span className="text-[#667085]">Unconstrained by campus</span>
                 </div>
               </div>
             ))}
@@ -454,23 +454,23 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
 
       {/* 4. HOLIDAY MILESTONE GOALS */}
       {currentPlan && (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-7 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-7 space-y-5 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E5E7EB] pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-indigo-400" />
-                <h2 className="text-lg font-black text-white tracking-tight">
+                <Target className="w-5 h-5 text-[#5865D8]" />
+                <h2 className="text-lg font-bold text-[#242938] tracking-tight">
                   HOLIDAY MILESTONE GOALS
                 </h2>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#667085]">
                 Track progress against concrete holiday achievements with evidence logs.
               </p>
             </div>
 
             <button
               onClick={() => setIsAddingGoal(!isAddingGoal)}
-              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 bg-white hover:bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB] rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Holiday Goal</span>
@@ -479,35 +479,35 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
 
           {/* New Goal Form */}
           {isAddingGoal && (
-            <form onSubmit={handleAddGoal} className="bg-slate-950/80 border border-slate-800 p-4 rounded-xl space-y-3">
+            <form onSubmit={handleAddGoal} className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <div className="sm:col-span-2">
-                  <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Goal Title</label>
+                  <label className="text-[10px] uppercase font-bold text-[#667085] block mb-1">Goal Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Complete 40 DSA problems or Build one Java project"
                     value={newGoalTitle}
                     onChange={(e) => setNewGoalTitle(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white"
+                    className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-[#242938] focus:border-[#5865D8] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Target & Unit</label>
+                  <label className="text-[10px] uppercase font-bold text-[#667085] block mb-1">Target & Unit</label>
                   <div className="flex gap-2">
                     <input
                       type="number"
                       min="1"
                       value={newGoalTarget}
                       onChange={(e) => setNewGoalTarget(Number(e.target.value))}
-                      className="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white font-mono"
+                      className="w-20 bg-white border border-[#E5E7EB] rounded-lg px-2 py-1.5 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                     />
                     <input
                       type="text"
                       value={newGoalUnit}
                       onChange={(e) => setNewGoalUnit(e.target.value)}
                       placeholder="problems"
-                      className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white font-mono"
+                      className="flex-1 bg-white border border-[#E5E7EB] rounded-lg px-2 py-1.5 text-[#242938] font-mono focus:border-[#5865D8] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -516,13 +516,13 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddingGoal(false)}
-                  className="px-3 py-1 text-slate-400 hover:text-white text-xs"
+                  className="px-3 py-1 text-[#667085] hover:text-[#242938] text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold"
+                  className="px-4 py-1 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg text-xs font-semibold cursor-pointer"
                 >
                   Save Goal
                 </button>
@@ -538,14 +538,14 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
               return (
                 <div
                   key={goal.id}
-                  className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2.5"
+                  className="p-4 rounded-xl bg-white border border-[#E5E7EB] space-y-2.5 shadow-xs"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs font-bold text-white">{goal.title}</span>
+                    <span className="text-xs font-semibold text-[#242938]">{goal.title}</span>
                     <button
                       onClick={() => handleIncrementGoal(goal.id)}
                       disabled={isDone}
-                      className="px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded text-[11px] font-bold cursor-pointer transition-colors disabled:opacity-40"
+                      className="px-2.5 py-1 bg-[#EEF0FF] hover:bg-[#E0E4FC] text-[#5865D8] border border-[#5865D8]/20 rounded text-[11px] font-semibold cursor-pointer transition-colors disabled:opacity-40"
                     >
                       +1 Log
                     </button>
@@ -553,19 +553,19 @@ export const HolidayModeModule: React.FC<HolidayModeModuleProps> = ({
 
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-[11px] font-mono">
-                      <span className="text-slate-400">{goal.currentValue} / {goal.targetValue} {goal.unit}</span>
-                      <span className={isDone ? 'text-emerald-400 font-bold' : 'text-slate-300'}>{pct}%</span>
+                      <span className="text-[#667085]">{goal.currentValue} / {goal.targetValue} {goal.unit}</span>
+                      <span className={isDone ? 'text-[#16845B] font-bold' : 'text-[#242938]'}>{pct}%</span>
                     </div>
-                    <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-[#F5F6FA] h-1.5 rounded-full overflow-hidden border border-[#E5E7EB]">
                       <div
-                        className={`h-full rounded-full ${isDone ? 'bg-emerald-400' : 'bg-indigo-500'}`}
+                        className={`h-full rounded-full ${isDone ? 'bg-[#16845B]' : 'bg-[#5865D8]'}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
                   </div>
 
                   {goal.description && (
-                    <p className="text-[11px] text-slate-500">{goal.description}</p>
+                    <p className="text-[11px] text-[#667085]">{goal.description}</p>
                   )}
                 </div>
               );

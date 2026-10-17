@@ -49,22 +49,22 @@ export const Navbar: React.FC<NavbarProps> = ({
   const availableHours = (capacity.netAvailableMinutes / 60).toFixed(1);
 
   return (
-    <header id="nexora-header" className="bg-slate-900 text-slate-100 border-b border-slate-800 sticky top-0 z-40">
+    <header id="nexora-header" className="bg-white text-[#242938] border-b border-[#E5E7EB] sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand & Semester Badge */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center font-black tracking-wider text-white shadow-sm shadow-indigo-500/20">
+            <div className="w-9 h-9 rounded-lg bg-[#5865D8] flex items-center justify-center font-black tracking-wider text-white shadow-xs">
               NX
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-lg tracking-tight text-white">NEXORA</span>
-                <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-slate-800 text-indigo-300 border border-slate-700">
+                <span className="font-bold text-lg tracking-tight text-[#242938]">NEXORA</span>
+                <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20 font-mono">
                   Local-First OS
                 </span>
               </div>
-              <div className="text-xs text-slate-400 truncate max-w-[200px] sm:max-w-xs">
+              <div className="text-xs text-[#667085] truncate max-w-[200px] sm:max-w-xs">
                 {activeSemester?.name || 'No Active Semester'}
               </div>
             </div>
@@ -75,20 +75,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Real capacity badge */}
             <div 
               id="capacity-status-pill"
-              className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-full text-xs"
+              className="flex items-center gap-2 bg-[#F5F6FA] border border-[#E5E7EB] px-3 py-1.5 rounded-full text-xs shadow-xs"
               title="Calculated from your 24h day minus classes, commute, and rest"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-slate-300">Today's Real Capacity:</span>
-              <span className="font-semibold text-emerald-300">{availableHours}h</span>
+              <span className="w-2 h-2 rounded-full bg-[#16845B] animate-pulse"></span>
+              <span className="text-[#667085]">Today's Real Capacity:</span>
+              <span className="font-semibold text-[#16845B] font-mono">{availableHours}h</span>
             </div>
 
             {/* Local Storage Indicator */}
             <div 
               id="local-storage-indicator"
-              className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800/50 px-2.5 py-1 rounded-md border border-slate-800"
+              className="flex items-center gap-1.5 text-xs text-[#667085] bg-[#F5F6FA] px-2.5 py-1 rounded-md border border-[#E5E7EB]"
             >
-              <HardDrive className="w-3.5 h-3.5 text-indigo-400" />
+              <HardDrive className="w-3.5 h-3.5 text-[#5865D8]" />
               <span>Local Data</span>
             </div>
 
@@ -96,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="quick-start-session-btn"
               onClick={onOpenFocusSession}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               <span>Start Session</span>
@@ -105,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Navigation Tabs Bar */}
-        <div className="flex items-center space-x-1 overflow-x-auto py-2 scrollbar-none border-t border-slate-800/60">
+        <div className="flex items-center space-x-1 overflow-x-auto py-2 scrollbar-none border-t border-[#E5E7EB]">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -114,13 +114,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={item.id}
                 id={`nav-tab-${item.id}`}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 font-semibold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    ? 'bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/30 font-semibold shadow-xs'
+                    : 'text-[#667085] hover:text-[#242938] hover:bg-[#F5F6FA]'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#5865D8]' : 'text-[#667085]'}`} />
                 <span>{item.label}</span>
               </button>
             );

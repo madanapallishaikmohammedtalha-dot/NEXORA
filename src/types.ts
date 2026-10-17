@@ -327,6 +327,12 @@ export interface TutorContext {
   currentObjective?: string;
   isLocked?: boolean;
   missingPrerequisites?: string[];
+  relevantMemories?: Array<{
+    category: string;
+    title: string;
+    detail: string;
+  }>;
+  preferredExplanationStyle?: string;
 }
 
 export interface ExplainItBackFeedback {
@@ -421,6 +427,12 @@ export interface SkillWithLevel {
   level: SkillProficiency;
 }
 
+export type ExplanationStyle = 
+  | 'intuition_first' 
+  | 'practical_examples' 
+  | 'first_principles' 
+  | 'socratic_inquiry';
+
 export interface UserProfile {
   name: string;
   university: string;
@@ -436,6 +448,7 @@ export interface UserProfile {
   skillsWithLevels?: SkillWithLevel[]; // skills with structured proficiency
   careerInterests?: string[]; // e.g. ["Systems Engineering", "Distributed Systems"]
   currentProjects?: string[]; // e.g. ["POSIX Shell Interpreter", "Key-Value Store"]
+  preferredExplanationStyle?: ExplanationStyle; // Memory & tutoring preference
   aiProvider: 'gemini' | 'custom' | 'offline';
   apiKey?: string;
   customEndpoint?: string;
@@ -443,7 +456,80 @@ export interface UserProfile {
   hasCompletedOnboarding: boolean;
 }
 
+// ==========================================
+// Persistent Learner Memory Types
+// ==========================================
+
+export type MemoryCategory =
+  | 'strength'
+  | 'needs_practice'
+  | 'misconception'
+  | 'effective_method'
+  | 'learning_context'
+  | 'priority';
+
+export type MemorySource =
+  | 'session_reflection'
+  | 'tutor_assessment'
+  | 'user_input'
+  | 'weekly_review'
+  | 'system_derivation';
+
+export interface LearnerMemory {
+  id: string;
+  category: MemoryCategory;
+  title: string;
+  detail: string;
+  subjectId?: string;
+  topicId?: string;
+  source: MemorySource;
+  confidence: number; // 0.0 - 1.0 scale
+  occurrences: number; // tracks reinforcement frequency
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  isArchived?: boolean;
+}
+
+// Active Focus Session State (Persisted across tab reloads/navigation)
+export interface ActiveFocusSessionState {
+  missionItemId?: string;
+  topicId?: string;
+  subjectId?: string;
+  title: string;
+  objective?: string;
+  startedAtMs: number;
+  targetDurationMinutes: number;
+  targetEndTimeMs: number;
+  currentStepIndex: number;
+  steps: string[];
+  status: 'running' | 'paused' | 'warning' | 'completed';
+  pausedAtMs?: number;
+  totalPausedMs: number;
+}
+
+// Project Item model for the Projects destination
+export interface ProjectItem {
+  id: string;
+  title: string;
+  description: string;
+  category: 'systems' | 'web' | 'ai' | 'tool' | 'academic';
+  status: 'planned' | 'in_progress' | 'completed';
+  techStack: string[];
+  githubUrl?: string;
+  liveUrl?: string;
+  milestones: Array<{
+    id: string;
+    title: string;
+    completed: boolean;
+  }>;
+  relatedSubjectId?: string;
+  relatedTopicIds?: string[];
+  targetCompletionDate?: string;
+  createdAt: string;
+}
+
 export interface AppState {
+  schemaVersion?: number; // 1 = original, 2 = with learner memory & persistent focus session
   profile: UserProfile;
   semesters: Semester[];
   activeSemesterId: string;
@@ -457,6 +543,9 @@ export interface AppState {
   timeBlocks?: Record<string, TimeBlock[]>; // Keyed by YYYY-MM-DD
   semesterReviews?: Record<string, SemesterAchievementReport>; // Keyed by semesterId
   activeHolidayPlan?: HolidayPlan;
+  learnerMemories?: LearnerMemory[];
+  activeFocusSession?: ActiveFocusSessionState | null;
+  projects?: ProjectItem[];
 }
 
 // ==========================================
@@ -635,16 +724,23 @@ export interface AIWeeklyReviewResponse {
 }
 
 export type ActiveTab = 
-  | 'dashboard'
+  // 8 Canonical Destinations
+  | 'today'
   | 'planner'
+  | 'learn'
+  | 'practice'
+  | 'semester'
+  | 'projects'
+  | 'reviews'
+  | 'settings'
+  // Backwards-compatible navigation aliases
+  | 'dashboard'
   | 'timetable'
   | 'roadmap'
   | 'tutor'
   | 'progress'
   | 'weekly_review'
-  | 'semester'
-  | 'holiday'
-  | 'settings';
+  | 'holiday';
 
 // ==========================================
 // Semester Review & Holiday Mode Types

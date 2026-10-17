@@ -169,34 +169,34 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
   const getStatusBadge = (status: SemesterStatus) => {
     switch (status) {
       case 'active':
-        return <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800/60 uppercase">Active Term</span>;
+        return <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#16845B] border border-[#A7F3D0] uppercase">Active Term</span>;
       case 'completed':
-        return <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 uppercase">Completed ✓</span>;
+        return <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#F5F6FA] text-[#667085] border border-[#E5E7EB] uppercase">Completed ✓</span>;
       case 'break':
-        return <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800/60 uppercase">Holiday / Break</span>;
+        return <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#FFFBEB] text-[#A6630A] border border-[#FDE68A] uppercase">Holiday / Break</span>;
       case 'upcoming':
       default:
-        return <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800/60 uppercase">Upcoming</span>;
+        return <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#EEF0FF] text-[#5865D8] border border-[#C7D2FE] uppercase">Upcoming</span>;
     }
   };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* 1. Header Banner with End Semester & Next Semester Actions */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-7 relative overflow-hidden">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-7 shadow-xs relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-black uppercase tracking-wider text-indigo-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#5865D8]">
                 Academic Term Lifecycle
               </span>
               {getStatusBadge(activeStatus)}
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-indigo-400" />
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#242938] tracking-tight flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-[#5865D8]" />
               <span>{activeSemester?.name || 'Semester Management'}</span>
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-2xl">
+            <p className="text-xs sm:text-sm text-[#667085] max-w-2xl">
               Deterministic date bounds, exam & revision periods, historical preservation, and holiday transitions.
             </p>
           </div>
@@ -205,10 +205,10 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
             {activeStatus !== 'completed' ? (
               <button
                 onClick={() => setIsEndingSemester(true)}
-                className="px-4 py-2 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-rose-600/20 flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 bg-[#C43D4B] hover:bg-[#b03440] text-white rounded-xl text-xs font-semibold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
               >
                 <Award className="w-4 h-4" />
-                <span>END SEMESTER</span>
+                <span>End Semester</span>
               </button>
             ) : (
               <button
@@ -216,16 +216,16 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
                   const rep = dataService.getSemesterReview(activeSemester.id);
                   if (rep) setViewingReport(rep);
                 }}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 bg-[#F5F6FA] hover:bg-[#E5E7EB] text-[#242938] border border-[#E5E7EB] rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <Award className="w-4 h-4 text-emerald-400" />
+                <Award className="w-4 h-4 text-[#16845B]" />
                 <span>View Semester Report</span>
               </button>
             )}
 
             <button
               onClick={() => setIsStartingNextSem(true)}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-semibold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Start Next Semester</span>
@@ -235,62 +235,62 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
       </div>
 
       {/* 2. Active Semester Dates & Periods Configuration */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-5">
+        <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-3">
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-indigo-400" />
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+            <Calendar className="w-4 h-4 text-[#5865D8]" />
+            <h2 className="text-sm font-bold text-[#242938] uppercase tracking-wider">
               Semester Schedule & Examination Periods
             </h2>
           </div>
-          <span className="text-xs text-slate-400">Actual dates override predictions</span>
+          <span className="text-xs text-[#667085]">Actual dates override predictions</span>
         </div>
 
         <form onSubmit={handleSaveSemesterInfo} className="space-y-4 text-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
-              <label className="text-slate-400 block mb-1">Semester Name</label>
+              <label className="text-[#667085] block mb-1">Semester Name</label>
               <input
                 type="text"
                 value={semName}
                 onChange={(e) => setSemName(e.target.value)}
                 placeholder="e.g. 3rd Semester (Fall 2026)"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-semibold"
+                className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] font-semibold focus:outline-none focus:border-[#5865D8]"
                 required
               />
             </div>
 
             <div>
-              <label className="text-slate-400 block mb-1">Start Date</label>
+              <label className="text-[#667085] block mb-1">Start Date</label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono"
+                className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] font-mono focus:outline-none focus:border-[#5865D8]"
                 required
               />
             </div>
 
             <div>
-              <label className="text-slate-400 block mb-1">Expected End Date (Prediction)</label>
+              <label className="text-[#667085] block mb-1">Expected End Date (Prediction)</label>
               <input
                 type="date"
                 value={expectedEndDate}
                 onChange={(e) => setExpectedEndDate(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono"
+                className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] font-mono focus:outline-none focus:border-[#5865D8]"
                 required
               />
             </div>
 
             <div>
-              <label className="text-slate-400 block mb-1">
-                Actual End Date <span className="text-emerald-400">(Authoritative)</span>
+              <label className="text-[#667085] block mb-1">
+                Actual End Date <span className="text-[#16845B] font-semibold">(Authoritative)</span>
               </label>
               <input
                 type="date"
                 value={actualEndDate}
                 onChange={(e) => setActualEndDate(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono"
+                className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] font-mono focus:outline-none focus:border-[#5865D8]"
               />
             </div>
           </div>
@@ -298,87 +298,87 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
           {/* Academic Periods: Exam, Revision, Holiday & Next Term */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
             <div>
-              <label className="text-slate-400 block mb-1">Exam Period (Start → End)</label>
+              <label className="text-[#667085] block mb-1">Exam Period (Start → End)</label>
               <div className="flex gap-2">
                 <input
                   type="date"
                   value={examStart}
                   onChange={(e) => setExamStart(e.target.value)}
-                  className="w-1/2 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-white font-mono text-[11px]"
+                  className="w-1/2 bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-2 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                 />
                 <input
                   type="date"
                   value={examEnd}
                   onChange={(e) => setExamEnd(e.target.value)}
-                  className="w-1/2 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-white font-mono text-[11px]"
+                  className="w-1/2 bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-2 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-slate-400 block mb-1">Revision / Reading Week</label>
+              <label className="text-[#667085] block mb-1">Revision / Reading Week</label>
               <div className="flex gap-2">
                 <input
                   type="date"
                   value={revStart}
                   onChange={(e) => setRevStart(e.target.value)}
-                  className="w-1/2 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-white font-mono text-[11px]"
+                  className="w-1/2 bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-2 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                 />
                 <input
                   type="date"
                   value={revEnd}
                   onChange={(e) => setRevEnd(e.target.value)}
-                  className="w-1/2 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-white font-mono text-[11px]"
+                  className="w-1/2 bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-2 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-slate-400 block mb-1">Semester Break (Holiday Mode)</label>
+              <label className="text-[#667085] block mb-1">Semester Break (Holiday Mode)</label>
               <div className="flex gap-2">
                 <input
                   type="date"
                   value={holidayStart}
                   onChange={(e) => setHolidayStart(e.target.value)}
-                  className="w-1/2 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-white font-mono text-[11px]"
+                  className="w-1/2 bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-2 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                 />
                 <input
                   type="date"
                   value={holidayEnd}
                   onChange={(e) => setHolidayEnd(e.target.value)}
-                  className="w-1/2 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-white font-mono text-[11px]"
+                  className="w-1/2 bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-2 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-slate-400 block mb-1">Next Semester Start Date</label>
+              <label className="text-[#667085] block mb-1">Next Semester Start Date</label>
               <input
                 type="date"
                 value={nextSemStart}
                 onChange={(e) => setNextSemStart(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-white font-mono text-[11px]"
+                className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
               />
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2">
-              <span className="text-slate-400">Weekly Target Study Hours:</span>
+              <span className="text-[#667085]">Weekly Target Study Hours:</span>
               <input
                 type="number"
                 min={5}
                 max={40}
                 value={targetWeeklyHours}
                 onChange={(e) => setTargetWeeklyHours(Number(e.target.value))}
-                className="w-20 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-white font-mono text-center font-bold"
+                className="w-20 bg-[#F5F6FA] border border-[#E5E7EB] rounded-lg px-2.5 py-1 text-[#242938] font-mono text-center font-bold focus:outline-none focus:border-[#5865D8]"
               />
-              <span className="text-slate-500">hours / week</span>
+              <span className="text-[#667085]">hours / week</span>
             </div>
 
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs cursor-pointer shadow-sm"
+              className="px-4 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white font-semibold rounded-xl text-xs cursor-pointer shadow-xs"
             >
               Save Timeline Settings
             </button>
@@ -388,10 +388,10 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
 
       {/* 3. Historical Semesters Archive */}
       {state.semesters.length > 1 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <History className="w-4 h-4 text-indigo-400" />
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#E5E7EB] pb-3">
+            <History className="w-4 h-4 text-[#5865D8]" />
+            <h2 className="text-sm font-bold text-[#242938] uppercase tracking-wider">
               Semester History & Archive ({state.semesters.length} Terms)
             </h2>
           </div>
@@ -407,19 +407,19 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
                   key={sem.id}
                   className={`p-4 rounded-xl border space-y-2 transition-all ${
                     isCurrent
-                      ? 'bg-indigo-950/20 border-indigo-500/40'
-                      : 'bg-slate-950/60 border-slate-800'
+                      ? 'bg-[#EEF0FF] border-[#C7D2FE]'
+                      : 'bg-[#F5F6FA] border-[#E5E7EB]'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white truncate">{sem.name}</span>
+                    <span className="text-xs font-bold text-[#242938] truncate">{sem.name}</span>
                     {getStatusBadge(status)}
                   </div>
-                  <div className="text-[11px] text-slate-400 font-mono">
+                  <div className="text-[11px] text-[#667085] font-mono">
                     {sem.startDate} → {sem.actualEndDate || sem.endDate}
                   </div>
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-[10px] text-slate-500">
+                    <span className="text-[10px] text-[#667085]">
                       {state.subjects.filter((s) => s.semesterId === sem.id).length} subjects
                     </span>
 
@@ -428,7 +428,7 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
                         const rep = dataService.getSemesterReview(sem.id);
                         if (rep) setViewingReport(rep);
                       }}
-                      className="text-[11px] text-emerald-400 hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                      className="text-[11px] text-[#16845B] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
                     >
                       <Award className="w-3 h-3" />
                       <span>{hasReport ? 'View Report' : 'Generate Review'}</span>
@@ -442,19 +442,19 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
       )}
 
       {/* 4. Enrolled Subjects Management */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-3">
           <div>
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+            <h2 className="text-sm font-bold text-[#242938] uppercase tracking-wider">
               Enrolled Subjects ({state.subjects.filter((s) => s.semesterId === activeSemester?.id).length})
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#667085]">
               Credit courses and weekly study pacing for {activeSemester?.name}.
             </p>
           </div>
           <button
             onClick={() => setIsAddingSubject(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-semibold shadow-xs cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Subject</span>
@@ -463,74 +463,74 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
 
         {/* Add Subject Modal */}
         {isAddingSubject && (
-          <form onSubmit={handleAddSubjectSubmit} className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
-            <div className="text-xs font-bold text-indigo-300">Enroll New Subject</div>
+          <form onSubmit={handleAddSubjectSubmit} className="bg-[#F5F6FA] p-4 rounded-xl border border-[#E5E7EB] space-y-3 text-xs">
+            <div className="text-xs font-bold text-[#5865D8]">Enroll New Subject</div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="text-slate-400 block mb-1">Subject Code</label>
+                <label className="text-[#667085] block mb-1">Subject Code</label>
                 <input
                   type="text"
                   value={subCode}
                   onChange={(e) => setSubCode(e.target.value)}
                   placeholder="e.g. CS 301"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">Subject Full Name</label>
+                <label className="text-[#667085] block mb-1">Subject Full Name</label>
                 <input
                   type="text"
                   value={subName}
                   onChange={(e) => setSubName(e.target.value)}
                   placeholder="e.g. Operating Systems & Concurrency"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">Color Theme</label>
+                <label className="text-[#667085] block mb-1">Color Theme</label>
                 <input
                   type="color"
                   value={subColor}
                   onChange={(e) => setSubColor(e.target.value)}
-                  className="w-full h-9 bg-slate-900 border border-slate-700 rounded-lg cursor-pointer px-1 py-1"
+                  className="w-full h-9 bg-white border border-[#E5E7EB] rounded-lg cursor-pointer px-1 py-1"
                 />
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">Credits / Units</label>
+                <label className="text-[#667085] block mb-1">Credits / Units</label>
                 <input
                   type="number"
                   min={1}
                   max={10}
                   value={subCredits}
                   onChange={(e) => setSubCredits(Number(e.target.value))}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">Target Study Hours / Week</label>
+                <label className="text-[#667085] block mb-1">Target Study Hours / Week</label>
                 <input
                   type="number"
                   min={1}
                   max={25}
                   value={subHours}
                   onChange={(e) => setSubHours(Number(e.target.value))}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
 
               <div className="sm:col-span-3">
-                <label className="text-slate-400 block mb-1">Syllabus Overview (Optional)</label>
+                <label className="text-[#667085] block mb-1">Syllabus Overview (Optional)</label>
                 <textarea
                   value={subSyllabus}
                   onChange={(e) => setSubSyllabus(e.target.value)}
                   placeholder="Paste syllabus summary to help AI generate tailored roadmaps..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white h-16 resize-none"
+                  className="w-full bg-white border border-[#E5E7EB] rounded-lg p-2.5 text-[#242938] h-16 resize-none focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
             </div>
@@ -539,13 +539,13 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
               <button
                 type="button"
                 onClick={() => setIsAddingSubject(false)}
-                className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg"
+                className="px-3 py-1.5 bg-white border border-[#E5E7EB] text-[#667085] hover:text-[#242938] rounded-lg font-medium cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-sm"
+                className="px-4 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white font-semibold rounded-lg shadow-xs cursor-pointer"
               >
                 Enroll Subject
               </button>
@@ -561,20 +561,20 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
             return (
               <div
                 key={sub.id}
-                className="bg-slate-950/60 border border-slate-800 p-4 rounded-xl space-y-3"
+                className="bg-[#F5F6FA] border border-[#E5E7EB] p-4 rounded-xl space-y-3"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <span className="w-4 h-4 rounded-full shrink-0" style={{ backgroundColor: sub.color }} />
                     <div>
-                      <div className="text-sm font-bold text-white">{sub.code}</div>
-                      <div className="text-xs text-slate-300 font-medium">{sub.name}</div>
+                      <div className="text-sm font-bold text-[#242938]">{sub.code}</div>
+                      <div className="text-xs text-[#667085] font-medium">{sub.name}</div>
                     </div>
                   </div>
 
                   <button
                     onClick={() => onDeleteSubject(sub.id)}
-                    className="text-slate-500 hover:text-rose-400 p-1 rounded cursor-pointer"
+                    className="text-[#667085] hover:text-[#C43D4B] p-1 rounded cursor-pointer"
                     title="Remove subject"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -582,15 +582,15 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
                 </div>
 
                 {sub.syllabusOverview && (
-                  <p className="text-[11px] text-slate-400 line-clamp-2">
+                  <p className="text-[11px] text-[#667085] line-clamp-2">
                     {sub.syllabusOverview}
                   </p>
                 )}
 
-                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800/80">
-                  <span>Target: <strong>{sub.targetWeeklyHours}h/wk</strong></span>
-                  <span>Credits: <strong>{sub.credits}</strong></span>
-                  <span>Roadmap: <strong>{topicCount} topics</strong></span>
+                <div className="flex items-center justify-between text-[11px] text-[#667085] pt-2 border-t border-[#E5E7EB]">
+                  <span>Target: <strong className="text-[#242938]">{sub.targetWeeklyHours}h/wk</strong></span>
+                  <span>Credits: <strong className="text-[#242938]">{sub.credits}</strong></span>
+                  <span>Roadmap: <strong className="text-[#242938]">{topicCount} topics</strong></span>
                 </div>
               </div>
             );
@@ -600,73 +600,73 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
 
       {/* MODAL: END SEMESTER CONFIRMATION & TRANSITION */}
       {isEndingSemester && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-5 shadow-2xl text-slate-200">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#E5E7EB] rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-5 shadow-xl text-[#242938]">
+            <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-3">
               <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-rose-400" />
-                <h3 className="text-base font-bold text-white">END SEMESTER CONFIRMATION</h3>
+                <Award className="w-5 h-5 text-[#C43D4B]" />
+                <h3 className="text-base font-bold text-[#242938]">END SEMESTER CONFIRMATION</h3>
               </div>
               <button
                 onClick={() => setIsEndingSemester(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#667085] hover:text-[#242938]"
               >
                 ✕
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <p className="text-slate-300 leading-relaxed">
-                You are ending <strong className="text-white">{activeSemester?.name}</strong>.
+              <p className="text-[#667085] leading-relaxed">
+                You are ending <strong className="text-[#242938]">{activeSemester?.name}</strong>.
                 NEXORA will calculate your complete semester achievement report and archive your curriculum history safely.
               </p>
 
               <div>
-                <label className="text-slate-400 block mb-1 font-bold uppercase text-[10px]">
-                  Actual Completion Date <span className="text-rose-400">*Required</span>
+                <label className="text-[#667085] block mb-1 font-bold uppercase text-[10px]">
+                  Actual Completion Date <span className="text-[#C43D4B]">*Required</span>
                 </label>
                 <input
                   type="date"
                   required
                   value={endSemDate}
                   onChange={(e) => setEndSemDate(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono"
+                  className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] font-mono focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <div>
-                  <label className="text-slate-400 block mb-1 text-[10px] uppercase font-bold">Holiday Start</label>
+                  <label className="text-[#667085] block mb-1 text-[10px] uppercase font-bold">Holiday Start</label>
                   <input
                     type="date"
                     value={endHolidayStart}
                     onChange={(e) => setEndHolidayStart(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-white font-mono text-[11px]"
+                    className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-2 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1 text-[10px] uppercase font-bold">Holiday End</label>
+                  <label className="text-[#667085] block mb-1 text-[10px] uppercase font-bold">Holiday End</label>
                   <input
                     type="date"
                     value={endHolidayEnd}
                     onChange={(e) => setEndHolidayEnd(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-white font-mono text-[11px]"
+                    className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-2 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1 text-[10px] uppercase font-bold">Next Semester Start Date</label>
+                <label className="text-[#667085] block mb-1 text-[10px] uppercase font-bold">Next Semester Start Date</label>
                 <input
                   type="date"
                   value={endNextSemStart}
                   onChange={(e) => setEndNextSemStart(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-white font-mono text-[11px]"
+                  className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-1.5 text-[#242938] font-mono text-[11px] focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-400">
-                <strong className="text-emerald-400 block mb-0.5">Historical Invariant:</strong>
+              <div className="p-3 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] text-[11px] text-[#242938]">
+                <strong className="text-[#16845B] block mb-0.5">Historical Invariant:</strong>
                 Zero data will be deleted. All study sessions, timetables, goals, and topic mastery remain preserved.
               </div>
             </div>
@@ -674,13 +674,13 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setIsEndingSemester(false)}
-                className="px-4 py-2 text-slate-400 hover:text-white text-xs font-semibold"
+                className="px-4 py-2 text-[#667085] hover:text-[#242938] text-xs font-semibold cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmEndSemester}
-                className="px-5 py-2 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white rounded-xl text-xs font-bold cursor-pointer"
+                className="px-5 py-2 bg-[#C43D4B] hover:bg-[#b03440] text-white rounded-xl text-xs font-semibold cursor-pointer shadow-xs"
               >
                 Confirm & End Semester
               </button>
@@ -691,20 +691,20 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
 
       {/* MODAL: START NEXT SEMESTER */}
       {isStartingNextSem && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
           <form
             onSubmit={handleCreateNextSemester}
-            className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-5 shadow-2xl text-slate-200"
+            className="bg-white border border-[#E5E7EB] rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-5 shadow-xl text-[#242938]"
           >
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-3">
               <div className="flex items-center gap-2">
-                <Plus className="w-5 h-5 text-indigo-400" />
-                <h3 className="text-base font-bold text-white">START NEXT SEMESTER</h3>
+                <Plus className="w-5 h-5 text-[#5865D8]" />
+                <h3 className="text-base font-bold text-[#242938]">START NEXT SEMESTER</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsStartingNextSem(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#667085] hover:text-[#242938]"
               >
                 ✕
               </button>
@@ -712,53 +712,53 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="text-slate-400 block mb-1">Semester Name</label>
+                <label className="text-[#667085] block mb-1">Semester Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. 4th Semester (Spring 2027)"
                   value={nextSemName}
                   onChange={(e) => setNextSemName(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 block mb-1">Actual Start Date</label>
+                  <label className="text-[#667085] block mb-1">Actual Start Date</label>
                   <input
                     type="date"
                     required
                     value={nextSemStartDate}
                     onChange={(e) => setNextSemStartDate(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono"
+                    className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] font-mono focus:outline-none focus:border-[#5865D8]"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1">Expected End Date</label>
+                  <label className="text-[#667085] block mb-1">Expected End Date</label>
                   <input
                     type="date"
                     required
                     value={nextSemExpEndDate}
                     onChange={(e) => setNextSemExpEndDate(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono"
+                    className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] font-mono focus:outline-none focus:border-[#5865D8]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">Target Weekly Study Hours</label>
+                <label className="text-[#667085] block mb-1">Target Weekly Study Hours</label>
                 <input
                   type="number"
                   min={5}
                   max={40}
                   value={nextSemHours}
                   onChange={(e) => setNextSemHours(Number(e.target.value))}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono"
+                  className="w-full bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl px-3 py-2 text-[#242938] font-mono focus:outline-none focus:border-[#5865D8]"
                 />
               </div>
 
-              <p className="text-[11px] text-slate-400 bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+              <p className="text-[11px] text-[#667085] bg-[#F5F6FA] p-3 rounded-xl border border-[#E5E7EB]">
                 All previous semester analytics, timetables, and session records will be retained cleanly under their respective semester IDs.
               </p>
             </div>
@@ -767,13 +767,13 @@ export const SemesterModule: React.FC<SemesterModuleProps> = ({
               <button
                 type="button"
                 onClick={() => setIsStartingNextSem(false)}
-                className="px-4 py-2 text-slate-400 hover:text-white text-xs font-semibold"
+                className="px-4 py-2 text-[#667085] hover:text-[#242938] text-xs font-semibold cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold cursor-pointer"
+                className="px-5 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-xl text-xs font-semibold cursor-pointer shadow-xs"
               >
                 Activate New Semester
               </button>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  LayoutDashboard, 
   CalendarDays, 
   Clock, 
   GitBranch, 
@@ -9,12 +8,14 @@ import {
   BookOpen, 
   Settings, 
   Play, 
-  Sparkles,
-  ShieldCheck,
-  CheckCircle2,
-  SlidersHorizontal,
-  Compass,
-  Sun
+  CheckCircle2, 
+  SlidersHorizontal, 
+  Compass, 
+  Sun, 
+  FolderGit2, 
+  Menu, 
+  X,
+  HardDrive
 } from 'lucide-react';
 import { 
   ActiveTab, 
@@ -32,6 +33,7 @@ import {
 import { loadAppState, resetToDemoState, exportStateAsJSON, importStateFromJSON } from './services/storage';
 import { dataService } from './services/dataService';
 import { getTodayDateString } from './services/scheduler';
+import { TodayModule } from './components/TodayModule';
 import { Dashboard } from './components/Dashboard';
 import { DailyPlannerModule } from './components/DailyPlannerModule';
 import { TimetableModule } from './components/TimetableModule';
@@ -41,13 +43,23 @@ import { ProgressModule } from './components/ProgressModule';
 import { WeeklyReviewModule } from './components/WeeklyReviewModule';
 import { SemesterModule } from './components/SemesterModule';
 import { HolidayModeModule } from './components/HolidayModeModule';
+import { ProjectsModule } from './components/ProjectsModule';
 import { SettingsModule } from './components/SettingsModule';
 import { SessionTrackerModal } from './components/SessionTrackerModal';
 import { OnboardingModal } from './components/OnboardingModal';
 
 export default function App() {
   const [state, setState] = useState<AppState>(() => loadAppState());
-  const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('today');
+
+  // Sub-view selectors for bundled destinations
+  const [plannerSubView, setPlannerSubView] = useState<'daily' | 'timetable'>('daily');
+  const [semesterSubView, setSemesterSubView] = useState<'semester' | 'holiday'>('semester');
+  const [reviewsSubView, setReviewsSubView] = useState<'weekly' | 'progress'>('weekly');
+  const [todaySubView, setTodaySubView] = useState<'today' | 'legacy_dashboard'>('today');
+
+  // Mobile sidebar menu toggle
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Modal states
   const [isFocusModalOpen, setIsFocusModalOpen] = useState(false);
@@ -74,6 +86,42 @@ export default function App() {
     });
     return unsubscribe;
   }, []);
+
+  // Backwards-compatible navigation adapter
+  const handleNavigate = (tab: ActiveTab) => {
+    setIsMobileMenuOpen(false);
+    if (tab === 'dashboard') {
+      setActiveTab('today');
+      setTodaySubView('legacy_dashboard');
+    } else if (tab === 'today') {
+      setActiveTab('today');
+      setTodaySubView('today');
+    } else if (tab === 'timetable') {
+      setActiveTab('planner');
+      setPlannerSubView('timetable');
+    } else if (tab === 'planner') {
+      setActiveTab('planner');
+      setPlannerSubView('daily');
+    } else if (tab === 'roadmap') {
+      setActiveTab('learn');
+    } else if (tab === 'tutor') {
+      setActiveTab('practice');
+    } else if (tab === 'holiday') {
+      setActiveTab('semester');
+      setSemesterSubView('holiday');
+    } else if (tab === 'semester') {
+      setActiveTab('semester');
+      setSemesterSubView('semester');
+    } else if (tab === 'progress') {
+      setActiveTab('reviews');
+      setReviewsSubView('progress');
+    } else if (tab === 'weekly_review') {
+      setActiveTab('reviews');
+      setReviewsSubView('weekly');
+    } else {
+      setActiveTab(tab);
+    }
+  };
 
   // Handler: Toggle Mission Item status
   const handleToggleItemStatus = (dateStr: string, itemId: string) => {
@@ -289,153 +337,329 @@ export default function App() {
     showToast('Setup & Routine saved successfully');
   };
 
-  const navTabs: Array<{ id: ActiveTab; label: string; icon: React.ReactNode }> = [
-    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
-    { id: 'planner', label: 'Daily Planner', icon: <CalendarDays className="w-4 h-4" /> },
-    { id: 'timetable', label: 'Timetable', icon: <Clock className="w-4 h-4" /> },
-    { id: 'roadmap', label: 'Roadmaps', icon: <GitBranch className="w-4 h-4" /> },
-    { id: 'tutor', label: 'AI Tutor', icon: <Bot className="w-4 h-4" /> },
-    { id: 'progress', label: 'Progress', icon: <BarChart3 className="w-4 h-4" /> },
-    { id: 'weekly_review', label: 'Weekly Review', icon: <Compass className="w-4 h-4" /> },
-    { id: 'holiday', label: 'Holiday Mode', icon: <Sun className="w-4 h-4" /> },
-    { id: 'semester', label: 'Curriculum & Semester', icon: <BookOpen className="w-4 h-4" /> },
+  // 8 Canonical Destinations
+  const canonicalTabs: Array<{ id: ActiveTab; label: string; icon: React.ReactNode }> = [
+    { id: 'today', label: 'Today', icon: <Sun className="w-4 h-4" /> },
+    { id: 'planner', label: 'Planner', icon: <CalendarDays className="w-4 h-4" /> },
+    { id: 'learn', label: 'Learn', icon: <GitBranch className="w-4 h-4" /> },
+    { id: 'practice', label: 'Practice', icon: <Bot className="w-4 h-4" /> },
+    { id: 'semester', label: 'Semester', icon: <BookOpen className="w-4 h-4" /> },
+    { id: 'projects', label: 'Projects', icon: <FolderGit2 className="w-4 h-4" /> },
+    { id: 'reviews', label: 'Reviews', icon: <Compass className="w-4 h-4" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
   ];
 
+  // Resolve current primary tab identifier
+  const resolvedTab: ActiveTab = 
+    activeTab === 'dashboard' ? 'today' :
+    activeTab === 'timetable' ? 'planner' :
+    activeTab === 'roadmap' ? 'learn' :
+    activeTab === 'tutor' ? 'practice' :
+    activeTab === 'holiday' ? 'semester' :
+    activeTab === 'progress' || activeTab === 'weekly_review' ? 'reviews' :
+    activeTab;
+
+  const activeSemester = state.semesters.find((s) => s.id === state.activeSemesterId) || state.semesters[0];
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-[#F5F6FA] text-[#242938] flex flex-col md:flex-row selection:bg-[#5865D8] selection:text-white">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white border border-indigo-500/60 shadow-2xl px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 animate-in fade-in slide-in-from-bottom-3 duration-200">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>{toastMessage}</span>
+        <div className="fixed bottom-6 right-6 z-50 bg-white text-[#242938] border border-[#5865D8]/40 shadow-lg px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <CheckCircle2 className="w-4 h-4 text-[#16845B]" />
+          <span className="font-medium">{toastMessage}</span>
         </div>
       )}
 
-      {/* Top Main Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          {/* Brand Logo & Tagline */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center font-extrabold text-white text-sm shadow-md shadow-indigo-500/20">
-              NX
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-base font-extrabold tracking-tight text-white">NEXORA</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50">
-                  OS v1.0
-                </span>
+      {/* ========================================================================= */}
+      {/* DESKTOP SIDEBAR NAVIGATION                                                */}
+      {/* ========================================================================= */}
+      <aside className="hidden md:flex flex-col w-60 bg-white border-r border-[#E5E7EB] p-3.5 shrink-0 justify-between sticky top-0 h-screen select-none">
+        <div className="space-y-4">
+          {/* Brand header */}
+          <div className="px-2.5 py-1.5 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#5865D8] flex items-center justify-center font-black text-white text-xs shadow-xs">
+                NX
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">
-                Personal Learning & Career Operating System
-              </p>
+              <div>
+                <div className="text-sm font-semibold tracking-tight text-[#242938] flex items-center gap-1.5">
+                  <span>NEXORA</span>
+                  <span className="text-[10px] font-mono text-[#667085] bg-[#F5F6FA] px-1.5 py-0.5 rounded border border-[#E5E7EB]">v1.0</span>
+                </div>
+                <div className="text-[10px] text-[#667085] truncate max-w-[140px]">
+                  {activeSemester?.name || 'Academic OS'}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Center / Right Controls: Quick Focus Trigger & Student Badge */}
-          <div className="flex items-center gap-2.5">
-            <button
-              id="open-setup-wizard-btn"
-              onClick={() => setIsOnboardingOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 rounded-xl text-xs font-medium transition-all cursor-pointer"
-              title="Edit your academic routine, timetable, and preferences"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-400" />
-              <span className="hidden sm:inline">Setup & Routine</span>
-            </button>
-
+          {/* Start Focus Quick Action Button */}
+          <div className="px-1">
             <button
               id="global-focus-btn"
               onClick={() => {
                 setActiveFocusItem(null);
                 setIsFocusModalOpen(true);
               }}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer"
-              title="Launch Pomodoro Focus Session"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg text-xs font-medium shadow-xs transition-colors cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Start Focus</span>
+              <span>Start Focus Session</span>
             </button>
-
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-medium truncate max-w-[120px]">{state.profile.name || 'Alex Mercer'}</span>
-            </div>
           </div>
-        </div>
 
-        {/* Navigation Tabs Bar */}
-        <div className="max-w-7xl mx-auto mt-2.5 overflow-x-auto scrollbar-none pb-0.5">
-          <nav className="flex items-center gap-1">
-            {navTabs.map((tab) => {
-              const isActive = activeTab === tab.id;
+          {/* 8 Canonical Navigation Links */}
+          <nav className="space-y-0.5 pt-1">
+            {canonicalTabs.map((tab) => {
+              const isActive = resolvedTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   id={`nav-tab-${tab.id}`}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+                  onClick={() => handleNavigate(tab.id)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                     isActive
-                      ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 font-semibold'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                      ? 'bg-[#EEF0FF] text-[#5865D8] font-semibold border border-[#5865D8]/20'
+                      : 'text-[#667085] hover:text-[#242938] hover:bg-[#F5F6FA]'
                   }`}
                 >
-                  {tab.icon}
+                  <span className={isActive ? 'text-[#5865D8]' : 'text-[#667085]'}>
+                    {tab.icon}
+                  </span>
                   <span>{tab.label}</span>
                 </button>
               );
             })}
           </nav>
         </div>
-      </header>
 
-      {/* Main Content Body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-        {activeTab === 'dashboard' && (
-          <Dashboard
-            state={state}
-            setActiveTab={setActiveTab}
-            onStartSessionForItem={handleStartSessionForItem}
-            onToggleItemStatus={handleToggleItemStatus}
-            onOpenFocusSession={() => {
-              setActiveFocusItem(null);
-              setIsFocusModalOpen(true);
-            }}
-          />
+        {/* Sidebar Footer: Profile, Routine, Local Data indicator */}
+        <div className="space-y-2 pt-3 border-t border-[#E5E7EB] px-1">
+          <div className="flex items-center justify-between text-[11px] text-[#667085] px-2">
+            <div className="flex items-center gap-1.5">
+              <HardDrive className="w-3 h-3 text-[#5865D8]" />
+              <span>Local Database</span>
+            </div>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#16845B]" />
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-[#F5F6FA] border border-[#E5E7EB] text-xs flex items-center justify-between">
+            <div className="min-w-0 pr-2">
+              <div className="font-semibold text-[#242938] truncate">
+                {state.profile.name || 'Alex Mercer'}
+              </div>
+              <div className="text-[10px] text-[#667085] truncate">
+                {state.profile.degreeMajor || 'CS Student'}
+              </div>
+            </div>
+            <button
+              onClick={() => setIsOnboardingOpen(true)}
+              className="p-1 text-[#667085] hover:text-[#242938] hover:bg-white rounded transition-colors cursor-pointer"
+              title="Edit Routine & Setup"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* ========================================================================= */}
+      {/* MOBILE TOP BAR & DRAWER                                                   */}
+      {/* ========================================================================= */}
+      <div className="md:hidden sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-[#E5E7EB] px-4 py-2.5 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-1.5 rounded-lg text-[#667085] hover:text-[#242938] hover:bg-[#F5F6FA]"
+          >
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-[#5865D8] flex items-center justify-center font-bold text-white text-xs">
+              NX
+            </div>
+            <span className="font-semibold text-xs text-[#242938] uppercase tracking-wider">
+              {canonicalTabs.find((t) => t.id === resolvedTab)?.label || 'NEXORA'}
+            </span>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            setActiveFocusItem(null);
+            setIsFocusModalOpen(true);
+          }}
+          className="flex items-center gap-1 px-3 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg text-xs font-medium cursor-pointer shadow-xs"
+        >
+          <Play className="w-3 h-3 fill-current" />
+          <span>Focus</span>
+        </button>
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex">
+          <div className="w-64 bg-white border-r border-[#E5E7EB] p-4 space-y-4 flex flex-col justify-between shadow-xl">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded bg-[#5865D8] flex items-center justify-center font-bold text-white text-xs">
+                    NX
+                  </div>
+                  <span className="font-bold text-sm text-[#242938]">NEXORA</span>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-1 text-[#667085] hover:text-[#242938]"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <nav className="space-y-1">
+                {canonicalTabs.map((tab) => {
+                  const isActive = resolvedTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => handleNavigate(tab.id)}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                        isActive
+                          ? 'bg-[#EEF0FF] text-[#5865D8] font-semibold'
+                          : 'text-[#667085] hover:text-[#242938] hover:bg-[#F5F6FA]'
+                      }`}
+                    >
+                      <span className={isActive ? 'text-[#5865D8]' : 'text-[#667085]'}>{tab.icon}</span>
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+
+            <div className="pt-3 border-t border-[#E5E7EB]">
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsOnboardingOpen(true);
+                }}
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-[#F5F6FA] border border-[#E5E7EB] rounded-lg text-xs text-[#242938] font-medium"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5 text-[#5865D8]" />
+                <span>Routine & Setup</span>
+              </button>
+            </div>
+          </div>
+          <div className="flex-1" onClick={() => setIsMobileMenuOpen(false)} />
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MAIN WORKSPACE CONTENT BODY                                               */}
+      {/* ========================================================================= */}
+      <main className="flex-1 w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen">
+        {/* 1. TODAY DESTINATION */}
+        {resolvedTab === 'today' && (
+          <div className="space-y-4">
+            {todaySubView === 'today' ? (
+              <TodayModule
+                state={state}
+                setActiveTab={handleNavigate}
+                onStartSessionForItem={handleStartSessionForItem}
+                onToggleItemStatus={handleToggleItemStatus}
+                onOpenFocusSession={() => {
+                  setActiveFocusItem(null);
+                  setIsFocusModalOpen(true);
+                }}
+              />
+            ) : (
+              <div className="space-y-4">
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => setTodaySubView('today')}
+                    className="text-xs text-[#5865D8] hover:underline font-medium cursor-pointer"
+                  >
+                    &larr; Switch to Today Focus Workspace
+                  </button>
+                </div>
+                <Dashboard
+                  state={state}
+                  setActiveTab={handleNavigate}
+                  onStartSessionForItem={handleStartSessionForItem}
+                  onToggleItemStatus={handleToggleItemStatus}
+                  onOpenFocusSession={() => {
+                    setActiveFocusItem(null);
+                    setIsFocusModalOpen(true);
+                  }}
+                />
+              </div>
+            )}
+          </div>
         )}
 
-        {activeTab === 'planner' && (
-          <DailyPlannerModule
-            state={state}
-            onSaveMission={handleSaveMission}
-            onStartSessionForItem={handleStartSessionForItem}
-            onToggleItemStatus={handleToggleItemStatus}
-          />
+        {/* 2. PLANNER DESTINATION (Daily Schedule + Weekly Timetable sub-tabs) */}
+        {resolvedTab === 'planner' && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-1.5 p-1 bg-[#EEF0FF]/70 border border-[#E5E7EB] rounded-xl w-fit">
+              <button
+                onClick={() => setPlannerSubView('daily')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                  plannerSubView === 'daily'
+                    ? 'bg-white text-[#5865D8] font-semibold shadow-xs border border-[#E5E7EB]'
+                    : 'text-[#667085] hover:text-[#242938]'
+                }`}
+              >
+                Daily Mission & Schedule
+              </button>
+              <button
+                onClick={() => setPlannerSubView('timetable')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                  plannerSubView === 'timetable'
+                    ? 'bg-white text-[#5865D8] font-semibold shadow-xs border border-[#E5E7EB]'
+                    : 'text-[#667085] hover:text-[#242938]'
+                }`}
+              >
+                Weekly College Timetable
+              </button>
+            </div>
+
+            {plannerSubView === 'daily' ? (
+              <DailyPlannerModule
+                state={state}
+                onSaveMission={handleSaveMission}
+                onStartSessionForItem={handleStartSessionForItem}
+                onToggleItemStatus={handleToggleItemStatus}
+              />
+            ) : (
+              <TimetableModule
+                state={state}
+                onSaveSlot={handleSaveSlot}
+                onDeleteSlot={handleDeleteSlot}
+              />
+            )}
+          </div>
         )}
 
-        {activeTab === 'timetable' && (
-          <TimetableModule
-            state={state}
-            onSaveSlot={handleSaveSlot}
-            onDeleteSlot={handleDeleteSlot}
-          />
-        )}
-
-        {activeTab === 'roadmap' && (
+        {/* 3. LEARN DESTINATION (Roadmap Module) */}
+        {resolvedTab === 'learn' && (
           <RoadmapModule
             state={state}
-            setActiveTab={setActiveTab}
+            setActiveTab={handleNavigate}
             onSaveTopic={handleSaveTopic}
             onSaveTopics={handleSaveTopics}
             onUpdateTopicMastery={handleUpdateTopicMastery}
             onOverrideTopicPrerequisites={handleOverrideTopicPrerequisites}
-            onSelectTopicForTutor={(topic) => setTutorTopic(topic)}
+            onSelectTopicForTutor={(topic) => {
+              setTutorTopic(topic);
+              handleNavigate('practice');
+            }}
             onAddTopicToDailyMission={handleAddTopicToDailyMission}
           />
         )}
 
-        {activeTab === 'tutor' && (
+        {/* 4. PRACTICE DESTINATION (AI Tutor & Socratic Practice) */}
+        {resolvedTab === 'practice' && (
           <AITutorModule
             state={state}
             selectedTopic={tutorTopic}
@@ -443,41 +667,102 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'progress' && (
-          <ProgressModule
-            state={state}
-            onNavigateToTab={(tab) => setActiveTab(tab)}
-          />
+        {/* 5. SEMESTER DESTINATION (Semester & Holiday Mode sub-tabs) */}
+        {resolvedTab === 'semester' && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-1.5 p-1 bg-[#EEF0FF]/70 border border-[#E5E7EB] rounded-xl w-fit">
+              <button
+                onClick={() => setSemesterSubView('semester')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                  semesterSubView === 'semester'
+                    ? 'bg-white text-[#5865D8] font-semibold shadow-xs border border-[#E5E7EB]'
+                    : 'text-[#667085] hover:text-[#242938]'
+                }`}
+              >
+                Curriculum & Semester Setup
+              </button>
+              <button
+                onClick={() => setSemesterSubView('holiday')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                  semesterSubView === 'holiday'
+                    ? 'bg-white text-[#5865D8] font-semibold shadow-xs border border-[#E5E7EB]'
+                    : 'text-[#667085] hover:text-[#242938]'
+                }`}
+              >
+                Holiday & Break Mode
+              </button>
+            </div>
+
+            {semesterSubView === 'semester' ? (
+              <SemesterModule
+                state={state}
+                onUpdateSemester={handleUpdateSemester}
+                onSaveSubject={handleSaveSubject}
+                onDeleteSubject={handleDeleteSubject}
+                onNavigateToTab={handleNavigate}
+                showToast={showToast}
+              />
+            ) : (
+              <HolidayModeModule
+                state={state}
+                onNavigateToTab={handleNavigate}
+                showToast={showToast}
+              />
+            )}
+          </div>
         )}
 
-        {activeTab === 'weekly_review' && (
-          <WeeklyReviewModule
+        {/* 6. PROJECTS DESTINATION (Systems Engineering Portfolio) */}
+        {resolvedTab === 'projects' && (
+          <ProjectsModule
             state={state}
-            onNavigateToTab={(tab) => setActiveTab(tab)}
             showToast={showToast}
           />
         )}
 
-        {activeTab === 'semester' && (
-          <SemesterModule
-            state={state}
-            onUpdateSemester={handleUpdateSemester}
-            onSaveSubject={handleSaveSubject}
-            onDeleteSubject={handleDeleteSubject}
-            onNavigateToTab={(tab) => setActiveTab(tab)}
-            showToast={showToast}
-          />
+        {/* 7. REVIEWS DESTINATION (Weekly AI Review & Progress Analytics sub-tabs) */}
+        {resolvedTab === 'reviews' && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-1.5 p-1 bg-[#EEF0FF]/70 border border-[#E5E7EB] rounded-xl w-fit">
+              <button
+                onClick={() => setReviewsSubView('weekly')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                  reviewsSubView === 'weekly'
+                    ? 'bg-white text-[#5865D8] font-semibold shadow-xs border border-[#E5E7EB]'
+                    : 'text-[#667085] hover:text-[#242938]'
+                }`}
+              >
+                Weekly AI Review & Pacing
+              </button>
+              <button
+                onClick={() => setReviewsSubView('progress')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                  reviewsSubView === 'progress'
+                    ? 'bg-white text-[#5865D8] font-semibold shadow-xs border border-[#E5E7EB]'
+                    : 'text-[#667085] hover:text-[#242938]'
+                }`}
+              >
+                Long-Term Progress & Mastery
+              </button>
+            </div>
+
+            {reviewsSubView === 'weekly' ? (
+              <WeeklyReviewModule
+                state={state}
+                onNavigateToTab={handleNavigate}
+                showToast={showToast}
+              />
+            ) : (
+              <ProgressModule
+                state={state}
+                onNavigateToTab={handleNavigate}
+              />
+            )}
+          </div>
         )}
 
-        {activeTab === 'holiday' && (
-          <HolidayModeModule
-            state={state}
-            onNavigateToTab={(tab) => setActiveTab(tab)}
-            showToast={showToast}
-          />
-        )}
-
-        {activeTab === 'settings' && (
+        {/* 8. SETTINGS DESTINATION */}
+        {resolvedTab === 'settings' && (
           <SettingsModule
             state={state}
             onUpdateProfile={handleUpdateProfile}

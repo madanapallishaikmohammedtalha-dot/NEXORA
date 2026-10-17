@@ -1,10 +1,15 @@
 import {
+  ActiveFocusSessionState,
   AppState,
   DailyMission,
   DayOfWeek,
   Goal,
+  LearnerMemory,
   LearningProgress,
+  MemoryCategory,
+  MemorySource,
   MissionItem,
+  ProjectItem,
   RoadmapProgressSummary,
   RoadmapTopic,
   Semester,
@@ -22,7 +27,7 @@ import {
   SemesterStatus,
   HolidayPlan,
 } from '../types';
-import { INITIAL_SEEDED_STATE } from './seedData';
+import { INITIAL_SEEDED_STATE, SEED_LEARNER_MEMORIES, SEED_PROJECTS } from './seedData';
 import {
   computeWeeklyAnalytics,
   generateDeterministicNextWeekProposals,
@@ -37,6 +42,7 @@ import {
 } from './holidayPlanner';
 import {
   validateGoal,
+  validateLearnerMemory,
   validateRoadmapTopic,
   validateSemester,
   validateStudySession,
@@ -168,11 +174,31 @@ export class DataService {
       }
       const parsed = JSON.parse(raw);
 
-      // Defensively ensure schema keys exist
+      // Defensively ensure schema keys exist & apply v1 -> v2 migration
+      let needsMigrationCommit = false;
+      let schemaVersion = parsed.schemaVersion || 1;
+      if (schemaVersion < 2) {
+        schemaVersion = 2;
+        needsMigrationCommit = true;
+      }
+
+      const learnerMemories: LearnerMemory[] = Array.isArray(parsed.learnerMemories)
+        ? parsed.learnerMemories
+        : (SEED_LEARNER_MEMORIES || []);
+
+      const projects: ProjectItem[] = Array.isArray(parsed.projects)
+        ? parsed.projects
+        : (SEED_PROJECTS || []);
+
       const state: AppState = {
         ...INITIAL_SEEDED_STATE,
         ...parsed,
-        profile: { ...INITIAL_SEEDED_STATE.profile, ...(parsed.profile || {}) },
+        schemaVersion,
+        profile: { 
+          ...INITIAL_SEEDED_STATE.profile, 
+          ...(parsed.profile || {}),
+          preferredExplanationStyle: parsed.profile?.preferredExplanationStyle || INITIAL_SEEDED_STATE.profile.preferredExplanationStyle || 'intuition_first',
+        },
         semesters: Array.isArray(parsed.semesters) ? parsed.semesters : INITIAL_SEEDED_STATE.semesters,
         subjects: Array.isArray(parsed.subjects) ? parsed.subjects : INITIAL_SEEDED_STATE.subjects,
         timetable: Array.isArray(parsed.timetable) ? parsed.timetable : INITIAL_SEEDED_STATE.timetable,
@@ -181,9 +207,17 @@ export class DataService {
         goals: Array.isArray(parsed.goals) ? parsed.goals : INITIAL_SEEDED_STATE.goals,
         timeBlocks: parsed.timeBlocks || INITIAL_SEEDED_STATE.timeBlocks || {},
         missions: parsed.missions || INITIAL_SEEDED_STATE.missions || {},
+        semesterReviews: parsed.semesterReviews || INITIAL_SEEDED_STATE.semesterReviews || {},
+        activeHolidayPlan: parsed.activeHolidayPlan || INITIAL_SEEDED_STATE.activeHolidayPlan,
+        learnerMemories,
+        activeFocusSession: parsed.activeFocusSession || null,
+        projects,
       };
 
       this.stateCache = state;
+      if (needsMigrationCommit) {
+        this.saveState(state);
+      }
       return state;
     } catch (err) {
       console.error('DataService: Failed to parse state from storage, falling back to seed data:', err);
@@ -928,11 +962,94 @@ export class DataService {
       };
     }
 
+    // Clear active focus session if one was running for this topic or mission item
+    let updatedActiveFocusSession = state.activeFocusSession;
+    if (updatedActiveFocusSession) {
+      if (
+        (session.missionItemId && updatedActiveFocusSession.missionItemId === session.missionItemId) ||
+        (session.topicId && updatedActiveFocusSession.topicId === session.topicId)
+      ) {
+        updatedActiveFocusSession = null;
+      }
+    }
+
+    // Automatically record learner evidence into persistent memory from real reflection
+    let updatedMemories = [...(state.learnerMemories || [])];
+    const topic = session.topicId ? state.topics.find((t) => t.id === session.topicId) : undefined;
+    const topicTitle = topic ? topic.title : 'Study Topic';
+
+    if (session.comprehensionRating >= 4 && session.keyTakeaways) {
+      // High comprehension: establish or reinforce strength memory
+      const normTitle = `Strong comprehension of ${topicTitle}`.toLowerCase();
+      const existingIdx = updatedMemories.findIndex((m) => 
+        (session.topicId && m.topicId === session.topicId && m.category === 'strength') ||
+        (m.category === 'strength' && m.title.toLowerCase() === normTitle)
+      );
+      const now = new Date().toISOString();
+      if (existingIdx >= 0) {
+        updatedMemories[existingIdx] = {
+          ...updatedMemories[existingIdx],
+          detail: session.keyTakeaways,
+          occurrences: (updatedMemories[existingIdx].occurrences || 1) + 1,
+          confidence: Math.min(1.0, updatedMemories[existingIdx].confidence + 0.05),
+          updatedAt: now,
+        };
+      } else {
+        updatedMemories.unshift({
+          id: `mem-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          category: 'strength',
+          title: `Strong comprehension of ${topicTitle}`,
+          detail: session.keyTakeaways,
+          topicId: session.topicId,
+          subjectId: session.subjectId,
+          source: 'session_reflection',
+          confidence: 0.85,
+          occurrences: 1,
+          createdAt: now,
+          updatedAt: now,
+        });
+      }
+    } else if (session.comprehensionRating <= 2 || session.difficultyNote) {
+      // Difficulty or roadblock noted: record needs_practice memory
+      const note = session.difficultyNote || session.keyTakeaways || 'Encountered difficulties during focus session.';
+      const normTitle = `Needs reinforcement on ${topicTitle}`.toLowerCase();
+      const existingIdx = updatedMemories.findIndex((m) => 
+        (session.topicId && m.topicId === session.topicId && m.category === 'needs_practice') ||
+        (m.category === 'needs_practice' && m.title.toLowerCase() === normTitle)
+      );
+      const now = new Date().toISOString();
+      if (existingIdx >= 0) {
+        updatedMemories[existingIdx] = {
+          ...updatedMemories[existingIdx],
+          detail: note,
+          occurrences: (updatedMemories[existingIdx].occurrences || 1) + 1,
+          confidence: Math.min(1.0, updatedMemories[existingIdx].confidence + 0.05),
+          updatedAt: now,
+        };
+      } else {
+        updatedMemories.unshift({
+          id: `mem-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          category: 'needs_practice',
+          title: `Needs reinforcement on ${topicTitle}`,
+          detail: note,
+          topicId: session.topicId,
+          subjectId: session.subjectId,
+          source: 'session_reflection',
+          confidence: 0.85,
+          occurrences: 1,
+          createdAt: now,
+          updatedAt: now,
+        });
+      }
+    }
+
     this.saveState({
       ...state,
       sessions: updatedSessions,
       topics: updatedTopics,
       missions: updatedMissions,
+      learnerMemories: updatedMemories,
+      activeFocusSession: updatedActiveFocusSession,
     });
 
     return session;
@@ -1146,6 +1263,15 @@ export class DataService {
     return updatedMission;
   }
 
+  skipDailyMissionItem(dateStr: string, itemId: string): MissionItem | undefined {
+    const mission = this.getDailyMission(dateStr);
+    if (!mission) return undefined;
+    const item = mission.items.find((i) => i.id === itemId);
+    if (!item) return undefined;
+    const updated: MissionItem = { ...item, status: 'skipped' };
+    return this.saveMissionItem(dateStr, updated);
+  }
+
   acceptProposedMission(proposed: ProposedDailyMission): DailyMission {
     const state = this.getState();
     const existing = state.missions[proposed.date];
@@ -1201,6 +1327,215 @@ export class DataService {
       isAIRecorded: false,
     };
     return this.saveMissionItem(targetDate, missionItem);
+  }
+
+  // ==========================================
+  // 12. Persistent Learner Memory Operations
+  // ==========================================
+
+  getLearnerMemories(category?: MemoryCategory): LearnerMemory[] {
+    const memories = this.getState().learnerMemories || [];
+    if (!category) return [...memories].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+    return memories
+      .filter((m) => m.category === category)
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+  }
+
+  getLearnerMemoryById(id: string): LearnerMemory | undefined {
+    return (this.getState().learnerMemories || []).find((m) => m.id === id);
+  }
+
+  saveLearnerMemory(memory: LearnerMemory): LearnerMemory {
+    const validation = validateLearnerMemory(memory);
+    if (!validation.isValid) {
+      throw new Error(`LearnerMemory validation failed: ${validation.errors.map((e) => e.message).join('; ')}`);
+    }
+
+    const state = this.getState();
+    const existing = state.learnerMemories || [];
+    const index = existing.findIndex((m) => m.id === memory.id);
+    let updated: LearnerMemory[];
+
+    if (index >= 0) {
+      updated = [...existing];
+      updated[index] = { ...memory, updatedAt: new Date().toISOString() };
+    } else {
+      updated = [memory, ...existing];
+    }
+
+    this.saveState({ ...state, learnerMemories: updated });
+    return memory;
+  }
+
+  /**
+   * Records evidence with deduplication: merges with existing record on the same topic/category
+   * instead of creating repetitive noise.
+   */
+  recordLearnerEvidence(evidence: {
+    category: MemoryCategory;
+    title: string;
+    detail: string;
+    subjectId?: string;
+    topicId?: string;
+    source: MemorySource;
+    confidence?: number;
+  }): LearnerMemory {
+    const state = this.getState();
+    const memories = state.learnerMemories || [];
+
+    // Find existing matching memory by same topicId+category OR same title
+    const normTitle = evidence.title.trim().toLowerCase();
+    const existingIndex = memories.findIndex((m) => {
+      if (evidence.topicId && m.topicId === evidence.topicId && m.category === evidence.category) {
+        return true;
+      }
+      return m.category === evidence.category && m.title.trim().toLowerCase() === normTitle;
+    });
+
+    const now = new Date().toISOString();
+
+    if (existingIndex >= 0) {
+      const match = memories[existingIndex];
+      const merged: LearnerMemory = {
+        ...match,
+        title: evidence.title.trim(),
+        detail: evidence.detail.trim() || match.detail,
+        confidence: Math.min(1.0, Math.max(match.confidence, evidence.confidence ?? 0.8) + 0.05),
+        occurrences: (match.occurrences || 1) + 1,
+        source: evidence.source,
+        updatedAt: now,
+      };
+
+      const updated = [...memories];
+      updated[existingIndex] = merged;
+      this.saveState({ ...state, learnerMemories: updated });
+      return merged;
+    }
+
+    // Create fresh memory record
+    const newMemory: LearnerMemory = {
+      id: `mem-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      category: evidence.category,
+      title: evidence.title.trim(),
+      detail: evidence.detail.trim(),
+      subjectId: evidence.subjectId,
+      topicId: evidence.topicId,
+      source: evidence.source,
+      confidence: Math.min(1.0, Math.max(0.1, evidence.confidence ?? 0.85)),
+      occurrences: 1,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    this.saveLearnerMemory(newMemory);
+    return newMemory;
+  }
+
+  updateLearnerMemory(id: string, updates: Partial<LearnerMemory>): LearnerMemory {
+    const memory = this.getLearnerMemoryById(id);
+    if (!memory) {
+      throw new Error(`Memory with id "${id}" not found`);
+    }
+
+    const merged: LearnerMemory = {
+      ...memory,
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+
+    return this.saveLearnerMemory(merged);
+  }
+
+  deleteLearnerMemory(id: string): void {
+    const state = this.getState();
+    const updated = (state.learnerMemories || []).filter((m) => m.id !== id);
+    this.saveState({ ...state, learnerMemories: updated });
+  }
+
+  clearLearnerMemories(): void {
+    const state = this.getState();
+    this.saveState({ ...state, learnerMemories: [] });
+  }
+
+  // ==========================================
+  // 13. Active Focus Session Persistence
+  // ==========================================
+
+  getActiveFocusSession(): ActiveFocusSessionState | null {
+    return this.getState().activeFocusSession || null;
+  }
+
+  startActiveFocusSession(session: ActiveFocusSessionState): void {
+    const state = this.getState();
+    this.saveState({ ...state, activeFocusSession: session });
+  }
+
+  updateActiveFocusSession(updates: Partial<ActiveFocusSessionState>): void {
+    const current = this.getActiveFocusSession();
+    if (!current) return;
+    const state = this.getState();
+    this.saveState({
+      ...state,
+      activeFocusSession: { ...current, ...updates },
+    });
+  }
+
+  clearActiveFocusSession(): void {
+    const state = this.getState();
+    this.saveState({ ...state, activeFocusSession: null });
+  }
+
+  // ==========================================
+  // 14. Projects & Engineering Portfolio
+  // ==========================================
+
+  getProjects(): ProjectItem[] {
+    return this.getState().projects || [];
+  }
+
+  saveProject(project: ProjectItem): ProjectItem {
+    const state = this.getState();
+    const existing = state.projects || [];
+    const index = existing.findIndex((p) => p.id === project.id);
+    let updated: ProjectItem[];
+
+    if (index >= 0) {
+      updated = [...existing];
+      updated[index] = project;
+    } else {
+      updated = [project, ...existing];
+    }
+
+    this.saveState({ ...state, projects: updated });
+    return project;
+  }
+
+  deleteProject(projectId: string): void {
+    const state = this.getState();
+    const updated = (state.projects || []).filter((p) => p.id !== projectId);
+    this.saveState({ ...state, projects: updated });
+  }
+
+  toggleProjectMilestone(projectId: string, milestoneId: string): void {
+    const state = this.getState();
+    const project = (state.projects || []).find((p) => p.id === projectId);
+    if (!project) return;
+
+    const updatedMilestones = project.milestones.map((m) => {
+      if (m.id === milestoneId) {
+        return { ...m, completed: !m.completed };
+      }
+      return m;
+    });
+
+    const allDone = updatedMilestones.length > 0 && updatedMilestones.every((m) => m.completed);
+    const updatedProject: ProjectItem = {
+      ...project,
+      milestones: updatedMilestones,
+      status: allDone ? 'completed' : project.status === 'planned' ? 'in_progress' : project.status,
+    };
+
+    this.saveProject(updatedProject);
   }
 }
 

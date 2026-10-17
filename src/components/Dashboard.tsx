@@ -77,20 +77,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const getActivityBadge = (type?: ActivityType) => {
     switch (type) {
       case 'college_work':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">College Work</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#FFFBEB] text-[#A6630A] border border-[#FDE68A]">College Work</span>;
       case 'dsa_practice':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">DSA Practice</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20">DSA Practice</span>;
       case 'career_learning':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">Career Skill</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20">Career Skill</span>;
       case 'project_work':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/30">Project</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#F5F6FA] text-[#242938] border border-[#E5E7EB]">Project</span>;
       case 'revision':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">Revision</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#ECFDF5] text-[#16845B] border border-[#A7F3D0]">Revision</span>;
       case 'break':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-400">Rest Break</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#F5F6FA] text-[#667085] border border-[#E5E7EB]">Rest Break</span>;
       case 'academic_study':
       default:
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/30">Academic Study</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#EEF0FF] text-[#5865D8] border border-[#5865D8]/20">Academic Study</span>;
     }
   };
 
@@ -99,50 +99,50 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* PRIMARY ACTION HERO: TODAY'S MISSION COMMAND CENTER */}
       <div 
         id="dashboard-primary-mission-hero"
-        className="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border-2 border-indigo-500/50 rounded-2xl p-6 sm:p-7 shadow-lg relative overflow-hidden"
+        className="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-7 shadow-xs relative overflow-hidden"
       >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
               {isBreakMode ? (
-                <span className="text-xs font-black uppercase tracking-wider text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/60">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#16845B] bg-[#ECFDF5] px-2.5 py-0.5 rounded-full border border-[#A7F3D0]">
                   SEMESTER BREAK • Holiday Mission
                 </span>
               ) : isNewSemester ? (
-                <span className="text-xs font-black uppercase tracking-wider text-indigo-400 bg-indigo-950/80 px-2.5 py-0.5 rounded-full border border-indigo-800/60">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#5865D8] bg-[#EEF0FF] px-2.5 py-0.5 rounded-full border border-[#5865D8]/20">
                   NEW SEMESTER • Today's Mission
                 </span>
               ) : (
-                <span className="text-xs font-black uppercase tracking-wider text-amber-400 bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-800/40">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#5865D8] bg-[#EEF0FF] px-2.5 py-0.5 rounded-full border border-[#5865D8]/20">
                   CURRENT SEMESTER • Today's Mission
                 </span>
               )}
 
               {isNewSemester && previousSemester ? (
-                <span className="text-xs text-slate-300 font-mono">
-                  Current: <strong className="text-white">{activeSemester?.name}</strong> • Previous: <strong className="text-emerald-400">{previousSemester.name} ✓ Completed</strong>
+                <span className="text-xs text-[#667085] font-mono">
+                  Current: <strong className="text-[#242938]">{activeSemester?.name}</strong> • Previous: <strong className="text-[#16845B]">{previousSemester.name} ✓ Completed</strong>
                 </span>
               ) : (
-                <span className="text-xs text-slate-400 font-mono">{activeSemester?.name} • {formatDateReadable(todayStr)}</span>
+                <span className="text-xs text-[#667085] font-mono">{activeSemester?.name} • {formatDateReadable(todayStr)}</span>
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#242938] tracking-tight">
               {isBreakMode ? (
                 currentActivity ? (
-                  <span>Holiday Mission: <span className="text-emerald-300">{currentActivity.title}</span></span>
+                  <span>Holiday Mission: <span className="text-[#16845B]">{currentActivity.title}</span></span>
                 ) : (
                   <span>SEMESTER BREAK • Holiday Mission</span>
                 )
               ) : isNewSemester ? (
                 currentActivity ? (
-                  <span>Next Focus: <span className="text-indigo-300">{currentActivity.title}</span></span>
+                  <span>Next Focus: <span className="text-[#5865D8]">{currentActivity.title}</span></span>
                 ) : (
                   <span>NEW SEMESTER • Today's Mission</span>
                 )
               ) : (
                 currentActivity ? (
-                  <span>Next Focus: <span className="text-indigo-300">{currentActivity.title}</span></span>
+                  <span>Next Focus: <span className="text-[#5865D8]">{currentActivity.title}</span></span>
                 ) : items.length > 0 ? (
                   <span>All Mission Tasks Completed!</span>
                 ) : (
@@ -151,10 +151,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
               )}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#667085] max-w-2xl leading-relaxed">
               {currentActivity ? (
                 <span>
-                  Targeting <strong>{currentActivity.plannedMinutes} mins</strong> of deliberate focus. {currentActivity.reason || 'Prerequisites validated and aligned with your daily capacity.'}
+                  Targeting <strong className="text-[#242938]">{currentActivity.plannedMinutes} mins</strong> of deliberate focus. {currentActivity.reason || 'Prerequisites validated and aligned with your daily capacity.'}
                 </span>
               ) : items.length > 0 ? (
                 <span>You’ve completed all scheduled study blocks today. Outstanding discipline!</span>
@@ -165,17 +165,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             {/* Quick Context Badges */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Remaining Study Capacity: <strong className="text-emerald-300">{remainingStudyHours}h</strong> ({remainingStudyMinutes}m)</span>
+              <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[#F5F6FA] border border-[#E5E7EB] text-[#242938] flex items-center gap-1.5 shadow-xs">
+                <Clock className="w-3.5 h-3.5 text-[#5865D8]" />
+                <span className="text-[#667085]">Remaining Capacity: <strong className="text-[#16845B]">{remainingStudyHours}h</strong> ({remainingStudyMinutes}m)</span>
               </span>
-              <span className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700 text-slate-300 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Completed Tasks: <strong className="text-white">{plannedVsActual.completedItems} / {plannedVsActual.totalItems}</strong></span>
+              <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[#F5F6FA] border border-[#E5E7EB] text-[#242938] flex items-center gap-1.5 shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#16845B]" />
+                <span className="text-[#667085]">Completed Tasks: <strong className="text-[#242938]">{plannedVsActual.completedItems} / {plannedVsActual.totalItems}</strong></span>
               </span>
               {nextSlot && (
-                <span className="text-[11px] px-2.5 py-1 rounded-lg bg-amber-950/40 border border-amber-800/50 text-amber-300 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[#FFFBEB] border border-[#FDE68A] text-[#A6630A] flex items-center gap-1.5 shadow-xs">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#A6630A]" />
                   <span>Next Campus: {nextSlot.title} ({nextSlot.startTime})</span>
                 </span>
               )}
@@ -187,7 +187,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <button
               id="start-today-session-btn"
               onClick={handleStartTodaySession}
-              className="px-6 py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-extrabold text-sm rounded-xl shadow-xl flex items-center gap-2.5 transition-all transform hover:scale-[1.02] cursor-pointer"
+              className="px-6 py-3.5 bg-[#5865D8] hover:bg-[#4854C4] text-white font-bold text-sm rounded-xl shadow-xs flex items-center gap-2.5 transition-colors cursor-pointer"
             >
               <Play className="w-5 h-5 fill-current" />
               <span>START TODAY'S SESSION</span>
@@ -195,7 +195,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             <button
               onClick={() => setActiveTab('planner')}
-              className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-semibold"
+              className="text-xs text-[#5865D8] hover:text-[#4854C4] flex items-center gap-1 font-semibold"
             >
               <span>Open Planner / Modify Day</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -204,15 +204,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Progress Bar & Current vs Next Activity Breakdown */}
-        <div className="mt-6 pt-5 border-t border-slate-800/80 space-y-4">
+        <div className="mt-6 pt-5 border-t border-[#E5E7EB] space-y-4">
           <div className="space-y-1.5">
-            <div className="flex justify-between text-xs text-slate-400">
-              <span className="font-semibold text-slate-300">Daily Mission Progress</span>
-              <span className="font-mono text-emerald-400 font-bold">{plannedVsActual.completionRate}% Done</span>
+            <div className="flex justify-between text-xs text-[#667085]">
+              <span className="font-semibold text-[#242938]">Daily Mission Progress</span>
+              <span className="font-mono text-[#16845B] font-bold">{plannedVsActual.completionRate}% Done</span>
             </div>
-            <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-[#F5F6FA] h-2 rounded-full overflow-hidden border border-[#E5E7EB]">
               <div 
-                className="bg-emerald-400 h-full rounded-full transition-all duration-500"
+                className="bg-[#5865D8] h-full rounded-full transition-all duration-500"
                 style={{ width: `${plannedVsActual.completionRate}%` }}
               />
             </div>
@@ -220,19 +220,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           {/* Current & Next Activity Bento Strip */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between">
+            <div className="bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl p-3.5 flex items-center justify-between">
               <div className="space-y-1 min-w-0 pr-2">
-                <div className="text-[10px] uppercase font-bold text-indigo-400 flex items-center gap-1">
+                <div className="text-[10px] uppercase font-bold text-[#5865D8] flex items-center gap-1">
                   <Target className="w-3 h-3" />
                   <span>Current Activity</span>
                 </div>
-                <div className="text-xs font-semibold text-white truncate">
+                <div className="text-xs font-semibold text-[#242938] truncate">
                   {currentActivity?.title || 'None active'}
                 </div>
                 {currentActivity && (
                   <div className="flex items-center gap-2">
                     {getActivityBadge(currentActivity.activityType)}
-                    <span className="text-[10px] text-slate-400 font-mono">
+                    <span className="text-[10px] text-[#667085] font-mono">
                       {currentActivity.scheduledTime} – {currentActivity.endTime}
                     </span>
                   </div>
@@ -241,7 +241,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {currentActivity && (
                 <button
                   onClick={() => onStartSessionForItem(currentActivity)}
-                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg shrink-0 flex items-center gap-1 cursor-pointer"
+                  className="px-3 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white text-xs font-semibold rounded-lg shrink-0 flex items-center gap-1 cursor-pointer shadow-xs"
                 >
                   <Play className="w-3 h-3 fill-current" />
                   <span>Focus</span>
@@ -249,19 +249,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
               )}
             </div>
 
-            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between">
+            <div className="bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl p-3.5 flex items-center justify-between">
               <div className="space-y-1 min-w-0">
-                <div className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
+                <div className="text-[10px] uppercase font-bold text-[#667085] flex items-center gap-1">
                   <ArrowRight className="w-3 h-3" />
                   <span>Next Activity</span>
                 </div>
-                <div className="text-xs font-semibold text-slate-300 truncate">
+                <div className="text-xs font-semibold text-[#242938] truncate">
                   {nextActivity?.title || (items.length > 0 ? 'No more tasks remaining' : 'Plan your day in Planner')}
                 </div>
                 {nextActivity && (
                   <div className="flex items-center gap-2">
                     {getActivityBadge(nextActivity.activityType)}
-                    <span className="text-[10px] text-slate-400 font-mono">
+                    <span className="text-[10px] text-[#667085] font-mono">
                       {nextActivity.scheduledTime} ({nextActivity.plannedMinutes}m)
                     </span>
                   </div>
@@ -278,27 +278,27 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <CalendarDays className="w-4 h-4 text-indigo-400" />
-              <h2 className="text-base font-bold text-white">Full Daily Schedule</h2>
+              <CalendarDays className="w-4 h-4 text-[#5865D8]" />
+              <h2 className="text-base font-bold text-[#242938]">Full Daily Schedule</h2>
             </div>
             <button
               onClick={() => setActiveTab('planner')}
-              className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold"
+              className="text-xs text-[#5865D8] hover:text-[#4854C4] font-semibold"
             >
               Open Daily Planner & Check-In →
             </button>
           </div>
 
           {items.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-3">
-              <AlertCircle className="w-8 h-8 text-slate-500 mx-auto" />
-              <div className="text-sm font-semibold text-slate-200">No Mission Planned Yet Today</div>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 text-center space-y-3 shadow-xs">
+              <AlertCircle className="w-8 h-8 text-[#667085] mx-auto opacity-50" />
+              <div className="text-sm font-semibold text-[#242938]">No Mission Planned Yet Today</div>
+              <p className="text-xs text-[#667085] max-w-sm mx-auto">
                 Calculate today's real available time and let NEXORA propose high-leverage topics matching your prerequisites.
               </p>
               <button
                 onClick={() => setActiveTab('planner')}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Open Planner & Begin Check-In</span>
@@ -317,28 +317,28 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     id={`mission-item-${item.id}`}
                     className={`border rounded-xl p-3.5 transition-all flex items-center justify-between gap-3 ${
                       isCompleted 
-                        ? 'border-slate-800/80 bg-slate-900/40 opacity-75' 
+                        ? 'border-[#E5E7EB] bg-[#F5F6FA] text-[#667085]' 
                         : isCurrent
-                        ? 'border-indigo-500 bg-indigo-950/20 shadow-md'
+                        ? 'border-[#5865D8] bg-[#EEF0FF]/40 shadow-xs'
                         : item.isBreak
-                        ? 'border-slate-800/60 bg-slate-950/40 text-slate-400'
-                        : 'border-slate-800 bg-slate-900 hover:border-slate-700'
+                        ? 'border-[#E5E7EB] bg-[#F5F6FA] text-[#667085]'
+                        : 'border-[#E5E7EB] bg-white hover:border-[#5865D8]/50 shadow-xs'
                     }`}
                   >
                     <div className="flex items-start gap-3 flex-1 min-w-0">
                       {!item.isBreak ? (
                         <button
                           onClick={() => onToggleItemStatus(todayStr, item.id)}
-                          className="mt-0.5 text-slate-400 hover:text-emerald-400 transition-colors cursor-pointer"
+                          className="mt-0.5 text-[#667085] hover:text-[#16845B] transition-colors cursor-pointer"
                         >
                           {isCompleted ? (
-                            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                            <CheckCircle2 className="w-5 h-5 text-[#16845B]" />
                           ) : (
-                            <Circle className="w-5 h-5 text-slate-500" />
+                            <Circle className="w-5 h-5 text-[#667085]" />
                           )}
                         </button>
                       ) : (
-                        <Coffee className="w-5 h-5 text-slate-500 shrink-0 mt-0.5" />
+                        <Coffee className="w-5 h-5 text-[#667085] shrink-0 mt-0.5" />
                       )}
 
                       <div className="min-w-0 flex-1">
@@ -352,19 +352,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             </span>
                           )}
                           {item.scheduledTime && (
-                            <span className="text-[11px] font-mono text-slate-400">
+                            <span className="text-[11px] font-mono text-[#667085]">
                               {item.scheduledTime} – {item.endTime}
                             </span>
                           )}
                           {getActivityBadge(item.activityType)}
                         </div>
 
-                        <h3 className={`text-sm font-semibold truncate ${isCompleted ? 'line-through text-slate-400' : 'text-slate-100'}`}>
+                        <h3 className={`text-sm font-semibold truncate ${isCompleted ? 'line-through text-[#667085]' : 'text-[#242938]'}`}>
                           {item.title}
                         </h3>
 
                         {item.reason && (
-                          <p className="text-xs text-slate-400 truncate mt-0.5">
+                          <p className="text-xs text-[#667085] truncate mt-0.5">
                             {item.reason}
                           </p>
                         )}
@@ -374,10 +374,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     {/* Time & Action */}
                     <div className="flex items-center gap-3 shrink-0">
                       <div className="text-right font-mono">
-                        <div className="text-xs font-semibold text-slate-200">
+                        <div className="text-xs font-semibold text-[#242938]">
                           {item.actualMinutes > 0 ? `${item.actualMinutes}m / ` : ''}{item.plannedMinutes}m
                         </div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[10px] text-[#667085]">
                           {item.actualMinutes > 0 ? 'Logged' : 'Target'}
                         </div>
                       </div>
@@ -385,7 +385,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {!isCompleted && !item.isBreak && (
                         <button
                           onClick={() => onStartSessionForItem(item)}
-                          className="flex items-center gap-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-all cursor-pointer"
+                          className="flex items-center gap-1 px-3 py-1.5 bg-[#5865D8] hover:bg-[#4854C4] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                           title="Start focus session"
                         >
                           <Play className="w-3 h-3 fill-current" />
@@ -401,10 +401,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           {/* AI Advisory Rationale Card */}
           {todaysMission?.aiProposalRationale && (
-            <div className="bg-indigo-950/20 border border-indigo-900/40 rounded-xl p-4 flex items-start gap-3">
-              <Sparkles className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
-              <div className="text-xs text-slate-300">
-                <strong className="text-indigo-300 font-semibold block mb-0.5">NEXORA Scheduling Advisory Strategy</strong>
+            <div className="bg-[#EEF0FF] border border-[#5865D8]/20 rounded-xl p-4 flex items-start gap-3 shadow-xs">
+              <Sparkles className="w-4 h-4 text-[#5865D8] mt-0.5 shrink-0" />
+              <div className="text-xs text-[#242938]">
+                <strong className="text-[#5865D8] font-semibold block mb-0.5">NEXORA Scheduling Advisory Strategy</strong>
                 {todaysMission.aiProposalRationale}
               </div>
             </div>
@@ -414,65 +414,65 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {/* Right 1 Col: Fixed Campus Commitments & Weekly Subject Pacing */}
         <div className="space-y-6">
           {/* Upcoming Fixed Campus Commitment */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 space-y-3 shadow-xs">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#667085]">
                 Campus Commitment
               </h3>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#FFFBEB] text-[#A6630A] border border-[#FDE68A]">
                 Fixed Block
               </span>
             </div>
 
             {nextSlot ? (
-              <div className="bg-slate-800/60 border border-slate-700/60 rounded-xl p-3.5 space-y-2">
+              <div className="bg-[#F5F6FA] border border-[#E5E7EB] rounded-xl p-3.5 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-white">{nextSlot.title}</span>
-                  <span className="text-xs font-mono text-amber-300 font-medium">
+                  <span className="text-sm font-semibold text-[#242938]">{nextSlot.title}</span>
+                  <span className="text-xs font-mono text-[#A6630A] font-medium">
                     {nextSlot.startTime} - {nextSlot.endTime}
                   </span>
                 </div>
                 {nextSlot.location && (
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                  <div className="flex items-center gap-1.5 text-xs text-[#667085]">
+                    <MapPin className="w-3.5 h-3.5 text-[#667085]" />
                     <span>{nextSlot.location}</span>
                   </div>
                 )}
-                <div className="text-[11px] text-slate-400">
-                  Type: <span className="capitalize text-slate-300">{nextSlot.type}</span>
+                <div className="text-[11px] text-[#667085]">
+                  Type: <span className="capitalize text-[#242938]">{nextSlot.type}</span>
                 </div>
               </div>
             ) : (
-              <div className="text-xs text-slate-400 py-2">
+              <div className="text-xs text-[#667085] py-2">
                 No further fixed lectures or labs scheduled for today.
               </div>
             )}
 
             <button
               onClick={() => setActiveTab('timetable')}
-              className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium transition-colors cursor-pointer text-center"
+              className="w-full py-2 bg-[#F5F6FA] hover:bg-[#E5E7EB] text-[#242938] rounded-lg text-xs font-medium transition-colors cursor-pointer text-center border border-[#E5E7EB]"
             >
               View Full Weekly Timetable
             </button>
           </div>
 
           {/* Weekly Subject Pacing */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#667085]">
                 Subject Pacing This Week
               </h3>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setActiveTab('weekly_review')}
-                  className="text-[11px] text-emerald-400 hover:underline font-semibold"
+                  className="text-[11px] text-[#16845B] hover:underline font-semibold"
                 >
                   Weekly Review
                 </button>
-                <span className="text-slate-600">•</span>
+                <span className="text-[#E5E7EB]">•</span>
                 <button
                   onClick={() => setActiveTab('progress')}
-                  className="text-[11px] text-indigo-400 hover:underline"
+                  className="text-[11px] text-[#5865D8] hover:underline"
                 >
                   Details
                 </button>
@@ -491,14 +491,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2 truncate pr-2">
                         <span className="w-2 h-2 rounded-full" style={{ backgroundColor: sub.color }}></span>
-                        <span className="font-semibold text-slate-200 truncate">{sub.code}</span>
+                        <span className="font-semibold text-[#242938] truncate">{sub.code}</span>
                       </div>
-                      <span className="text-slate-400 font-mono text-[11px]">
+                      <span className="text-[#667085] font-mono text-[11px]">
                         {actualHours} / {targetHours}h
                       </span>
                     </div>
 
-                    <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-[#F5F6FA] h-1.5 rounded-full overflow-hidden border border-[#E5E7EB]">
                       <div 
                         className="h-full rounded-full transition-all"
                         style={{ width: `${percent}%`, backgroundColor: sub.color }}
